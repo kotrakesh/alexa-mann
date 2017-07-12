@@ -97,6 +97,40 @@ def main():
     else:
         return render_template('main.html')
 
+@app.route('/me')
+def get_me():
+    me_response = msgraphapi.get('me')
+    me_data = json.loads(json.dumps(me_response.data))
+    username = me_data['displayName']
+    vname    = me_data['givenName']
+    nname    = me_data['surname']
+    userid   = me_data['id']
+    email_address = me_data['userPrincipalName']
+
+
+    return render_template('me.html', vName = vname, nName = nname, uID = userid, mail = email_address)
+
+@app.route('/calendar')
+def get_calendars():
+    cal = msgraphapi.get('me/calendars')
+    cal_data = json.loads(json.dumps(cal.data))
+    return render_template('calendars.html', data = cal, jsondata = cal_data)
+
+@app.route('/mail')
+def get_mail():
+    mail_response = msgraphapi.get('me/messages')
+    mail_data = json.loads(json.dumps(mail_response.data))
+    print(mail_data)
+    #username = me_data['displayName']
+    #vname    = me_data['givenName']
+    #nname    = me_data['surname']
+    #userid   = me_data['id']
+    #email_address = me_data['userPrincipalName']
+
+
+    return render_template('mail.html', data=mail_data)
+
+
 @app.route('/send_mail')
 def send_mail():
     """Handler for send_mail route."""
