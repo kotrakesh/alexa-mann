@@ -29,11 +29,14 @@ oauth = OAuth(app)
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
 
+#scopes = 
+
 msgraphapi = oauth.remote_app( \
     'microsoft',
     consumer_key=client_id,
     consumer_secret=client_secret,
-    request_token_params={'scope': 'User.Read Mail.Send'},
+#    request_token_params={'scope': 'User.Read Mail.Send'},
+    request_token_params={'scope': 'User.Read Mail.Send Calendars.Read'},
     base_url='https://graph.microsoft.com/v1.0/',
     request_token_url=None,
     access_token_method='POST',
@@ -114,21 +117,18 @@ def get_me():
 def get_calendars():
     cal = msgraphapi.get('me/calendars')
     cal_data = json.loads(json.dumps(cal.data))
+    print('before response')
+    response = call_getcalendar_endpoint(session['access_token'])
+    print('after response') 
+    if response == 'SUCCESS':
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        print(response)
+        show_success = 'false'
+        show_error = 'true'
+
     return render_template('calendars.html', data = cal, jsondata = cal_data)
-
-@app.route('/mail')
-def get_mail():
-    mail_response = msgraphapi.get('me/messages')
-    mail_data = json.loads(json.dumps(mail_response.data))
-    print(mail_data)
-    #username = me_data['displayName']
-    #vname    = me_data['givenName']
-    #nname    = me_data['surname']
-    #userid   = me_data['id']
-    #email_address = me_data['userPrincipalName']
-
-
-    return render_template('mail.html', data=mail_data)
 
 
 @app.route('/send_mail')
@@ -191,6 +191,35 @@ def call_sendmail_endpoint(access_token, name, email_address):
                              verify=False,
                              params=None)
 
+    if response.ok:
+        return 'SUCCESS'
+    else:
+        return '{0}: {1}'.format(response.status_code, response.text)
+
+
+
+
+def call_getcalendar_endpoint(access_token):
+    """Call the resource URL for the sendMail action."""
+    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.calendars'
+
+	# set request headers
+    headers = {'User-Agent' : 'python_tutorial/1.0',
+               'Authorization' : 'Bearer {0}'.format(access_token),
+               'Accept' : 'application/json',
+               'Content-Type' : 'application/json'}
+
+    # Use these headers to instrument calls. Makes it easier to correlate
+    # requests and responses in case of problems and is a recommended best
+    # practice.
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id' : request_id,
+                       'return-client-request-id' : 'true'}
+    headers.update(instrumentation)
+
+    # Create the email that is to be sent via the Graph API
+    response = requests.get(url=send_calendar_url, headers=headers)
+                                
     if response.ok:
         return 'SUCCESS'
     else:
