@@ -6,8 +6,8 @@ import sys
 import uuid
 
 # un-comment these lines to suppress the HTTP status messages sent to the console
-#import logging
-#logging.getLogger('werkzeug').setLevel(logging.ERROR)
+# import logging
+# logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 import requests
 from flask import Flask, redirect, url_for, session, request, render_template
@@ -16,9 +16,9 @@ from flask_oauthlib.client import OAuth
 # read private credentials from text file
 client_id, client_secret, *_ = open('_PRIVATE.txt').read().split('\n')
 if (client_id.startswith('*') and client_id.endswith('*')) or \
-    (client_secret.startswith('*') and client_secret.endswith('*')):
+        (client_secret.startswith('*') and client_secret.endswith('*')):
     print('MISSING CONFIGURATION: the _PRIVATE.txt file needs to be edited ' + \
-        'to add client ID and secret.')
+          'to add client ID and secret.')
     sys.exit(1)
 
 app = Flask(__name__)
@@ -29,32 +29,35 @@ oauth = OAuth(app)
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
 
-#scopes = 
+# scopes =
 
 msgraphapi = oauth.remote_app( \
     'microsoft',
     consumer_key=client_id,
     consumer_secret=client_secret,
-#    request_token_params={'scope': 'User.Read Mail.Send'},
+    #    request_token_params={'scope': 'User.Read Mail.Send'},
     request_token_params={'scope': 'User.Read Mail.Send Calendars.Read'},
     base_url='https://graph.microsoft.com/v1.0/',
     request_token_url=None,
     access_token_method='POST',
     access_token_url='https://login.microsoftonline.com/common/oauth2/v2.0/token',
     authorize_url='https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
-                             )
+)
+
 
 @app.route('/')
 def index():
     """Handler for home page."""
     return render_template('connect.html')
 
+
 @app.route('/login')
 def login():
     """Handler for login route."""
-    guid = uuid.uuid4() # guid used to only accept initiated logins
+    guid = uuid.uuid4()  # guid used to only accept initiated logins
     session['state'] = guid
     return msgraphapi.authorize(callback=url_for('authorized', _external=True), state=guid)
+
 
 @app.route('/logout')
 def logout():
@@ -62,6 +65,7 @@ def logout():
     session.pop('microsoft_token', None)
     session.pop('state', None)
     return redirect(url_for('index'))
+
 
 @app.route('/login/authorized')
 def authorized():
@@ -75,7 +79,7 @@ def authorized():
     # Check response for state
     if str(session['state']) != str(request.args['state']):
         raise Exception('State has been messed with, end authentication')
-    session['state'] = '' # reset session state to prevent re-use
+    session['state'] = ''  # reset session state to prevent re-use
 
     # Okay to store this in a local variable, encrypt if it's going to client
     # machine or database. Treat as a password.
@@ -90,6 +94,7 @@ def authorized():
     session['userEmailAddress'] = email_address
     return redirect('main')
 
+
 @app.route('/main')
 def main():
     """Handler for main route."""
@@ -100,26 +105,25 @@ def main():
     else:
         return render_template('main.html')
 
+
 @app.route('/me')
 def get_me():
     me_response = msgraphapi.get('me')
     me_data = json.loads(json.dumps(me_response.data))
     username = me_data['displayName']
-    vname    = me_data['givenName']
-    nname    = me_data['surname']
-    userid   = me_data['id']
+    vname = me_data['givenName']
+    nname = me_data['surname']
+    userid = me_data['id']
     email_address = me_data['userPrincipalName']
 
+    return render_template('me.html', vName=vname, nName=nname, uID=userid, mail=email_address)
 
-    return render_template('me.html', vName = vname, nName = nname, uID = userid, mail = email_address)
 
 @app.route('/calendar')
 def get_calendars():
     cal = msgraphapi.get('me/calendars')
     cal_data = json.loads(json.dumps(cal.data))
-    print('before response')
     response = call_getcalendar_endpoint(session['access_token'])
-    print('after response') 
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -128,13 +132,13 @@ def get_calendars():
         show_success = 'false'
         show_error = 'true'
 
-    return render_template('calendars.html', data = cal, jsondata = cal_data)
+    return render_template('calendars.html', data=cal, jsondata=cal_data)
 
 
 @app.route('/send_mail')
 def send_mail():
     """Handler for send_mail route."""
-    email_address = request.args.get('emailAddress') # get email address from the form
+    email_address = request.args.get('emailAddress')  # get email address from the form
     response = call_sendmail_endpoint(session['access_token'], session['alias'], email_address)
     if response == 'SUCCESS':
         show_success = 'true'
@@ -149,6 +153,23 @@ def send_mail():
                            emailAddress=email_address, showSuccess=show_success,
                            showError=show_error)
 
+@app.route('/send_event')
+def send_event():
+    """Handler for send_mail route."""
+    response = call_createvent_endpoint(session['access_token'])
+    print("test1")
+    if response == 'SUCCESS':
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        print(response)
+        show_success = 'false'
+        show_error = 'true'
+
+    session['pageRefresh'] = 'false'
+    return render_template('main.html', name=session['alias'],showSuccess=show_success,showError=show_error)
+
+
 # If library is having trouble with refresh, uncomment below and implement
 # refresh handler see https://github.com/lepture/flask-oauthlib/issues/160 for
 # instructions on how to do this. Implements refresh token logic.
@@ -159,30 +180,31 @@ def get_token():
     """Return the Oauth token."""
     return session.get('microsoft_token')
 
+
 def call_sendmail_endpoint(access_token, name, email_address):
     """Call the resource URL for the sendMail action."""
     send_mail_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.sendMail'
 
-	# set request headers
-    headers = {'User-Agent' : 'python_tutorial/1.0',
-               'Authorization' : 'Bearer {0}'.format(access_token),
-               'Accept' : 'application/json',
-               'Content-Type' : 'application/json'}
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
 
-	# Use these headers to instrument calls. Makes it easier to correlate
+    # Use these headers to instrument calls. Makes it easier to correlate
     # requests and responses in case of problems and is a recommended best
     # practice.
     request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id' : request_id,
-                       'return-client-request-id' : 'true'}
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
     headers.update(instrumentation)
 
-	# Create the email that is to be sent via the Graph API
+    # Create the email that is to be sent via the Graph API
     email = {'Message': {'Subject': 'Welcome to the Microsoft Graph Connect sample for Python',
                          'Body': {'ContentType': 'HTML',
                                   'Content': render_template('email.html', name=name)},
                          'ToRecipients': [{'EmailAddress': {'Address': email_address}}]
-                        },
+                         },
              'SaveToSentItems': 'true'}
 
     response = requests.post(url=send_mail_url,
@@ -198,32 +220,97 @@ def call_sendmail_endpoint(access_token, name, email_address):
 
 
 
-
-def call_getcalendar_endpoint(access_token):
-    """Call the resource URL for the sendMail action."""
-    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.calendars'
-
-	# set request headers
-    headers = {'User-Agent' : 'python_tutorial/1.0',
-               'Authorization' : 'Bearer {0}'.format(access_token),
-               'Accept' : 'application/json',
-               'Content-Type' : 'application/json'}
+def call_createvent_endpoint(access_token):
+    """Call the resource URL for the create event action."""
+    send_event_url = 'https://graph.microsoft.com/v1.0/me/events'
+    print("test2")
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+               }
 
     # Use these headers to instrument calls. Makes it easier to correlate
     # requests and responses in case of problems and is a recommended best
     # practice.
     request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id' : request_id,
-                       'return-client-request-id' : 'true'}
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
     headers.update(instrumentation)
 
     # Create the email that is to be sent via the Graph API
-    response = requests.get(url=send_calendar_url, headers=headers)
-                                
+    event = {
+        "subject": "Let's go for lunch",
+        "body": {
+            "contentType": "HTML",
+            "content": "Does late morning work for you?"
+        },
+        "start": {
+              "dateTime": "2017-07-19T12:00:00",
+              "timeZone": "Pacific Standard Time"
+        },
+        "end": {
+              "dateTime": "2017-07-19T14:00:00",
+              "timeZone": "Pacific Standard Time"
+         },
+        "location":{
+              "displayName":"Harry's Bar"
+        },
+        "attendees": [
+            {
+              "emailAddress": {
+                "address":"fannyd@contoso.onmicrosoft.com",
+                "name": "Fanny Downs"
+              },
+              "type": "required"
+            }
+        ]
+    }
+
+    response = requests.post(url=send_event_url,
+                             headers=headers,
+                             data=json.dumps(event),
+                             verify=False,
+                             params=None)
+
     if response.ok:
         return 'SUCCESS'
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-#test
+
+
+def call_getcalendar_endpoint(access_token):
+    """Call the resource URL for the sendMail action."""
+    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.calendars'
+
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
+
+    # Use these headers to instrument calls. Makes it easier to correlate
+    # requests and responses in case of problems and is a recommended best
+    # practice.
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+
+    # Create the email that is to be sent via the Graph API
+    response = requests.get(url=send_calendar_url, headers=headers)
+
+    if response.ok:
+        return 'SUCCESS'
+    else:
+        return '{0}: {1}'.format(response.status_code, response.text)
+
+
+
+
+
+
+# test
