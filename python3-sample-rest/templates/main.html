@@ -99,6 +99,20 @@
 	<input type="submit" value="Get my calendars">
 	</div>
     </form>
+      <form action="/send_event">
+	<div class="icon-holder">
+	<input type="submit" value="Create an event">
+	</div>
+    </form>
+      {% if showSuccess == 'true' %}
+      <div>
+        <p class="ms-font-m ms-fontColor-green">Successfully create an event</p>
+      </div>
+      {% elif showError == 'true' %}
+      <div>
+        <p class="ms-font-m ms-fontColor-redDark">Something went wrong, couldn't create an event.</p>
+      </div>
+      {% endif %}
  
       <form action="/send_mail">
         <div class="ms-TextField">
