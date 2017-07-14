@@ -309,7 +309,13 @@ def call_getcalendar_endpoint(access_token):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-
-
+#Amzazon Date: “today”: 2015-11-24
+#Amazon Duration: “ten minutes”: PT10M, “five hours”: PT5H
+#Amazon Time: “two fifteen pm”: 14:15
+#MS DateTime: "2017-04-17T09:00:00",
+#MS Duration : PT2H
+def convert_amazon_to_ms(Date,Time):
+    date_time = Date + 'T' + Time + ':00'
+    return date_time
 
 
