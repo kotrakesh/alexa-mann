@@ -119,7 +119,7 @@ def get_me():
     return render_template('me.html', vName=vname, nName=nname, uID=userid, mail=email_address)
 
 
-@app.route('/calendar')
+@app.route('/calendars')
 def get_calendars():
     cal = msgraphapi.get('me/calendars')
     cal_data = json.loads(json.dumps(cal.data))
@@ -132,7 +132,26 @@ def get_calendars():
         show_success = 'false'
         show_error = 'true'
 
-    return render_template('calendars.html', data=cal, jsondata=cal_data)
+    return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1)
+
+
+@app.route('/create_calendar')
+def create_calendar():
+    """Handler for send_mail route."""
+    username = request.args.get('name')  # get name of the user the calendar is created for
+
+    response = call_createcalendar_endpoint(session['access_token'], username)
+
+    if response == 'SUCCESS':
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        print(response)
+        show_success = 'false'
+        show_error = 'true'
+
+    session['pageRefresh'] = 'false'
+    return render_template('main.html', name=session['alias'], username=username, showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
 
 @app.route('/send_mail')
@@ -153,6 +172,27 @@ def send_mail():
                            emailAddress=email_address, showSuccess=show_success,
                            showError=show_error)
 
+@app.route('/list_events')
+def list_events():
+    cal_id = request.args.get('cal_id')  # get email address from the form
+    cal_name = request.args.get('cal_name')
+    response = call_listevents_endpoint(session['access_token'], cal_id)
+    data = json.loads(response.text)
+    print(data)
+    if response.ok:
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        print(response)
+        show_success = 'false'
+        show_error = 'true'
+
+    session['pageRefresh'] = 'false'
+    print(response)
+
+    return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data, showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
+
+
 @app.route('/send_event')
 def send_event():
     """Handler for send_mail route."""
@@ -167,7 +207,7 @@ def send_event():
         show_error = 'true'
 
     session['pageRefresh'] = 'false'
-    return render_template('main.html', name=session['alias'],showSuccess=show_success,showError=show_error)
+    return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,showError=show_error)
 
 
 # If library is having trouble with refresh, uncomment below and implement
@@ -179,6 +219,56 @@ def send_event():
 def get_token():
     """Return the Oauth token."""
     return session.get('microsoft_token')
+
+def call_listevents_endpoint(access_token, id):
+    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+id+'/events'
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
+
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+
+
+    response = requests.get(url=list_events_url,
+                             headers=headers,
+                             verify=False,
+                             params=None)
+
+    if response.ok:
+        return response
+    else:
+        return '{0}: {1}'.format(response.status_code, response.text)
+
+def call_createcalendar_endpoint(access_token, name):
+    create_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
+
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+    user_data = {'name': name}
+
+    response = requests.post(url=create_calendar_url,
+                             headers=headers,
+                             data=json.dumps(user_data),
+                             verify=False,
+                             params=None)
+
+    if response.ok:
+        return 'SUCCESS'
+    else:
+        return '{0}: {1}'.format(response.status_code, response.text)
+
 
 
 def call_sendmail_endpoint(access_token, name, email_address):

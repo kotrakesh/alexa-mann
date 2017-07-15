@@ -74,7 +74,7 @@
   <!-- App navigation bar markup. -->
   <div class="ms-NavBar">
     <ul class="ms-NavBar-items">
-      <li class="navbar-header">Microsoft Graph Connect sample</li>
+      <li class="navbar-header">Microsoft Graph Connect</li>
       <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
     </ul>
   </div>
@@ -82,14 +82,81 @@
   <!-- App main content markup. -->
   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
     <div>
-	    <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi!</h2>
-      <p class="ms-font-xl">
-	Ihre Kalender: <br/>
-	{{ data }}
-	</br></br>
-	Jsondata:</br>
-	{{ jsondata }}
-      </p>
+	    <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi {{ name }}!</h2>
+
+      <!-- show calendars -->
+      {% if showCalendars == 1 %}
+      <div>
+        <p class="ms-font-xl">
+            Folgende Kalender sind registriert:</br>
+        </p>
+        <table>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Mail Address</th>
+
+        </tr>
+        {% if jsondata != null %}
+        {% for cal in jsondata.value %}
+        <tr>
+          <td>{{ cal.name}}</td>
+          <td>{{ cal.owner.name}}</td>
+          <td>{{ cal.owner.address}}</td>
+          <td>
+              <form action="/list_events">
+                <div class="icon-holder">
+                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
+                  <input type="submit" value="List events">
+                </div>
+              </form>
+          </td>
+
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </table>
+      </div>
+      {% endif %}
+
+      <!-- show events -->
+      {% if showEvents == 1 %}
+      <div>
+        {% if showSuccess_listEvents == 'true' %}
+        <div>
+        <p class="ms-font-m ms-fontColor-green">Die Events fuer den Kalender {{ calName }}!</p>
+        <table>
+        <tr>
+            <th>Subject</th>
+            <th>Start</th>
+            <th>Ende</th>
+            <th>Ort</th>
+            <th>Organizer</th>
+
+        </tr>
+        {% if data != null %}
+        {% for e in data.value %}
+        <tr>
+            <td>{{ e.subject }}</td>
+            <td>{{ e.start.dateTime }}</td>
+            <td>{{ e.end.dateTime }}</td>
+            <td>{{ e.location.displayName }}</td>
+            <td>{{ e.organizer.emailAddress.name }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </table>
+        </div>
+        {% elif showError_listEvents == 'true' %}
+        <div>
+          <p class="ms-font-m ms-fontColor-redDark">Etwas ist schief gelaufen {{data.body}}, Kalender: {{calName}}</p>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
 
     </div>
   </div>
