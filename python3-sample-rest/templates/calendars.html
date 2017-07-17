@@ -118,6 +118,45 @@
         {% endif %}
 
     </table>
+
+     <table>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Mail Address</th>
+
+        </tr>
+        {% if jsondata != null %}
+        {% for cal in jsondata.value %}
+        <tr>
+          <form action="/list_events_for_time">
+            <td>{{ cal.name}}</td>
+            <td>{{ cal.owner.name}}</td>
+            <td>{{ cal.owner.address}}</td>
+            <td>
+                <div class="icon-holder">
+                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
+                </div>
+            </td>
+            <td><input value = "      " type = "hidden" >   </td>
+            <td> <input type = "text" name="date" value = "2017-7-24"></td>
+            <td><input type = "text" name="start_time" value = "19:00:00"></td>
+            <td> <input type = "text" name="end_time" value = "21:00:00"></td>
+            <td>
+                  <input type="submit" value="List events for time">
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+        {% endif %}
+     </table>
+
+
+
+
+
+
       </div>
       {% endif %}
 
