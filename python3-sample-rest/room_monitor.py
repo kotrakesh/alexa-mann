@@ -21,6 +21,7 @@ room = Room()
 
 @ask.launch
 def welcome():
+    print(room.date, room.duration, room.time)
     return question('Hello, please tell me the dates and times when your meeting shall be scheduled')
 
 
@@ -56,6 +57,7 @@ def missing_date_time(Duration):
     if room.date == '' and room.time == '':
         return question('What day and what time is the meeting?')
     elif room.date != '' and room.time == '':
+        print('im here')
         missing_time(room.date, room.duration)
     elif room.date == '' and room.time != '':
         missing_date(room.timem, room.duration)
@@ -65,9 +67,11 @@ def missing_date_time(Duration):
 
 @ask.intent("DateDurationIntent")
 def missing_time(Date, Duration):
+    print('number two')
     room.date = Date
     room.duration = Duration
     if room.time == '':
+        print('three')
         return question('What time is the meeting?')
     else:
         return allKnown(room.date, room.time, room.duration)
@@ -101,7 +105,7 @@ def allKnown(Date, Time, Duration):
     room.date = Date
     room.time = Time
     room.duration = Duration
-    return statement('The meeting is on', Date , 'at', Time , 'and lasts' , Duration)
+    return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
 
 
 
