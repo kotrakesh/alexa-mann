@@ -192,6 +192,32 @@ def list_events():
 
     return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data, showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
 
+@app.route('/list_events_for_time')
+def list_events_for_time():
+    cal_id = request.args.get('cal_id')  # get email address from the form
+    cal_name = request.args.get('cal_name')
+    cal_date = request.args.get('date')
+    cal_start_time = request.args.get('start_time')
+    cal_end_time = request.args.get('end_time')
+    start = convert_amazon_to_ms(cal_date, cal_start_time)
+    end = convert_amazon_to_ms(cal_date, cal_end_time)
+    response = call_listevents_for_time_endpoint(session['access_token'], cal_id, start, end)
+    data = json.loads(response.text)
+    print(data)
+    if response.ok:
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        print(response)
+        show_success = 'false'
+        show_error = 'true'
+
+    session['pageRefresh'] = 'false'
+    print(response)
+
+    return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
+                           showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
+
 
 @app.route('/send_event')
 def send_event():
@@ -244,6 +270,33 @@ def call_listevents_endpoint(access_token, id):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
+def call_listevents_for_time_endpoint(access_token, id, start, end):
+    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+id+'/calendarView?startDateTime='+start+'Z&endDateTime='+end+'Z'
+    # set request headers
+    print(list_events_url)
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
+
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+
+
+
+
+    response = requests.get(url=list_events_url,
+                             headers=headers,
+                             verify=False,
+                             params=None)
+    print("test100")
+    if response.ok:
+        return response
+    else:
+        return '{0}: {1}'.format(response.status_code, response.text)
+
 def call_createcalendar_endpoint(access_token, name):
     create_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
     # set request headers
@@ -268,8 +321,6 @@ def call_createcalendar_endpoint(access_token, name):
         return 'SUCCESS'
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
-
-
 
 def call_sendmail_endpoint(access_token, name, email_address):
     """Call the resource URL for the sendMail action."""
@@ -307,8 +358,6 @@ def call_sendmail_endpoint(access_token, name, email_address):
         return 'SUCCESS'
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
-
-
 
 def call_createvent_endpoint(access_token):
     """Call the resource URL for the create event action."""
@@ -369,9 +418,6 @@ def call_createvent_endpoint(access_token):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
-
-
-
 def call_getcalendar_endpoint(access_token):
     """Call the resource URL for the sendMail action."""
     send_calendar_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.calendars'
@@ -405,7 +451,7 @@ def call_getcalendar_endpoint(access_token):
 #MS DateTime: "2017-04-17T09:00:00",
 #MS Duration : PT2H
 def convert_amazon_to_ms(Date,Time):
-    date_time = Date + 'T' + Time + ':00'
+    date_time = Date + 'T' + Time
     return date_time
 
 
