@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 ask = Ask(app, "/")
 
-logging.getLogger("flask_ask").setLevel(logging.DEBUG)
+#logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
 
 @ask.launch
