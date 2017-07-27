@@ -4,6 +4,8 @@
 import json
 import sys
 import uuid
+import logging
+from room_class import Room
 
 # un-comment these lines to suppress the HTTP status messages sent to the console
 # import logging
@@ -13,10 +15,11 @@ import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_oauthlib.client import OAuth
 from flask_ask import Ask, statement, question, session as ask_session
+from pprint import pprint
 
+room = Room()
 
-
-
+logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
 # read private credentials from text file
 client_id, client_secret, *_ = open('_PRIVATE.txt').read().split('\n')
@@ -453,6 +456,16 @@ def call_getcalendar_endpoint(access_token):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
+
+
+
+
+################################################################################################################3
+
+
+
+
+
 #Amzazon Date: “today”: 2015-11-24
 #Amazon Duration: “ten minutes”: PT10M, “five hours”: PT5H
 #Amazon Time: “two fifteen pm”: 14:15
@@ -463,95 +476,124 @@ def convert_amazon_to_ms(Date,Time):
     return date_time
 
 
+
 @ask.launch
 def welcome():
-    ask_session.attributes['date'] = None #'2017-07-16'
-    ask_session.attributes['time'] = None #'03:00'
-    ask_session.attributes['duration'] = None #'PT5M'
-
+    ask_session.attributes['date'] = room.date = None # '2017-07-16'
+    ask_session.attributes['time'] = room.time = None # '03:00'
+    ask_session.attributes['duration'] = room.duration = None # 'PT5M'
     return question('Hello, please tell me the dates and times when your meeting shall be scheduled')
 
 
 @ask.intent("DateIntent")
 def missing_duration_time(Date):
-    ask_session.attributes['date'] = Date
+    room.date = ask_session.attributes['date'] = Date
 
-    if ask_session.attributes['duration'] is None and ask_session.attributes['time'] is None:
+    print('Date: ' + str(ask_session.attributes['date']))
+    print('Date: ' + str(room.date))
+
+    if room.duration is None and room.time is None:
         return question('What time is the meeting and how long is it?')
-    elif ask_session.attributes['duration'] is not None and ask_session.attributes['time'] is None:
-        missing_time(Date, ask_session.attributes['duration'])
-    elif ask_session.attributes['time'] is not None and ask_session.attributes['duration'] is None:
-        missing_duration(ask_session.attributes['date'], ask_session.attributes['time'])
+    elif room.duration is not None and room.time is None:
+        return missing_time(room.date, room.duration)
+    elif room.time is not None and room.duration is None:
+        return missing_duration(room.date, room.time)
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        print('DateIntent')
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 @ask.intent("TimeIntent")
 def missing_date_duration(Time):
-    ask_session.attributes['time'] = Time
-    if ask_session.attributes['date'] is None and ask_session.attributes['duration'] is None:
+    room.time = ask_session.attributes['time'] = Time
+
+    print('TimeIntent - Date: ' + str(room.date))
+    print('TimeIntent - Time: ' + str(room.time))
+
+    if room.date is None and room.duration is None:
         return question('Whats the date and the duration of the meeting?')
-    elif ask_session.attributes['date'] is not None and ask_session.attributes['duration'] is None:
-        missing_duration(ask_session.attributes['date'], Time)
-    elif ask_session.attributes['date'] is None and ask_session.attributes['duration'] is not None:
-        missing_date(ask_session.attributes['time'], ask_session.attributes['duration'])
+    elif room.date is not None and room.duration is None:
+        return missing_duration(room.date, room.time)
+    elif room.date is None and room.duration is not None:
+        print('TimeIntent - duration!=null, date==null')
+        return missing_date(room.time, room.duration)
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 @ask.intent("DurationIntent")
 def missing_date_time(Duration):
-    ask_session.attributes['duration'] = Duration
-    if ask_session.attributes['date'] is None and ask_session.attributes['time'] is None:
+    room.duration = ask_session.attributes['duration'] = Duration
+
+    if room.date is None and room.time is None:
         return question('What day and what time is the meeting?')
-    elif ask_session.attributes['date'] is not None and ask_session.attributes['time'] is None:
-        missing_time(ask_session.attributes['date'], ask_session.attributes['duration'])
-    elif ask_session.attributes['date'] is None and ask_session.attributes['time'] is not None:
-        missing_date(ask_session.attributes['time'], ask_session.attributes['duration'])
+    elif room.date is not None and room.time is None:
+        return missing_time(room.date, room.duration)
+    elif room.date is None and room.time is not None:
+        return missing_date(room.time, room.duration)
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        print('DurationIntent - All known   ')
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 @ask.intent("DateDurationIntent")
 def missing_time(Date, Duration):
-    ask_session.attributes['date'] = Date
-    ask_session.attributes['duration'] = Duration
-    if ask_session.attributes['time'] is None:
+    room.date     = ask_session.attributes['date'] = Date
+    room.duration = ask_session.attributes['duration'] = Duration
+
+    if room.time is None:
         return question('What time is the meeting?')
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 
 @ask.intent("DateTimeIntent")
 def missing_duration(Date, Time):
-    ask_session.attributes['date'] = Date
-    ask_session.attributes['time'] = Time
-    if ask_session.attributes['duration'] is None:
+    room.date = ask_session.attributes['date'] = Date
+    room.time = ask_session.attributes['time'] = Time
+    print('DateTimeIntent Date: ' + str(room.date))
+    print('DateTimeIntent Time: ' + str(room.time))
+
+    if room.duration is None:
+        print('DateTimeIntent no duration')
+        #pprint(dir(question('How long is the meeting?')))
         return question('How long is the meeting?')
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 
 @ask.intent("TimeDurationIntent")
 def missing_date(Time, Duration):
-    ask_session.attributes['duration'] = Duration
-    ask_session.attributes['time'] = Time
-    if ask_session.attributes['date'] is None:
+    room.duration = ask_session.attributes['duration'] = Duration
+    room.time = ask_session.attributes['time'] = Time
+    ask_session.attributes['date'] = room.date
+
+    if room.date is None:
         return question('What day is the meeting?')
     else:
-        allKnown(ask_session.attributes['date'], ask_session.attributes['time'], ask_session.attributes['duration'])
+        return readMeetingTime(room.date, room.time, room.duration)
 
 
 
-@ask.intent("DataTimeDurationIntent")
+@ask.intent("DataTimeDurationIntent", convert={'Date': 'date', 'Time': 'time', 'Duration': 'timedelta'})
 def allKnown(Date, Time, Duration):
-    ask_session.attributes['date'] = Date
-    ask_session.attributes['time'] = Time
-    ask_session.attributes['duration'] = Duration
-    get_infor_from_alexa(Date, Time, Duration)
-    return statement('The meeting is on ' + str(ask_session.attributes['date']) + ' at ' + str(ask_session.attributes['time']) + ' and lasts ' + str(ask_session.attributes['duration']))
+    print('DataTimeDurationIntent ' + Date, Time, Duration)
+    #get_infor_from_alexa(Date, Time, Duration)
+    return readMeetingTime(room.date, room.time, room.duration)
+    #return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
+
+
+
+def readMeetingTime(Date, Time, Duration):
+    print(Date, Time, Duration)
+    #get_infor_from_alexa(Date, Time, Duration)
+    ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
+    return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
+
+
+
 
 def get_infor_from_alexa(Date, Time, Duration):
     print(Date, Time, Duration)
