@@ -4,68 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>O365 Connect sample</title>
+  <title>O365 Connect</title>
 
   <!-- Third party dependencies. -->
   <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
   <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
-  
-  <style>
-    .navbar-header {
-      box-sizing: border-box;
-      display: block;
-      height: 40px;
-      line-height: 40px;
-      font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
-      font-size: 17px;
-      padding-left: 20px;
-      position: relative;
-      font-weight: bold;
-    }
-    
-    @media (min-width: 480px) {
-      .navbar-header {
-        float: left;
-        margin-right: 20px;
-        font-size: 20px;
-        padding: 0;
-      }
-    }
-    
-    .ms-TextField {
-      width: 300px;
-      display: inline-block;
-    }
-    
-    .icon-holder {
-      display: inline-block;
-      width: 30px;
-    }
-    
-    .big-icon {
-      font-size: 30px;
-      top: 5px;
-      position: relative;
-    }
-    
-    input[type=submit] {
-      color: #333333;
-      font-family: 'Segoe UI Semibold WestEuropean', 'Segoe UI Semibold', 'Segoe WP Semibold', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
-      font-size: 14px;
-      font-weight: normal;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      box-shadow: none;
-      background-color: #f4f4f4;
-      border: 1px solid #f4f4f4;
-      cursor: pointer;
-      display: inline-block;
-      height: 32px;
-      min-width: 80px;
-      padding: 4px 20px 6px;
-    }
-  </style>
+  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
   
 </head>
 
@@ -119,7 +63,10 @@
 
     </table>
 
-     <table>
+
+        <!-- Table with amazon data -->
+        <h2>Events during the time specified with Alexa</h2>
+        <table>
         <tr>
             <th>Name</th>
             <th>Owner</th>
@@ -139,12 +86,12 @@
                   <input name="cal_name"   value="{{cal.name}} "type="hidden">
                 </div>
             </td>
-            <td><input value = "      " type = "hidden" >   </td>
-            <td> <input type = "text" name="date" value = "2017-7-24"></td>
-            <td><input type = "text" name="start_time" value = "19:00:00"></td>
-            <td> <input type = "text" name="end_time" value = "21:00:00"></td>
+            <td><input value = "" type = "hidden" >   </td>
+            <td><input type = "text" name="date" value = "{{ aDate}}"></td>
+            <td><input type = "text" name="start_time" value="{{aTime}}"></td>
+            <td><input type = "text" name="end_time" value = "21:00:00"></td>
             <td>
-                  <input type="submit" value="List events for time">
+                  <input type="submit" value="List events for selected time">
             </td>
           </form>
         </tr>
