@@ -5,6 +5,7 @@ import json
 import sys
 import uuid
 import logging
+import datetime
 from room_class import Room
 
 # un-comment these lines to suppress the HTTP status messages sent to the console
@@ -143,7 +144,8 @@ def get_calendars():
         show_success = 'false'
         show_error = 'true'
 
-    return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1)
+    return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1,
+                           aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
 
 
 @app.route('/create_calendar')
@@ -205,7 +207,7 @@ def list_events():
 
 @app.route('/list_events_for_time')
 def list_events_for_time():
-    cal_id = request.args.get('cal_id')  # get email address from the form
+    cal_id  = request.args.get('cal_id')  # get email address from the form
     cal_name = request.args.get('cal_name')
     cal_date = request.args.get('date')
     cal_start_time = request.args.get('start_time')
@@ -214,7 +216,8 @@ def list_events_for_time():
     end = convert_amazon_to_ms(cal_date, cal_end_time)
     response = call_listevents_for_time_endpoint(session['access_token'], cal_id, start, end)
     data = json.loads(response.text)
-    print(data)
+
+    print(cal_name, cal_date, cal_start_time, cal_end_time)
     if response.ok:
         show_success = 'true'
         show_error = 'false'
@@ -245,6 +248,11 @@ def send_event():
 
     session['pageRefresh'] = 'false'
     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,showError=show_error)
+
+
+@app.route('/get_information')
+def get_information():
+    return render_template('information.html', aDate=vars['date'], aTime=vars['time'], aDuration =  vars['duration'])
 
 
 # If library is having trouble with refresh, uncomment below and implement
@@ -500,7 +508,7 @@ def missing_duration_time(Date):
         return missing_duration(room.date, room.time)
     else:
         print('DateIntent')
-        return readMeetingTime(room.date, room.time, room.duration)
+        return readMeetingTime(Date, room.time, room.duration)
 
 
 @ask.intent("TimeIntent")
@@ -518,7 +526,7 @@ def missing_date_duration(Time):
         print('TimeIntent - duration!=null, date==null')
         return missing_date(room.time, room.duration)
     else:
-        return readMeetingTime(room.date, room.time, room.duration)
+        return readMeetingTime(room.date, Time, room.duration)
 
 
 @ask.intent("DurationIntent")
@@ -533,7 +541,7 @@ def missing_date_time(Duration):
         return missing_date(room.time, room.duration)
     else:
         print('DurationIntent - All known   ')
-        return readMeetingTime(room.date, room.time, room.duration)
+        return readMeetingTime(room.date, room.time, Duration)
 
 
 @ask.intent("DateDurationIntent")
@@ -544,8 +552,7 @@ def missing_time(Date, Duration):
     if room.time is None:
         return question('What time is the meeting?')
     else:
-        return readMeetingTime(room.date, room.time, room.duration)
-
+        return readMeetingTime(Date, room.time, Duration)
 
 
 @ask.intent("DateTimeIntent")
@@ -560,8 +567,7 @@ def missing_duration(Date, Time):
         #pprint(dir(question('How long is the meeting?')))
         return question('How long is the meeting?')
     else:
-        return readMeetingTime(room.date, room.time, room.duration)
-
+        return readMeetingTime(Date, Time, room.duration)
 
 
 @ask.intent("TimeDurationIntent")
@@ -573,23 +579,29 @@ def missing_date(Time, Duration):
     if room.date is None:
         return question('What day is the meeting?')
     else:
-        return readMeetingTime(room.date, room.time, room.duration)
-
+        return readMeetingTime(room.date, Time, Duration)
 
 
 @ask.intent("DataTimeDurationIntent", convert={'Date': 'date', 'Time': 'time', 'Duration': 'timedelta'})
 def allKnown(Date, Time, Duration):
-    print('DataTimeDurationIntent ' + Date, Time, Duration)
-    #get_infor_from_alexa(Date, Time, Duration)
-    return readMeetingTime(room.date, room.time, room.duration)
-    #return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
+    print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
+    return readMeetingTime(Date, Time, Duration)
 
 
 
+# Print and return the meeting room
 def readMeetingTime(Date, Time, Duration):
     print(Date, Time, Duration)
-    #get_infor_from_alexa(Date, Time, Duration)
+    get_infor_from_alexa(Date, Time, Duration)
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
+
+    # TODO convert duration in end time
+    #   convert start time in python time, (duration)
+    #   add time
+    # TODO loop through rooms (calendars)
+    # TODO get events at that time, time difference because if events in that time frame occur response is not null
+    # TODO create event, in one of the free rooms
+
     return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
 
 
@@ -601,6 +613,3 @@ def get_infor_from_alexa(Date, Time, Duration):
     vars['time']=Time
     vars['duration']=Duration
 
-@app.route('/get_information')
-def get_information():
-    return render_template('information.html', aDate=vars['date'], aTime=vars['time'], aDuration =  vars['duration'])
