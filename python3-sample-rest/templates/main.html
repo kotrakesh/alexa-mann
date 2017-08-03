@@ -9,63 +9,7 @@
   <!-- Third party dependencies. -->
   <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
   <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
-  
-  <style>
-    .navbar-header {
-      box-sizing: border-box;
-      display: block;
-      height: 40px;
-      line-height: 40px;
-      font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
-      font-size: 17px;
-      padding-left: 20px;
-      position: relative;
-      font-weight: bold;
-    }
-    
-    @media (min-width: 480px) {
-      .navbar-header {
-        float: left;
-        margin-right: 20px;
-        font-size: 20px;
-        padding: 0;
-      }
-    }
-    
-    .ms-TextField {
-      width: 300px;
-      display: inline-block;
-    }
-    
-    .icon-holder {
-      display: inline-block;
-      width: 30px;
-    }
-    
-    .big-icon {
-      font-size: 30px;
-      top: 5px;
-      position: relative;
-    }
-    
-    input[type=submit] {
-      color: #333333;
-      font-family: 'Segoe UI Semibold WestEuropean', 'Segoe UI Semibold', 'Segoe WP Semibold', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
-      font-size: 14px;
-      font-weight: normal;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      box-shadow: none;
-      background-color: #f4f4f4;
-      border: 1px solid #f4f4f4;
-      cursor: pointer;
-      display: inline-block;
-      height: 32px;
-      min-width: 80px;
-      padding: 4px 20px 6px;
-    }
-  </style>
+  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
   
 </head>
 
@@ -120,25 +64,25 @@
       <!-- Create Calendar -->
       <form action="/create_calendar">
         <div class="ms-TextField">
-          <input name="name" class="ms-TextField-field" value="">
+          <input name="name" class="ms-TextField-field" value="" placeholder="Name of the room">
         </div>
         <div class="icon-holder">
-          <input type="submit" value="Create calendar">
+          <input type="submit" value="Add room">
         </div>
       </form>
       {% if showSuccess_createCalendar == 'true' %}
       <div>
-        <p class="ms-font-m ms-fontColor-green">Der Kalender fuer {{ username }} wurde erstellt!</p>
+        <p class="ms-font-m ms-fontColor-green">Der Raum {{ username }} wurde erstellt!</p>
       </div>
       {% elif showError_createCalendar == 'true' %}
       <div>
-        <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars ist etwas schief gegangen!</p>
+        <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars fuer den Raum {{ username }} ist etwas schief gegangen!</p>
       </div>
       {% endif %}
 
 
 
-      <!-- Send mail -->
+      <!-- Send mail
       <form action="/send_mail">
         <div class="ms-TextField">
           <input name="emailAddress" class="ms-TextField-field" value="{{ emailAddress }}">
@@ -157,7 +101,7 @@
       </div>
       {% endif %}
     </div>
-
+    -->
     
   </div>
 </div>
