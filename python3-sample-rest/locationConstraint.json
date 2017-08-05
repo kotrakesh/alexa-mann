@@ -1,0 +1,67 @@
+{
+  "isRequired": true,
+  "locations": [
+    {
+      "resolveAvailability": true,
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": "Meetingroom 1",
+      "locationEmailAddress": "meetingroom1@sovanta.de",
+      "maxAttendents" : 5
+    },
+    {
+      "resolveAvailability": true,
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": "Meetingroom 2",
+      "locationEmailAddress": "meetingroom2@sovanta.de"
+    },
+    {
+      "resolveAvailability": true,
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": "Meetingroom 3",
+      "locationEmailAddress": "meetingroom3@sovanta.de"
+    }    ,
+    {
+      "resolveAvailability": true,
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": "Meetingroom 4",
+      "locationEmailAddress": "meetingroom4@sovanta.de"
+    },
+    {
+      "resolveAvailability": true,
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": "Meetingroom 5",
+      "locationEmailAddress": "meetingroom5@sovanta.de"
+    }
+  ],
+  "suggestLocation": true
+}

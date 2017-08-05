@@ -585,12 +585,13 @@ def missing_date(Time, Duration):
 @ask.intent("DataTimeDurationIntent", convert={'Date': 'date', 'Time': 'time', 'Duration': 'timedelta'})
 def allKnown(Date, Time, Duration):
     print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
+
     return readMeetingTime(Date, Time, Duration)
 
 
 
 # Print and return the meeting room
-def readMeetingTime(Date, Time, Duration):
+def readMeetingTime(Date, Time, Duration, numOfAttendees):
     print(Date, Time, Duration)
     get_infor_from_alexa(Date, Time, Duration)
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
@@ -601,7 +602,8 @@ def readMeetingTime(Date, Time, Duration):
     # TODO loop through rooms (calendars)
     # TODO get events at that time, time difference because if events in that time frame occur response is not null
     # TODO create event, in one of the free rooms
-
+    # TODO frontend, fabric CSS and JS
+    # TODO name and number of attendees intents and parameters
     return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
 
 
