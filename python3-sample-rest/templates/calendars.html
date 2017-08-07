@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>O365 Connect</title>
+
+  <!-- Third party dependencies. -->
+  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
+  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
+  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
+  
+</head>
+
+<body class="ms-Grid">
+  <div class="ms-Grid-row">
+  <!-- App navigation bar markup. -->
+  <div class="ms-NavBar">
+    <ul class="ms-NavBar-items">
+      <li class="navbar-header">Microsoft Graph Connect</li>
+      <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
+    </ul>
+  </div>
+
+  <!-- App main content markup. -->
+  <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
+    <div>
+	    <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi {{ name }}!</h2>
+
+      <!-- show calendars -->
+      {% if showCalendars == 1 %}
+      <div>
+        <p class="ms-font-xl">
+            Folgende Kalender sind registriert:</br>
+        </p>
+        <table>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Mail Address</th>
+
+        </tr>
+        {% if jsondata != null %}
+        {% for cal in jsondata.value %}
+        <tr>
+          <td>{{ cal.name}}</td>
+          <td>{{ cal.owner.name}}</td>
+          <td>{{ cal.owner.address}}</td>
+          <td>
+              <form action="/list_events">
+                <div class="icon-holder">
+                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
+                  <input type="submit" value="List events">
+                </div>
+              </form>
+          </td>
+
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </table>
+
+
+        <!-- Table with amazon data -->
+        <h2>Events during the time specified with Alexa</h2>
+        <table>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Mail Address</th>
+
+        </tr>
+        {% if jsondata != null %}
+        {% for cal in jsondata.value %}
+        <tr>
+          <form action="/list_events_for_time">
+            <td>{{ cal.name}}</td>
+            <td>{{ cal.owner.name}}</td>
+            <td>{{ cal.owner.address}}</td>
+            <td>
+                <div class="icon-holder">
+                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
+                </div>
+            </td>
+            <td><input value = "" type = "hidden" >   </td>
+            <td><input type = "text" name="date" value = "{{ aDate}}"></td>
+            <td><input type = "text" name="start_time" value="{{aTime}}"></td>
+            <td><input type = "text" name="end_time" value = "21:00:00"></td>
+            <td>
+                  <input type="submit" value="List events for selected time">
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+        {% endif %}
+     </table>
+
+
+
+
+
+
+      </div>
+      {% endif %}
+
+      <!-- show events -->
+      {% if showEvents == 1 %}
+      <div>
+        {% if showSuccess_listEvents == 'true' %}
+        <div>
+        <p class="ms-font-m ms-fontColor-green">Die Events fuer den Kalender {{ calName }}!</p>
+        <table>
+        <tr>
+            <th>Subject</th>
+            <th>Start</th>
+            <th>Ende</th>
+            <th>Ort</th>
+            <th>Organizer</th>
+
+        </tr>
+        {% if data != null %}
+        {% for e in data.value %}
+        <tr>
+            <td>{{ e.subject }}</td>
+            <td>{{ e.start.dateTime }}</td>
+            <td>{{ e.end.dateTime }}</td>
+            <td>{{ e.location.displayName }}</td>
+            <td>{{ e.organizer.emailAddress.name }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </table>
+        </div>
+        {% elif showError_listEvents == 'true' %}
+        <div>
+          <p class="ms-font-m ms-fontColor-redDark">Etwas ist schief gelaufen {{data.body}}, Kalender: {{calName}}</p>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
