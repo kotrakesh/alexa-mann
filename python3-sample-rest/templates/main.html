@@ -32,17 +32,21 @@
 
       <!-- Get my account information -->
       <form action="/me">
-        <div class="icon-holder">
-          <input type="submit" value="Get my account information">
-        </div>
+        <button type="submit" class="ms-Button ms-Button--compound">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">Get my account information</span>
+          <span class="ms-Button-description">Displays info about the current logged in account</span>
+        </button>
       </form>
 
 
       <!-- Get my calendar -->
      <form action="/calendars">
-        <div class="icon-holder">
-          <input type="submit" value="Registrierte Kalender">
-        </div>
+        <button type="submit" class="ms-Button ms-Button--compound">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">Registrierte Raume</span>
+          <span class="ms-Button-description">Zeigt alle Kalender der registierten Raume an</span>
+        </button>
      </form>
 
 
@@ -66,9 +70,10 @@
         <div class="ms-TextField">
           <input name="name" class="ms-TextField-field" value="" placeholder="Name of the room">
         </div>
-        <div class="icon-holder">
-          <input type="submit" value="Add room">
-        </div>
+        <button type="submit" class="ms-Button ms-Button--compound">
+          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+          <span class="ms-Button-label">Fuege Raume hinzu</span>
+        </button>
       </form>
       {% if showSuccess_createCalendar == 'true' %}
       <div>

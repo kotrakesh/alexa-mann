@@ -34,48 +34,56 @@
         <p class="ms-font-xl">
             Folgende Kalender sind registriert:</br>
         </p>
-        <table>
-        <tr>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Mail Address</th>
 
-        </tr>
+        <ul>
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
-        <tr>
-          <td>{{ cal.name}}</td>
-          <td>{{ cal.owner.name}}</td>
-          <td>{{ cal.owner.address}}</td>
-          <td>
+
+            <li class="ms-ListItem" tabindex="0">
+              <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
+              <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
+              <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
+              <span class="ms-ListItem-metaText"></span>
+              <div class="ms-ListItem-selectionTarget"></div>
+              <div class="ms-ListItem-actions">
+                <div class="ms-ListItem-action">
+                  <i class="ms-Icon ms-Icon--Mail"></i>
+                </div>
+                <div class="ms-ListItem-action">
+                  <i class="ms-Icon ms-Icon--Delete"></i>
+                </div>
+              </div>
               <form action="/list_events">
-                <div class="icon-holder">
                   <input name="cal_id" value="{{cal.id}}" type="hidden">
                   <input name="cal_name"   value="{{cal.name}} "type="hidden">
-                  <input type="submit" value="List events">
-                </div>
-              </form>
-          </td>
+                  <button type="submit" class="ms-Button ms-Button--small">
+                    <span class="ms-Button-label">List Events</span>
+                  </button>
 
-        </tr>
+              </form>
+            </li>
+
         {% endfor %}
         {% endif %}
 
-    </table>
+        </ul>
 
 
         <!-- Table with amazon data -->
         <h2>Events during the time specified with Alexa</h2>
-        <table>
-        <tr>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Mail Address</th>
+        <table class="ms-Table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Mail Address</th>
 
-        </tr>
+            </tr>
+            </thead>
+            <tbody>
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
-        <tr>
+            <tr>
           <form action="/list_events_for_time">
             <td>{{ cal.name}}</td>
             <td>{{ cal.owner.name}}</td>
@@ -97,13 +105,8 @@
         </tr>
         {% endfor %}
         {% endif %}
-     </table>
-
-
-
-
-
-
+            </tbody>
+        </table>
       </div>
       {% endif %}
 
@@ -113,15 +116,17 @@
         {% if showSuccess_listEvents == 'true' %}
         <div>
         <p class="ms-font-m ms-fontColor-green">Die Events fuer den Kalender {{ calName }}!</p>
-        <table>
-        <tr>
+        <table class="ms-Table">
+        <thead>
+            <tr>
             <th>Subject</th>
             <th>Start</th>
             <th>Ende</th>
             <th>Ort</th>
             <th>Organizer</th>
-
-        </tr>
+            </tr>
+        </thead>
+        <tbody>
         {% if data != null %}
         {% for e in data.value %}
         <tr>
@@ -133,7 +138,7 @@
         </tr>
         {% endfor %}
         {% endif %}
-
+        </tbody>
     </table>
         </div>
         {% elif showError_listEvents == 'true' %}
