@@ -3,3 +3,5 @@ class Room  :
         self.date = None
         self.time = None
         self.duration = None
+        self.token = None
+        self.data = None
