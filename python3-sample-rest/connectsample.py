@@ -36,7 +36,7 @@ app.secret_key = 'development'
 oauth = OAuth(app)
 ask = Ask(app, "/")
 
-vars = {'date': None, 'time': None, 'duration': None}
+vars = {'date': None, 'time': None, 'duration': None, 'attendees': None}
 
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
@@ -245,11 +245,10 @@ def list_events_for_time():
                            showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
 
 
-@app.route('/send_event')
-def send_event():
-    """Handler for send_mail route."""
-    response = call_createvent_endpoint(session['access_token'])
-    print("test1")
+@app.route('/create_event')
+def create_event(start, end, title, roomName):
+    """Handler for create_event route."""
+    response = call_createvent_endpoint(session['access_token'], start, end, title, roomName)
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -265,7 +264,7 @@ def send_event():
 
 @app.route('/get_information')
 def get_information():
-    return render_template('information.html', aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
+    return render_template('information.html', aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'], aAttendees=vars['attendees'])
 
 
 ##################################
@@ -395,7 +394,7 @@ def call_sendmail_endpoint(access_token, name, email_address):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-def call_createvent_endpoint(access_token):
+def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName):
     """Call the resource URL for the create event action."""
     send_event_url = 'https://graph.microsoft.com/v1.0/me/events'
     print("test2")
@@ -416,31 +415,31 @@ def call_createvent_endpoint(access_token):
 
     # Create the email that is to be sent via the Graph API
     event = {
-        "subject": "Let's go for lunch",
+        "subject": title,
         "body": {
             "contentType": "HTML",
             "content": "Does late morning work for you?"
         },
         "start": {
-            "dateTime": "2017-07-19T12:00:00",
+            "dateTime": tStart,
             "timeZone": "Pacific Standard Time"
         },
         "end": {
-            "dateTime": "2017-07-19T14:00:00",
+            "dateTime": tEnd,
             "timeZone": "Pacific Standard Time"
         },
         "location": {
-            "displayName": "Harry's Bar"
+            "displayName": roomName
         },
-        "attendees": [
-            {
-                "emailAddress": {
-                    "address": "fannyd@contoso.onmicrosoft.com",
-                    "name": "Fanny Downs"
-                },
-                "type": "required"
-            }
-        ]
+        #"attendees": [
+        #   {
+        #        "emailAddress": {
+        #            "address": "fannyd@contoso.onmicrosoft.com",
+        #           "name": "Fanny Downs"
+        #        },
+        #        "type": "required"
+        #   }
+        #]
     }
 
     response = requests.post(url=send_event_url,
@@ -598,11 +597,15 @@ def missing_date(Time, Duration):
 @ask.intent("DataTimeDurationIntent", convert={'Date': 'date', 'Time': 'time', 'Duration': 'timedelta'})
 def allKnown(Date, Time, Duration):
     print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
+    vars['date'] = Date
+    vars['time'] = Time
+    vars['duration'] = Duration
     return question("How many attendees will attend the meeting?")
 
 
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
+    vars['attendees'] = Attendees
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
@@ -630,6 +633,7 @@ def getFreeRooms(t_start, t_end):
             print('Keine Events vorhanden')
             print(data['value'])
             # TODO create Event for that date
+            #create_event(t_start, t_end, "Event title", "Romm name")
             # TODO check other constraints like room size
             return cal['name']
 
@@ -642,7 +646,7 @@ def getFreeRooms(t_start, t_end):
 # Print and return the meeting room
 def readMeetingTime(Date, Time, Duration, Attendees=0):
     print('readMeetingTime')
-    get_infor_from_alexa(Date, Time, Duration)
+    get_infor_from_alexa(Date, Time, Duration,Attendees)
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes[
         'duration'] = room.date = room.time = room.duration = None
 
@@ -664,8 +668,9 @@ def readMeetingTime(Date, Time, Duration, Attendees=0):
     # return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
 
 
-def get_infor_from_alexa(Date, Time, Duration):
-    print(Date, Time, Duration)
+def get_infor_from_alexa(Date, Time, Duration, Attendees):
+    print(Date, Time, Duration,Attendees)
     vars['date'] = Date
     vars['time'] = Time
     vars['duration'] = Duration
+    vars['attendees'] = Attendees
