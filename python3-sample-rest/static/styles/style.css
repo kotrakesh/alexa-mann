@@ -52,3 +52,18 @@
       min-width: 80px;
       padding: 4px 20px 6px;
     }
+
+    .ms-ListItem {
+        border-bottom: 1px solid #ccc;
+        list-decoration: none;
+        padding: 20px 20px 0px 0px;
+        list-style-type: none;
+    }
+    .ms-ListItem form {
+        float: right;
+        position: relative;
+        top: -60px;
+    }
+    .ms-ListItem-tertiaryText {
+        line-height: 20px;
+    }
