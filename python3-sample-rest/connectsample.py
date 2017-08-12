@@ -219,7 +219,7 @@ def list_events():
 
 @app.route('/list_events_for_time')
 def list_events_for_time():
-    cal_id = request.args.get('cal_id')  # get email address from the form
+    cal_id = request.args.get('cal_id')
     cal_name = request.args.get('cal_name')
     cal_date = request.args.get('date')
     cal_start_time = request.args.get('start_time')
@@ -246,9 +246,18 @@ def list_events_for_time():
 
 
 @app.route('/create_event')
-def create_event(start, end, title, roomName, cal_id):
+def create_event():
     """Handler for create_event route."""
-    response = call_createvent_endpoint(session['access_token'], start, end, title, roomName, cal_id)
+    cal_id = request.args.get('cal_id')
+    cal_date = request.args.get('date')
+    cal_start_time = request.args.get('start')
+    cal_end_time = request.args.get('end')
+    cal_title = request.args.get('title')
+    cal_room = request.args.get('room')
+    start = convert_amazon_to_ms(cal_date, cal_start_time)
+    end = convert_amazon_to_ms(cal_date, cal_end_time)
+    print("cal id:"+cal_id)
+    response = call_createvent_endpoint(session['access_token'], start, end, cal_title, cal_room, cal_id)
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -260,6 +269,13 @@ def create_event(start, end, title, roomName, cal_id):
     session['pageRefresh'] = 'false'
     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
                            showError=show_error)
+
+
+def create_event_from_alexa(start, end, title, room_name, cal_id):
+    """Handler for create_event route."""
+    print("cal id:"+cal_id)
+    call_createvent_endpoint(session['access_token'], start, end, title, room_name, cal_id)
+
 
 
 @app.route('/get_information')
@@ -418,15 +434,15 @@ def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName, cal_id):
         "subject": title,
         "body": {
             "contentType": "HTML",
-            "content": "Does late morning work for you?"
+            "content": "alexa created event"
         },
         "start": {
             "dateTime": tStart,
-            "timeZone": "Pacific Standard Time"
+            "timeZone": "W. Europe Standard Time"
         },
         "end": {
             "dateTime": tEnd,
-            "timeZone": "Pacific Standard Time"
+            "timeZone": "W. Europe Standard Time"
         },
         "location": {
             "displayName": roomName
@@ -633,7 +649,7 @@ def getFreeRooms(t_start, t_end):
             print('Keine Events vorhanden')
             print(data['value'])
             # TODO create Event for that date
-            #create_event(t_start, t_end, "Event title", "Romm name")
+            #create_event_from_alexa(t_start,t_end, title, room_name, cal_id)
             # TODO check other constraints like room size
             return cal['name']
 

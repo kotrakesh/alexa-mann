@@ -101,14 +101,62 @@
             <td>
                   <input type="submit" value="List events for selected time">
             </td>
+
           </form>
         </tr>
         {% endfor %}
         {% endif %}
             </tbody>
         </table>
+
+          <table class="ms-Table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Mail Address</th>
+
+            </tr>
+            </thead>
+            <tbody>
+        {% if jsondata != null %}
+        {% for cal in jsondata.value %}
+            <tr>
+          <form action="/create_event">
+            <td>{{ cal.name}}</td>
+            <td>{{ cal.owner.name}}</td>
+            <td>{{ cal.owner.address}}</td>
+            <td>
+                <div class="icon-holder">
+                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
+                </div>
+            </td>
+            <td><input value = "" type = "hidden" >   </td>
+            <td><input type = "text" name="date" value = "2017-08-16"></td>
+            <td><input type = "text" name="start" value="09:00:00"></td>
+            <td><input type = "text" name="end" value = "10:00:00"></td>
+             <td><input type = "text" name="title" value = "title for this event"></td>
+              <td><input type = "text" name="room" value = "{{cal.name}}"></td>
+            <td>
+              <input type="submit" value="create a event for this room">
+            </td>
+
+          </form>
+        </tr>
+        {% endfor %}
+        {% endif %}
+            </tbody>
+        </table>
+
+
+
+
       </div>
       {% endif %}
+
+
+
 
       <!-- show events -->
       {% if showEvents == 1 %}
