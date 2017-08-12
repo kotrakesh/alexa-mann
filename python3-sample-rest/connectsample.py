@@ -246,9 +246,9 @@ def list_events_for_time():
 
 
 @app.route('/create_event')
-def create_event(start, end, title, roomName):
+def create_event(start, end, title, roomName, cal_id):
     """Handler for create_event route."""
-    response = call_createvent_endpoint(session['access_token'], start, end, title, roomName)
+    response = call_createvent_endpoint(session['access_token'], start, end, title, roomName, cal_id)
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -323,7 +323,7 @@ def call_listevents_for_time_endpoint(access_token, id, start, end):
                             headers=headers,
                             verify=False,
                             params=None)
-    print("test100")
+    #print("test100")
     if response.ok:
         return response
     else:
@@ -394,9 +394,9 @@ def call_sendmail_endpoint(access_token, name, email_address):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName):
+def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName, cal_id):
     """Call the resource URL for the create event action."""
-    send_event_url = 'https://graph.microsoft.com/v1.0/me/events'
+    send_event_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+cal_id+'/events'
     print("test2")
     # set request headers
     headers = {'User-Agent': 'python_tutorial/1.0',
