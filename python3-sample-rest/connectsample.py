@@ -622,6 +622,8 @@ def getFreeRooms(t_start, t_end):
         print(' ------------ ')
         print('id: ' + str(cal['id']))
         print('name: ' + str(cal['name']))
+        if (cal['name'] == 'Birthdays'):
+            continue
         jdata = call_listevents_for_time_endpoint(room.token, cal['id'], t_start, t_end)
         data = json.loads(jdata.text)
         print(data['value'])
