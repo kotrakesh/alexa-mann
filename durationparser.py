@@ -2,7 +2,7 @@ import re
 import datetime
 
 start = '10:10'
-duration = 'PT10H5M50S'
+duration = 'PT12H5M50S'
 
 if bool(re.search(r'\d*H', duration)):
     hours = re.search(r'(\d*)H', duration).group(1)
