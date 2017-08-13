@@ -1,13 +1,26 @@
-
+import re
 import datetime
 
 start = '10:10'
-duration = '5:80'
+duration = 'PT10H5M50S'
 
-timeList = [start, duration]
+if bool(re.search(r'\d*H', duration)):
+    hours = re.search(r'(\d*)H', duration).group(1)
+else:
+    hours = '00'
+
+if bool(re.search(r'\d*M', duration)):
+    minutes = re.search(r'(\d*)M', duration).group(1)
+else:
+    minutes = '00'
+
+time = hours + ':' + minutes
+
+timeList = [start, time]
 sum = datetime.timedelta()
 for i in timeList:
     (h, m) = i.split(':')
     d = datetime.timedelta(hours=int(h), minutes=int(m))
     sum += d
-print(str(sum))
+
+print('The meeting ends at: ' + str(sum))
