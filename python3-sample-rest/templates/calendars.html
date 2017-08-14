@@ -71,83 +71,58 @@
 
         <!-- Table with amazon data -->
         <h2>Events during the time specified with Alexa</h2>
-        <table class="ms-Table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Owner</th>
-                <th>Mail Address</th>
 
-            </tr>
-            </thead>
-            <tbody>
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
-            <tr>
-          <form action="/list_events_for_time">
-            <td>{{ cal.name}}</td>
-            <td>{{ cal.owner.name}}</td>
-            <td>{{ cal.owner.address}}</td>
-            <td>
-                <div class="icon-holder">
-                  <input name="cal_id" value="{{cal.id}}" type="hidden">
+          <li class="ms-ListItem" tabindex="0">
+              <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
+              <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
+              <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
+          <h2>&nbsp;</h2>
+           <form action="/list_events_for_time">
+               <input name="cal_id" value="{{cal.id}}" type="hidden">
                   <input name="cal_name"   value="{{cal.name}} "type="hidden">
-                </div>
-            </td>
-            <td><input value = "" type = "hidden" >   </td>
-            <td><input type = "text" name="date" value = "{{ aDate}}"></td>
-            <td><input type = "text" name="start_time" value="{{aTime}}"></td>
-            <td><input type = "text" name="end_time" value = "21:00:00"></td>
-            <td>
-                  <input type="submit" value="List events for selected time">
-            </td>
-
+            <input type = "text" name="date" value = "{{ aDate}}">
+            <input type = "text" name="start_time" value="{{aTime}}">
+            <input type = "text" name="end_time" value = "21:00:00">
+             <button type="submit" class="ms-Button ms-Button--small">
+                    <span class="ms-Button-label">List events for selected time</span>
+              </button>
           </form>
-        </tr>
+          </li>
+
         {% endfor %}
         {% endif %}
-            </tbody>
-        </table>
 
-          <table class="ms-Table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Owner</th>
-                <th>Mail Address</th>
 
-            </tr>
-            </thead>
-            <tbody>
+          <h2>create an event</h2>
+
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
-            <tr>
+          <li class="ms-ListItem" tabindex="0">
+              <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
+              <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
+              <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
+          <h2>&nbsp;</h2>
+
           <form action="/create_event">
-            <td>{{ cal.name}}</td>
-            <td>{{ cal.owner.name}}</td>
-            <td>{{ cal.owner.address}}</td>
-            <td>
-                <div class="icon-holder">
-                  <input name="cal_id" value="{{cal.id}}" type="hidden">
-                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
-                </div>
-            </td>
-            <td><input value = "" type = "hidden" >   </td>
-            <td><input type = "text" name="date" value = "2017-08-16"></td>
-            <td><input type = "text" name="start" value="09:00:00"></td>
-            <td><input type = "text" name="end" value = "10:00:00"></td>
-             <td><input type = "text" name="title" value = "title for this event"></td>
-              <td><input type = "text" name="room" value = "{{cal.name}}"></td>
-            <td>
-              <input type="submit" value="create a event for this room">
-            </td>
-
+              <input name="cal_id" value="{{cal.id}}" type="hidden">
+               <input name="cal_name"   value="{{cal.name}} "type="hidden">
+            <input value = "" type = "hidden" >
+            <input type = "text" name="date" value = "2017-08-16">
+            <input type = "text" name="start" value="09:00:00">
+            <input type = "text" name="end" value = "10:00:00">
+            <input type = "text" name="title" value = "title for this event">
+            <input type = "text" name="room" value = "{{cal.name}}">
+            <button type="submit" class="ms-Button ms-Button--small">
+                 <span class="ms-Button-label">create an event for this room</span>
+            </button>
           </form>
-        </tr>
+          </li>
+
         {% endfor %}
         {% endif %}
-            </tbody>
-        </table>
+
 
 
 
