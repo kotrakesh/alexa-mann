@@ -8,11 +8,7 @@ app = Flask(__name__)
 # app.debug = False
 ask = Ask(app, "/")
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
+vars = {'date': None, 'time': None, 'duration': None, 'attendees': None}
 
 # Amzazon Date: “today”: 2015-11-24
 # Amazon Duration: “ten minutes”: PT10M, “five hours”: PT5H
@@ -133,7 +129,7 @@ def allKnown(Date, Time, Duration):
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
     vars['attendees'] = Attendees
-    return statement('the meeting is on', room.date, 'at', room.time, 'and lasts', room.duration, '.', Attendees, 'people are attending it.')
+    return statement('the meeting is on ' + room.date + ' at ' + room.time + ' and lasts ' + room.duration + ' . ' + Attendees + ' people are attending it. ')
     # return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 # Print and return the meeting room
@@ -159,3 +155,9 @@ def numberOfAttendees(Attendees):
 #     # TODO name and number of attendees intents and parameters
 #     return statement('The meeting is in room ' + str(freeRoom))
 #     # return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
