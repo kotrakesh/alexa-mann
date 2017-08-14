@@ -12,7 +12,7 @@
       },
       "displayName": "Meetingroom 1",
       "locationEmailAddress": "meetingroom1@sovanta.de",
-      "maxAttendents" : 5
+      "maxAttendees" : 5
     },
     {
       "resolveAvailability": true,
@@ -24,7 +24,8 @@
         "street": "Mittermaierstraße 31"
       },
       "displayName": "Meetingroom 2",
-      "locationEmailAddress": "meetingroom2@sovanta.de"
+      "locationEmailAddress": "meetingroom2@sovanta.de",
+      "maxAttendees" : 5
     },
     {
       "resolveAvailability": true,
@@ -36,8 +37,9 @@
         "street": "Mittermaierstraße 31"
       },
       "displayName": "Meetingroom 3",
-      "locationEmailAddress": "meetingroom3@sovanta.de"
-    }    ,
+      "locationEmailAddress": "meetingroom3@sovanta.de",
+      "maxAttendees" : 3
+    },
     {
       "resolveAvailability": true,
       "address": {
@@ -48,7 +50,8 @@
         "street": "Mittermaierstraße 31"
       },
       "displayName": "Meetingroom 4",
-      "locationEmailAddress": "meetingroom4@sovanta.de"
+      "locationEmailAddress": "meetingroom4@sovanta.de",
+      "maxAttendees" : 7
     },
     {
       "resolveAvailability": true,
@@ -60,7 +63,8 @@
         "street": "Mittermaierstraße 31"
       },
       "displayName": "Meetingroom 5",
-      "locationEmailAddress": "meetingroom5@sovanta.de"
+      "locationEmailAddress": "meetingroom5@sovanta.de",
+      "maxAttendees" : 6
     }
   ],
   "suggestLocation": true

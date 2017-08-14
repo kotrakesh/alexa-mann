@@ -5,7 +5,8 @@ import json
 import sys
 import uuid
 import logging
-import datetime
+
+from durationparser import getMeetingEndTime
 from room_class import Room
 
 # un-comment these lines to suppress the HTTP status messages sent to the console
@@ -61,7 +62,7 @@ msgraphapi = oauth.remote_app( \
 def index():
     """Handler for home page."""
     return login()
-    return render_template('connect.html')
+    #return render_template('connect.html')
 
 
 # https://forums.developer.amazon.com/questions/5428/how-to-link-an-amazon-alexa-skill-using-azure-app.html
@@ -115,6 +116,8 @@ def authorized():
 @app.route('/main')
 def main():
     get_calendars()  # directly load the calenders after login
+#    print('getFreeRooms')
+#    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     """Handler for main route."""
     if session['alias']:
         username = session['alias']
@@ -148,7 +151,7 @@ def get_calendars():
         show_success = 'true'
         show_error = 'false'
     else:
-        print(response)
+        #print(response)
         show_success = 'false'
         show_error = 'true'
 
@@ -246,9 +249,18 @@ def list_events_for_time():
 
 
 @app.route('/create_event')
-def create_event(start, end, title, roomName):
+def create_event():
     """Handler for create_event route."""
-    response = call_createvent_endpoint(session['access_token'], start, end, title, roomName)
+    cal_id = request.args.get('cal_id')
+    cal_date = request.args.get('date')
+    cal_start_time = request.args.get('start')
+    cal_end_time = request.args.get('end')
+    cal_title = request.args.get('title')
+    cal_room = request.args.get('room')
+    start = convert_amazon_to_ms(cal_date, cal_start_time)
+    end = convert_amazon_to_ms(cal_date, cal_end_time)
+    print("cal id:"+cal_id)
+    response = call_createvent_endpoint(session['access_token'], start, end, cal_title, cal_room, cal_id)
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -260,6 +272,13 @@ def create_event(start, end, title, roomName):
     session['pageRefresh'] = 'false'
     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
                            showError=show_error)
+
+
+def create_event_from_alexa(start, end, title, room_name, cal_id):
+    """Handler for create_event route."""
+    print("cal id:"+cal_id)
+    call_createvent_endpoint(session['access_token'], start, end, title, room_name, cal_id)
+
 
 
 @app.route('/get_information')
@@ -323,7 +342,7 @@ def call_listevents_for_time_endpoint(access_token, id, start, end):
                             headers=headers,
                             verify=False,
                             params=None)
-    print("test100")
+
     if response.ok:
         return response
     else:
@@ -394,9 +413,9 @@ def call_sendmail_endpoint(access_token, name, email_address):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName):
+def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName, cal_id):
     """Call the resource URL for the create event action."""
-    send_event_url = 'https://graph.microsoft.com/v1.0/me/events'
+    send_event_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+cal_id+'/events'
     print("test2")
     # set request headers
     headers = {'User-Agent': 'python_tutorial/1.0',
@@ -418,15 +437,15 @@ def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName):
         "subject": title,
         "body": {
             "contentType": "HTML",
-            "content": "Does late morning work for you?"
+            "content": "alexa created event"
         },
         "start": {
             "dateTime": tStart,
-            "timeZone": "Pacific Standard Time"
+            "timeZone": "W. Europe Standard Time"
         },
         "end": {
             "dateTime": tEnd,
-            "timeZone": "Pacific Standard Time"
+            "timeZone": "W. Europe Standard Time"
         },
         "location": {
             "displayName": roomName
@@ -609,36 +628,55 @@ def numberOfAttendees(Attendees):
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
-def getFreeRooms(t_start, t_end):
-    print('getFreeRooms')
+def getFreeRooms(t_start, t_end, attendees):
 
     # TODO authenticate with Graph API
-    print('--------------------- login token: ' + str(room.token))
+    #print('--------------------- login token: ' + str(room.token))
     # cal = call_getcalendar_endpoint(room.token)
-    print(str(t_start), str(t_end), ' --- cal.data: ')
+    print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' --- cal.data: ')
 
-    # cal_data = json.loads(json.dumps(cal))
-    print(room.data['value'])
+
+    #print(room.data['value'])
+
+    locConstraint = json.load(open('locationConstraint.json'))
 
     for cal in room.data['value']:
+        if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'): # calendar and    birthdays are ignored
+            continue
+
         print(' ------------ ')
-        print('id: ' + str(cal['id']))
+        #print('id: ' + str(cal['id']))
         print('name: ' + str(cal['name']))
-        jdata = call_listevents_for_time_endpoint(room.token, cal['id'], t_start, t_end)
+
+        jdata = call_listevents_for_time_endpoint(session['access_token'], cal['id'], t_start, t_end)
         data = json.loads(jdata.text)
-        print(data['value'])
+
+        #print(data['value'])
+
         if not data['value']:
             print('Keine Events vorhanden')
-            print(data['value'])
-            # TODO create Event for that date
-            #create_event(t_start, t_end, "Event title", "Romm name")
-            # TODO check other constraints like room size
-            return cal['name']
+
+            for l in locConstraint['locations']:
+               # print('Raumname: ' + str(l['displayName']), str(cal['name']))
+               #  print('Raumgroesse: ' + str(l['maxAttendees']), str(attendees))
+
+                if l['displayName'] == cal['name']:
+                    if attendees <= l['maxAttendees']:
+                        print('Raumgroesse: ' +  str(attendees), str(l['maxAttendees']))
+                        print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
+                        print('    ')
+                        # TODO create Event for that date
+                        # create_event_from_alexa(t_start,t_end, title, room_name, cal_id)
+
+                        return cal['name']
+                    else:
+                        print('Raumgroesse: ' + str(attendees), ' > ', str(l['maxAttendees']))
+                        print('Raum ist zu klein')
 
         else:
             print('Events vorhanden')
-            print(data['value'])
-            # TODO continue to search
+
+
 
 
 # Print and return the meeting room
@@ -648,16 +686,14 @@ def readMeetingTime(Date, Time, Duration, Attendees=0):
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes[
         'duration'] = room.date = room.time = room.duration = None
 
-    start = '2017-07-19T10:00'
-    end = '2017-07-19T20:00'
-    freeRoom = getFreeRooms(start, end)
+    start = Time
+    end = getMeetingEndTime(Time, Duration)
+
+    freeRoom = getFreeRooms(start, end, Attendees)
 
     # TODO get events from each calendar
 
-    # TODO convert duration in end time
-    #   convert start time in python time, (duration)
-    #   add time
-    # TODO loop through rooms (calendars)
+
     # TODO get events at that time, time difference because if events in that time frame occur response is not null
     # TODO create event, in one of the free rooms
     # TODO frontend, fabric CSS and JS
