@@ -5,7 +5,6 @@ from flask_ask import Ask, statement, question, session as ask_session
 room = Room()
 
 app = Flask(__name__)
-# app.debug = False
 ask = Ask(app, "/")
 
 vars = {'date': None, 'time': None, 'duration': None, 'attendees': None}
