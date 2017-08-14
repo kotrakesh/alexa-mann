@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/micha/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.3.0/support-annotations-23.3.0.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="db7791d75a07fef9844d06236c1c59ba7bf6997c">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/support-annotations-23.3.0_3de0b4999eb3493520208833475e48178597a210.jar" />
+    </item>
+    <item
+        jar="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="1b8e03daaa43fb0a4cd57e378167c2fd70454c1e">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.3.0_9e70a7d25170bc1d99837ed4efd0ccf22e63f741.jar" />
+    </item>
+    <item
+        jar="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="a0b5d60246cd9d4f3f2443611b3b4c25265840b5">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-23.3.0_612d02de27ec96dd40d50b8a83ce19297507b98c.jar" />
+    </item>
+    <item
+        jar="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="23be6993826b8fd88bbc8d14928bb3b8960d3d4e">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-23.3.0_3cb3fd91621b5dc4e704897c97b51e1a606de7d9.jar" />
+    </item>
+    <item
+        jar="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/libs/internal_impl-23.3.0.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="4da5a4d697d32497c6f85567a5112e62fdfd0676">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/internal_impl-23.3.0_0420fbdc3d28d3a78e88673421cc8547412c26f0.jar" />
+    </item>
+    <item
+        jar="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.3"
+        sha1="8a034dd16c0dfd75fe86c52c2cd581592acc684a">
+        <dex dex="/home/micha/rpi3-wifi-conf-android/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.3.0_a59fd06de5187a75e86c9a52ea2746a0142745f6.jar" />
+    </item>
+
+</items>

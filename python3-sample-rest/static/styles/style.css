@@ -1,0 +1,81 @@
+.navbar-header {
+      box-sizing: border-box;
+      display: block;
+      height: 40px;
+      line-height: 40px;
+      font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+      font-size: 17px;
+      padding-left: 20px;
+      position: relative;
+      font-weight: bold;
+    }
+
+    @media (min-width: 480px) {
+      .navbar-header {
+        float: left;
+        margin-right: 20px;
+        font-size: 20px;
+        padding: 0;
+      }
+    }
+
+    .ms-TextField {
+      width: 300px;
+      display: inline-block;
+    }
+
+    .icon-holder {
+      display: inline-block;
+      width: 30px;
+    }
+
+    .big-icon {
+      font-size: 30px;
+      top: 5px;
+      position: relative;
+    }
+
+    input[type=submit] {
+      color: #333333;
+      font-family: 'Segoe UI Semibold WestEuropean', 'Segoe UI Semibold', 'Segoe WP Semibold', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+      font-size: 14px;
+      font-weight: normal;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      background-color: #f4f4f4;
+      border: 1px solid #f4f4f4;
+      cursor: pointer;
+      display: inline-block;
+      height: 32px;
+      min-width: 80px;
+      padding: 4px 20px 6px;
+    }
+
+    .ms-ListItem {
+        border-bottom: 1px solid #ccc;
+        list-decoration: none;
+        padding: 20px 20px 0px 0px;
+        list-style-type: none;
+    }
+    .ms-ListItem form {
+        float: right;
+        position: relative;
+        top: -60px;
+    }
+    .ms-ListItem-tertiaryText {
+        line-height: 20px;
+    }
+
+    .accountInformation form {
+        float: left;
+        margin: 20px;
+    }
+    .ms-Button.ms-Button--compound {
+        width: 150px;
+        height:150px;
+    }
+    .accountInteractions {
+        clear: both;
+    }
