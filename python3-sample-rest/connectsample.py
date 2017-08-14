@@ -5,7 +5,8 @@ import json
 import sys
 import uuid
 import logging
-import datetime
+
+from durationparser import getMeetingEndTime
 from room_class import Room
 
 # un-comment these lines to suppress the HTTP status messages sent to the console
@@ -61,7 +62,7 @@ msgraphapi = oauth.remote_app( \
 def index():
     """Handler for home page."""
     return login()
-    return render_template('connect.html')
+    #return render_template('connect.html')
 
 
 # https://forums.developer.amazon.com/questions/5428/how-to-link-an-amazon-alexa-skill-using-azure-app.html
@@ -115,6 +116,8 @@ def authorized():
 @app.route('/main')
 def main():
     get_calendars()  # directly load the calenders after login
+#    print('getFreeRooms')
+#    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     """Handler for main route."""
     if session['alias']:
         username = session['alias']
@@ -148,7 +151,7 @@ def get_calendars():
         show_success = 'true'
         show_error = 'false'
     else:
-        print(response)
+        #print(response)
         show_success = 'false'
         show_error = 'true'
 
@@ -219,7 +222,7 @@ def list_events():
 
 @app.route('/list_events_for_time')
 def list_events_for_time():
-    cal_id = request.args.get('cal_id')
+    cal_id = request.args.get('cal_id')  # get email address from the form
     cal_name = request.args.get('cal_name')
     cal_date = request.args.get('date')
     cal_start_time = request.args.get('start_time')
@@ -339,7 +342,7 @@ def call_listevents_for_time_endpoint(access_token, id, start, end):
                             headers=headers,
                             verify=False,
                             params=None)
-    #print("test100")
+
     if response.ok:
         return response
     else:
@@ -625,38 +628,55 @@ def numberOfAttendees(Attendees):
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
-def getFreeRooms(t_start, t_end):
-    print('getFreeRooms')
+def getFreeRooms(t_start, t_end, attendees):
 
     # TODO authenticate with Graph API
-    print('--------------------- login token: ' + str(room.token))
+    #print('--------------------- login token: ' + str(room.token))
     # cal = call_getcalendar_endpoint(room.token)
-    print(str(t_start), str(t_end), ' --- cal.data: ')
+    print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' --- cal.data: ')
 
-    # cal_data = json.loads(json.dumps(cal))
-    print(room.data['value'])
+
+    #print(room.data['value'])
+
+    locConstraint = json.load(open('locationConstraint.json'))
 
     for cal in room.data['value']:
-        print(' ------------ ')
-        print('id: ' + str(cal['id']))
-        print('name: ' + str(cal['name']))
-        if (cal['name'] == 'Birthdays'):
+        if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'): # calendar and    birthdays are ignored
             continue
-        jdata = call_listevents_for_time_endpoint(room.token, cal['id'], t_start, t_end)
+
+        print(' ------------ ')
+        #print('id: ' + str(cal['id']))
+        print('name: ' + str(cal['name']))
+
+        jdata = call_listevents_for_time_endpoint(session['access_token'], cal['id'], t_start, t_end)
         data = json.loads(jdata.text)
-        print(data['value'])
+
+        #print(data['value'])
+
         if not data['value']:
             print('Keine Events vorhanden')
-            print(data['value'])
-            # TODO create Event for that date
-            #create_event_from_alexa(t_start,t_end, title, room_name, cal_id)
-            # TODO check other constraints like room size
-            return cal['name']
+
+            for l in locConstraint['locations']:
+               # print('Raumname: ' + str(l['displayName']), str(cal['name']))
+               #  print('Raumgroesse: ' + str(l['maxAttendees']), str(attendees))
+
+                if l['displayName'] == cal['name']:
+                    if attendees <= l['maxAttendees']:
+                        print('Raumgroesse: ' +  str(attendees), str(l['maxAttendees']))
+                        print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
+                        print('    ')
+                        # TODO create Event for that date
+                        # create_event_from_alexa(t_start,t_end, title, room_name, cal_id)
+
+                        return cal['name']
+                    else:
+                        print('Raumgroesse: ' + str(attendees), ' > ', str(l['maxAttendees']))
+                        print('Raum ist zu klein')
 
         else:
             print('Events vorhanden')
-            print(data['value'])
-            # TODO continue to search
+
+
 
 
 # Print and return the meeting room
@@ -666,16 +686,14 @@ def readMeetingTime(Date, Time, Duration, Attendees=0):
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes[
         'duration'] = room.date = room.time = room.duration = None
 
-    start = '2017-07-19T10:00'
-    end = '2017-07-19T20:00'
-    freeRoom = getFreeRooms(start, end)
+    start = Time
+    end = getMeetingEndTime(Time, Duration)
+
+    freeRoom = getFreeRooms(start, end, Attendees)
 
     # TODO get events from each calendar
 
-    # TODO convert duration in end time
-    #   convert start time in python time, (duration)
-    #   add time
-    # TODO loop through rooms (calendars)
+
     # TODO get events at that time, time difference because if events in that time frame occur response is not null
     # TODO create event, in one of the free rooms
     # TODO frontend, fabric CSS and JS

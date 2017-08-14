@@ -1,7 +1,7 @@
 import re
 import datetime
 
-def getmeetingendtime(start, duration):
+def getMeetingEndTime(start, duration):
 
  if bool(re.search(r'\d*H', duration)):
     hours = re.search(r'(\d*)H', duration).group(1)

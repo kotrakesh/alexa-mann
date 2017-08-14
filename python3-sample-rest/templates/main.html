@@ -27,60 +27,63 @@
   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
     <div>
       <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi, {{ name }}!</h2>
-      <p class="ms-font-xl">You're now connected to Office 365. Click the button below to manage your rooms or check your event list. </p>
+      <p class="ms-font-xl">
+          Sie sind nun mit Office 365 verbunden. Unten sehen Sie Ihre Account Informationen sowie die Moeglichkeit neue Raume anzulegen.
+      </p>
 
+      <!-- Information -->
+      <div class="accountInformation">
+          <h3 class="ms-font-l">Account Informationen</h3>
+          <!-- Get my account information -->
+          <form action="/me">
+            <button type="submit" class="ms-Button ms-Button--compound">
+              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+              <span class="ms-Button-label">Account information</span>
+              <span class="ms-Button-description">Zeigt alle wichtigen Details des aktuell eingeloggten Accounts an</span>
+            </button>
+          </form>
 
-      <!-- Get my account information -->
-      <form action="/me">
-        <button type="submit" class="ms-Button ms-Button--compound">
-          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-          <span class="ms-Button-label">Get my account information</span>
-          <span class="ms-Button-description">Displays info about the current logged in account</span>
-        </button>
-      </form>
+          <!-- get inormation from alexa -->
+          <form action="/get_information">
+            <button type="submit" class="ms-Button ms-Button--compound">
+              <span class="ms-Button-label">Amazon Daten</span>
+              <span class="ms-Button-description">Uebergebene Daten des Amazon Skills</span>
+            </button>
+          </form>
 
-
-      <!-- Get my calendar -->
-     <form action="/calendars">
-        <button type="submit" class="ms-Button ms-Button--compound">
-          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-          <span class="ms-Button-label">Registrierte Raume</span>
-          <span class="ms-Button-description">Zeigt alle Kalender der registierten Raume an</span>
-        </button>
-     </form>
-
-
-
-        <!-- get inormation from alexa -->
-        <form action="/get_information">
-        <button type="submit" class="ms-Button ms-Button--compound">
-          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-          <span class="ms-Button-label">Get information</span>
-          <span class="ms-Button-description">Display information send by user via voice interface</span>
-        </button>
-      </form>
-
-
-      <!-- Create Calendar -->
-      <form action="/create_calendar">
-        <div class="ms-TextField">
-          <input name="name" class="ms-TextField-field" value="" placeholder="Name of the room">
-        </div>
-        <button type="submit" class="ms-Button ms-Button--compound">
-          <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-          <span class="ms-Button-label">Fuege Raume hinzu</span>
-        </button>
-      </form>
-      {% if showSuccess_createCalendar == 'true' %}
-      <div>
-        <p class="ms-font-m ms-fontColor-green">Der Raum {{ username }} wurde erstellt!</p>
+          <!-- Get my calendar -->
+         <form action="/calendars">
+            <button type="submit" class="ms-Button ms-Button--compound">
+              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+              <span class="ms-Button-label">Registrierte Raume</span>
+              <span class="ms-Button-description">Zeigt alle Kalender der registierten Raume an</span>
+            </button>
+         </form>
       </div>
-      {% elif showError_createCalendar == 'true' %}
-      <div>
-        <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars fuer den Raum {{ username }} ist etwas schief gegangen!</p>
-      </div>
-      {% endif %}
 
+     <div class="accountInteractions">
+         <h3 class="ms-font-l">Account Interaktionen</h3>
+
+          <!-- Create Calender for room -->
+          <form action="/create_calendar">
+            <div class="ms-TextField">
+              <input name="name" class="ms-TextField-field" value="" placeholder="Raumname">
+            </div>
+            <button type="submit" class="ms-Button">
+              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+              <span class="ms-Button-label">Fuege Raume hinzu</span>
+            </button>
+          </form>
+          {% if showSuccess_createCalendar == 'true' %}
+          <div>
+            <p class="ms-font-m ms-fontColor-green">Der Raum {{ username }} wurde erstellt!</p>
+          </div>
+          {% elif showError_createCalendar == 'true' %}
+          <div>
+            <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars fuer den Raum {{ username }} ist etwas schief gegangen!</p>
+          </div>
+          {% endif %}
+     </div>
 
 
       <!-- Send mail

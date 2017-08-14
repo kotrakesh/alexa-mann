@@ -67,3 +67,15 @@
     .ms-ListItem-tertiaryText {
         line-height: 20px;
     }
+
+    .accountInformation form {
+        float: left;
+        margin: 20px;
+    }
+    .ms-Button.ms-Button--compound {
+        width: 150px;
+        height:150px;
+    }
+    .accountInteractions {
+        clear: both;
+    }
