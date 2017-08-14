@@ -2,6 +2,7 @@ import re
 import datetime
 
 def getmeetingendtime(start, duration):
+
  if bool(re.search(r'\d*H', duration)):
     hours = re.search(r'(\d*)H', duration).group(1)
  else:
@@ -20,7 +21,7 @@ def getmeetingendtime(start, duration):
     (h, m) = i.split(':')
     d = datetime.timedelta(hours=int(h), minutes=int(m))
     sum += d
+ return str(sum)
 
- str(sum)
+#print(getmeetingendtime("10:20","PT12H5M50S"))
 
-#getmeetingendtime("10:20","PT12H5M50S")
