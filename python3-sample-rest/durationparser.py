@@ -21,7 +21,7 @@ def getMeetingEndTime(start, duration):
     (h, m) = i.split(':')
     d = datetime.timedelta(hours=int(h), minutes=int(m))
     sum += d
- return str(sum)
+ return str(sum)[:5]
 
-#print(getmeetingendtime("10:20","PT12H5M50S"))
+#print(getMeetingEndTime("10:20","PT12H5M50S"))
 
