@@ -23,5 +23,5 @@ def getMeetingEndTime(start, duration):
     sum += d
  return str(sum)[:5]
 
-#print(getMeetingEndTime("10:20","PT12H5M50S"))
+#print(getMeetingEndTime("10:20","PT12H10M50S"))
 
