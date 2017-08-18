@@ -1,47 +1,20 @@
-<!DOCTYPE html>
-<html>
+  {% include "header.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>O365 Connect</title>
 
-  <!-- Third party dependencies. -->
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
-  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
-  
-</head>
-
-<body class="ms-Grid">
-  <div class="ms-Grid-row">
-  <!-- App navigation bar markup. -->
-  <div class="ms-NavBar">
-    <ul class="ms-NavBar-items">
-      <li class="navbar-header">Microsoft Graph Connect</li>
-      <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
-    </ul>
-  </div>
+   <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
+      <h2 class="ms-font-xxl ms-fontWeight-semibold">Guten Tag, {{ name }}!</h2>
+      <p class="ms-font-xl">
+           Sie sind nun mit Office 365 Graph API verbunden.
+           Hier k&ouml;nnen Sie Ihre Kalender verwalten und neue R&auml;ume anlegen.
+      </p>
+    </div>
 
   <!-- App main content markup. -->
-  <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
-    <div>
-      <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi, {{ name }}!</h2>
-      <p class="ms-font-xl">
-          Sie sind nun mit Office 365 verbunden. Unten sehen Sie Ihre Account Informationen sowie die Moeglichkeit neue Raume anzulegen.
-      </p>
+  <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
 
       <!-- Information -->
       <div class="accountInformation">
           <h3 class="ms-font-l">Account Informationen</h3>
-          <!-- Get my account information -->
-          <form action="/me">
-            <button type="submit" class="ms-Button ms-Button--compound">
-              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-              <span class="ms-Button-label">Account information</span>
-              <span class="ms-Button-description">Zeigt alle wichtigen Details des aktuell eingeloggten Accounts an</span>
-            </button>
-          </form>
 
           <!-- get inormation from alexa -->
           <form action="/get_information">
@@ -55,38 +28,40 @@
          <form action="/calendars">
             <button type="submit" class="ms-Button ms-Button--compound">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-              <span class="ms-Button-label">Registrierte Raume</span>
-              <span class="ms-Button-description">Zeigt alle Kalender der registierten Raume an</span>
+              <span class="ms-Button-label">Registrierte R&auml;ume</span>
+              <span class="ms-Button-description">Zeigt alle Kalender der registierten R&auml;ume an</span>
             </button>
          </form>
       </div>
 
-
-
-
-      <!-- Send mail
-      <form action="/send_mail">
-        <div class="ms-TextField">
-          <input name="emailAddress" class="ms-TextField-field" value="{{ emailAddress }}">
-        </div>
-        <div class="icon-holder">
-          <input type="submit" value="Send mail">
-        </div>
-      </form>
-      {% if showSuccess == 'true' %}
-      <div>
-        <p class="ms-font-m ms-fontColor-green">Successfully sent an email to {{ emailAddress }}!</p>
-      </div>
-      {% elif showError == 'true' %}
-      <div>
-        <p class="ms-font-m ms-fontColor-redDark">Something went wrong, couldn't send an email.</p>        
-      </div>
-      {% endif %}
+      <!-- Interaction -->
+      <div class="accountInteractions">
+        <h3 class="ms-font-l">Account Interaktionen</h3>
+        <button onclick="window.location.href='/createRoom.html'" class="ms-Button ms-Button--compound">
+              <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
+              <span class="ms-Button-label">Raum hinzufuegen</span>
+              <span class="ms-Button-description">&Ouml;ffnet ein Formular, um einen neuen Raum anzulegen</span>
+        </button>
     </div>
-    -->
-    
+
   </div>
-</div>
+
+  <div class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
+      <h3 class="ms-font-l">Account Details</h3>
+      <ul class="ms-List">
+		<li class="ms-ListItem">
+            <span class="ms-ListItem-primaryText">UserID: {{ uID }} </span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-ListItem-primaryText">Name: {{ vName }} {{ nName }}</span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-ListItem-primaryText">Mail: {{ mail }}</span>
+            <i class="ms-Icon ms-Icon--Mail"></i>
+        </li>
+	  </ul>
+  </div>
+
 </body>
 
 </html>

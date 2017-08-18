@@ -62,7 +62,7 @@
     .ms-ListItem form {
         float: right;
         position: relative;
-        top: -60px;
+        top: -20px;
     }
     .ms-ListItem-tertiaryText {
         line-height: 20px;
@@ -75,7 +75,24 @@
     .ms-Button.ms-Button--compound {
         width: 150px;
         height:150px;
+        border: 1px solid #3aaa35;
+
     }
     .accountInteractions {
         clear: both;
+    }
+    a {
+        color: #3aaa35;
+    }
+
+    /* Header */
+    .ms-NavBar {
+        border-bottom: 2px solid #3aaa35;
+    }
+
+
+    /* Calender Liste */
+    .calendars li.ms-ListItem:first-child,
+    .calendars li.ms-ListItem:nth-child(2){
+        display: none;
     }

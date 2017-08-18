@@ -1,27 +1,5 @@
-<!DOCTYPE html>
-<html>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>O365 Connect</title>
-
-  <!-- Third party dependencies. -->
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
-  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
-  
-</head>
-
-<body class="ms-Grid">
-  <div class="ms-Grid-row">
-  <!-- App navigation bar markup. -->
-  <div class="ms-NavBar">
-    <ul class="ms-NavBar-items">
-      <li class="navbar-header">Microsoft Graph Connect</li>
-      <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'"><i class="ms-Icon ms-Icon--x"></i> Disconnect</li>
-    </ul>
-  </div>
+  {% include "header.html" %}
 
   <!-- App main content markup. -->
   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
@@ -35,7 +13,7 @@
             Folgende Kalender sind registriert:</br>
         </p>
 
-        <ul>
+        <ul class="calendars ms-List">
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
 
@@ -48,8 +26,6 @@
               <div class="ms-ListItem-actions">
                 <div class="ms-ListItem-action">
                   <i class="ms-Icon ms-Icon--Mail"></i>
-                </div>
-                <div class="ms-ListItem-action">
                   <i class="ms-Icon ms-Icon--Delete"></i>
                 </div>
               </div>
@@ -57,9 +33,8 @@
                   <input name="cal_id" value="{{cal.id}}" type="hidden">
                   <input name="cal_name"   value="{{cal.name}} "type="hidden">
                   <button type="submit" class="ms-Button ms-Button--small">
-                    <span class="ms-Button-label">List Events</span>
+                    <span class="ms-Button-label">Events anzeigen</span>
                   </button>
-
               </form>
             </li>
 
