@@ -2,7 +2,7 @@
 
 
    <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
-      <h2 class="ms-font-xxl ms-fontWeight-semibold">Guten Tag, {{ name }}!</h2>
+      <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
            Hier k&ouml;nnen Sie Ihre Kalender verwalten und neue R&auml;ume anlegen.
@@ -14,7 +14,7 @@
 
       <!-- Information -->
       <div class="accountInformation">
-          <h3 class="ms-font-l">Account Informationen</h3>
+          <h3 class="ms-font-xl">Account Informationen</h3>
 
           <!-- get inormation from alexa -->
           <form action="/get_information">
@@ -36,7 +36,7 @@
 
       <!-- Interaction -->
       <div class="accountInteractions">
-        <h3 class="ms-font-l">Account Interaktionen</h3>
+        <h3 class="ms-font-xl">Account Interaktionen</h3>
         <button onclick="window.location.href='/createRoom.html'" class="ms-Button ms-Button--compound">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Raum hinzufuegen</span>
@@ -47,16 +47,16 @@
   </div>
 
   <div class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
-      <h3 class="ms-font-l">Account Details</h3>
+      <h3 class="ms-font-xl">Account Details</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">UserID: {{ uID }} </span>
+            <span class="ms-font-m">UserID: {{ uID }} </span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">Name: {{ vName }} {{ nName }}</span>
+            <span class="ms-font-m">Name: {{ vName }} {{ nName }}</span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">Mail: {{ mail }}</span>
+            <span class="ms-font-m">Mail: {{ mail }}</span>
             <i class="ms-Icon ms-Icon--Mail"></i>
         </li>
 	  </ul>

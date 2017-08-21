@@ -109,23 +109,24 @@ def authorized():
     email_address = me_data['userPrincipalName']
     session['alias'] = username
     session['userEmailAddress'] = email_address
-    room.token = session['access_token']
+    room.token = session['access_token']             # save room token for further useage
     return redirect('main')
 
 
 @app.route('/main')
 def main():
-    get_calendars()  # directly load the calenders after login
+#    get_calendars()  # directly load the calenders after login
 #    print('getFreeRooms')
-    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
+#    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
+    me = get_me()
 
     """Handler for main route."""
     if session['alias']:
         username = session['alias']
         email_address = session['userEmailAddress']
-        return render_template('main.html', name=username, emailAddress=email_address)
+        return render_template('main.html', name=username, emailAddress=email_address, uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'])
     else:
-        return render_template('main.html')
+        return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'])
 
 
 # Get Information about the current account
@@ -133,13 +134,8 @@ def main():
 def get_me():
     me_response = msgraphapi.get('me')
     me_data = json.loads(json.dumps(me_response.data))
-    username = me_data['displayName']
-    vname = me_data['givenName']
-    nname = me_data['surname']
-    userid = me_data['id']
-    email_address = me_data['userPrincipalName']
-
-    return render_template('me.html', vName=vname, nName=nname, uID=userid, mail=email_address)
+    print('me ', me_data)
+    return me_data
 
 
 @app.route('/calendars')
@@ -182,6 +178,11 @@ def create_calendar():
     return render_template('main.html', name=session['alias'], username=username,
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
+@app.route('/delete_calendar')
+def delete_calendar():
+    calendar_name = request.args.get('calName')
+
+    return render_template('calendars.html', name=session['alias'], jsondata=room.data, calName=calendar_name, showDeletedCalendars=1, showCalendars=1)
 
 @app.route('/send_mail')
 def send_mail():
