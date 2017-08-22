@@ -1,7 +1,7 @@
   {% include "header.html" %}
 
 
-   <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
+   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md12 ms-u-lgPush1 ms-u-lg12 ms-lg12">
       <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
@@ -16,35 +16,83 @@
       <div class="accountInformation">
           <h3 class="ms-font-xl">Account Informationen</h3>
 
-          <!-- get inormation from alexa -->
+          <!-- get inormation from alexa
           <form action="/get_information">
             <button type="submit" class="ms-Button ms-Button--compound">
               <span class="ms-Button-label">Amazon Daten</span>
               <span class="ms-Button-description">Uebergebene Daten des Amazon Skills</span>
             </button>
           </form>
-
+          -->
           <!-- Get my calendar -->
-         <form action="/calendars">
-            <button type="submit" class="ms-Button ms-Button--compound">
+          <button type="submit" class="ms-Button ms-Button--compound" onclick="window.location.href='/calendars'">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Registrierte R&auml;ume</span>
               <span class="ms-Button-description">Zeigt alle Kalender der registierten R&auml;ume an</span>
-            </button>
-         </form>
+          </button>
       </div>
 
       <!-- Interaction -->
       <div class="accountInteractions">
         <h3 class="ms-font-xl">Account Interaktionen</h3>
-        <button onclick="window.location.href='/createRoom'" class="ms-Button ms-Button--compound">
+        <button onclick="toggleCreateRoom()" class="ms-Button ms-Button--compound">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Raum hinzufuegen</span>
               <span class="ms-Button-description">&Ouml;ffnet ein Formular, um einen neuen Raum anzulegen</span>
         </button>
+
+        <!-- Create Calender for room -->
+        <form class="createRoom hide" action="/create_calendar">
+
+            <div class="ms-TextField">
+
+              <input type="radio" name="resolveAvailability" value="true" hidden>
+              <label class="ms-Label">Stadt</label>
+              <input name="city" class="ms-TextField-field" value="Heidelberg" placeholder="City">
+              <label class="ms-Label">Land</label>
+                <input name="countryOrRegion" class="ms-TextField-field" value="Deutschland" placeholder="Country">
+              <label class="ms-Label">PLZ</label>
+                <input name="postalCode" class="ms-TextField-field" value="69115" placeholder="Postal code">
+              <label class="ms-Label">Bundesland</label>
+                <input name="state" class="ms-TextField-field" value="Baden-Wuerttemberg" placeholder="State">
+              <label class="ms-Label">Strasse</label>
+                <input name="street" class="ms-TextField-field" value="Mittermaierstrasse 31" placeholder="Street">
+              <label class="ms-Label">Raumname</label>
+                <input name="displayName" class="ms-TextField-field" value="" placeholder="Meeting Raum X" required>
+
+                <input name="locationEmailAddress" class="ms-TextField-field" value="" placeholder="E-Mail" hidden>
+              <label class="ms-Label">Groesse des Zimmers (Personenanzahl)</label>
+                <input name="maxAttendees" class="ms-TextField-field" value="" placeholder="6" required>
+              </br>
+
+            </div>
+              <button type="submit" class="ms-Button ms-Button--primary createCalendarButton">
+                <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
+              </button>
+        </form>
+
     </div>
 
   </div>
+
+  <script>
+      function toggleCreateRoom() {
+          console.log('openCreateRoom');
+          if ($('.createRoom').hasClass('open')){
+            $('.createRoom').removeClass('open');
+            $('.createRoom').addClass('hide')
+          }
+          else {
+            $('.createRoom').addClass('open');
+            $('.createRoom').removeClass('hide')
+          }
+
+      }
+
+  </script>
+
+
+
 
   <div class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
       <h3 class="ms-font-xl">Account Details</h3>
@@ -60,6 +108,24 @@
             <i class="ms-Icon ms-Icon--Mail"></i>
         </li>
 	  </ul>
+
+
+      <h3 class="ms-font-xl">Alexa Informationen</h3>
+      <ul class="ms-List">
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Datum: {{ aDate }} </span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Zeit: {{ aTime }}</span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Dauer: {{ aDuration }}</span>
+        </li>
+        <li class="ms-ListItem">
+            <span class="ms-font-m">Anzahl Teilnehmer: {{ aAttendees }}</span>
+        </li>
+	  </ul>
+
   </div>
 
 </body>
