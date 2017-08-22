@@ -713,3 +713,33 @@ def get_infor_from_alexa(Date, Time, Duration, Attendees):
     vars['time'] = Time
     vars['duration'] = Duration
     vars['attendees'] = Attendees
+
+
+def store(data):
+    with open('locationConstraint.json', 'w') as json_file:
+        json_file.write(json.dumps(data))
+
+
+def load():
+    with open('locationConstraint.json') as json_file:
+        data = json.load(json_file)
+        return data
+
+def create_room_to_json(name, attendess):
+    newData ={
+      "resolveAvailability": "true",
+      "address": {
+        "city": "Heidelberg",
+        "countryOrRegion": "Deutschland",
+        "postalCode": "69115",
+        "state": "Baden-Wuerttemberg",
+        "street": "Mittermaierstraße 31"
+      },
+      "displayName": name,
+      "locationEmailAddress": "meetingroom1@sovanta.de",
+      "maxAttendees": attendess
+    }
+
+    data = load()
+    data['locations'].append(newData)
+    store(data)
