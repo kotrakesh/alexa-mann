@@ -115,7 +115,7 @@ def authorized():
 
 @app.route('/main')
 def main():
-#    get_calendars()  # directly load the calenders after login
+    get_calendars()  # directly load the calenders after login
 #    print('getFreeRooms')
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
@@ -156,15 +156,29 @@ def get_calendars():
                            aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
 
 
+@app.route('/createRoom')
+def create_room():
+    return render_template('createRoom.html')
+
 @app.route('/create_calendar')
 def create_calendar():
     """Handler for send_mail route."""
-    username = request.args.get('name')  # get name of the user the calendar is created for
+    resolveAvailability = request.args.get('resolveAvailability')  # get name of the user the calendar is created for
+    city = request.args.get('city')
+    countryOrRegion = request.args.get('countryOrRegion')
+    postalCode = request.args.get('postalCode')
+    state = request.args.get('state')
+    street = request.args.get('street')
+    displayName = request.args.get('displayName')
+    locationEmailAddress = request.args.get('locationEmailAddress')
     maxAttendees = request.args.get('maxAttendees')
 
     #data['location']
+    create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street,
+                        displayName, locationEmailAddress, maxAttendees)
 
-    response = call_createcalendar_endpoint(session['access_token'], username)
+
+    response = call_createcalendar_endpoint(session['access_token'], displayName)
 
     if response == 'SUCCESS':
         show_success = 'true'
@@ -175,7 +189,7 @@ def create_calendar():
         show_error = 'true'
 
     session['pageRefresh'] = 'false'
-    return render_template('main.html', name=session['alias'], username=username,
+    return render_template('main.html', name=session['alias'], username=displayName,
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
 @app.route('/delete_calendar')
@@ -549,10 +563,13 @@ def missing_duration_time(Date):
 
 @ask.intent("TimeIntent")
 def missing_date_duration(Time):
-    room.time = ask_session.attributes['time'] = Time
-
+    #room.time = ask_session.attributes['time'] = Time
+    room.time = Time
     print('TimeIntent - Date: ' + str(room.date))
     print('TimeIntent - Time: ' + str(room.time))
+    if Time == '':
+        print('############################\n Time is empty')
+        room.time = None
 
     if room.date is None and room.duration is None:
         return question('Whats the date and the duration of the meeting?')
@@ -633,6 +650,10 @@ def allKnown(Date, Time, Duration):
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
     vars['attendees'] = Attendees
+
+    #TODO check if dates are set
+
+
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
@@ -687,8 +708,7 @@ def getFreeRooms(t_start, t_end, attendees):
 def readMeetingTime(Date, Time, Duration, Attendees):
     print('readMeetingTime')
     get_infor_from_alexa(Date, Time, Duration,Attendees)
-    ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes[
-        'duration'] = room.date = room.time = room.duration = None
+    ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
     start = convert_amazon_to_ms(Date, Time)
     am_end = getMeetingEndTime(Time, Duration)
@@ -725,21 +745,21 @@ def load():
         data = json.load(json_file)
         return data
 
-def create_room_to_json(name, attendess):
-    newData ={
-      "resolveAvailability": "true",
-      "address": {
-        "city": "Heidelberg",
-        "countryOrRegion": "Deutschland",
-        "postalCode": "69115",
-        "state": "Baden-Wuerttemberg",
-        "street": "Mittermaierstraße 31"
-      },
-      "displayName": name,
-      "locationEmailAddress": "meetingroom1@sovanta.de",
-      "maxAttendees": attendess
-    }
 
+def create_room_to_json(isAvailable, city, country, postalCode, state, street, displayName, email, attendees):
+    json_data = {
+        "resolveAvailability": isAvailable,
+        "address": {
+            "city": city,
+            "countryOrRegion": country,
+            "postalCode": postalCode,
+            "state": state,
+            "street": street
+        },
+        "displayName": displayName,
+        "locationEmailAddress": email,
+        "maxAttendees": attendees
+    }
     data = load()
-    data['locations'].append(newData)
+    data['locations'].append(json_data)
     store(data)
