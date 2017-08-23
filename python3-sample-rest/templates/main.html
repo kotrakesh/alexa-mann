@@ -42,6 +42,7 @@
         </button>
 
         <!-- Create Calender for room -->
+        <h3 class="ms-font-l">Account Interaktionen</h3>
         <form class="createRoom hide" action="/create_calendar">
 
             <div class="ms-TextField">
@@ -70,6 +71,15 @@
                 <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
               </button>
         </form>
+        {% if showSuccess_createCalendar == 'true' %}
+        <div>
+          <p class="ms-font-m ms-fontColor-green">Der Raum {{ username }} wurde erstellt!</p>
+        </div>
+        {% elif showError_createCalendar == 'true' %}
+        <div>
+          <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars fuer den Raum {{ username }} ist etwas schief gegangen!</p>
+        </div>
+        {% endif %}
 
     </div>
 
