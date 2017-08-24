@@ -137,6 +137,10 @@
         border-bottom: 2px solid #3aaa35;
     }
 
+    .ms-NavBar li {
+        cursor: pointer;
+    }
+
 
     /* Calender Liste */
     .calendars li.ms-ListItem:first-child,
@@ -158,3 +162,7 @@
     }
 
     .ms-MessageBar {padding: 13px;}
+
+    .backtoMainButton {
+        margin-top: 20px;
+    }

@@ -6,13 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Sovanta Room-Monitor Dashboard</title>
 
-  <!-- Custom style sheet -->
-  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
-
   <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.min.css" />
   <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.components.min.css" />
   <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/js/fabric.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <!-- Custom style sheet and scripts -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  <script src="{{ url_for('static',filename='script.js') }}"></script>
+
 </head>
 
 <body class="ms-Grid">

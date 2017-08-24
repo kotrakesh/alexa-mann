@@ -109,7 +109,7 @@ def authorized():
 
 @app.route('/main')
 def main():
-    get_calendars()  # directly load the calenders after login
+    room.data = cal_data = get_calendars()  # directly load the calenders after login
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
 
@@ -117,9 +117,9 @@ def main():
     if session['alias']:
         username = session['alias']
         email_address = session['userEmailAddress']
-        return render_template('main.html', name=username, emailAddress=email_address, uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'])
+        return render_template('main.html', name=username, emailAddress=email_address, uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
     else:
-        return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'])
+        return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
 
 
 # Get Information about the current account
@@ -127,12 +127,11 @@ def main():
 def get_me():
     me_response = msgraphapi.get('me')
     me_data = json.loads(json.dumps(me_response.data))
-    print('me ', me_data)
+#    print('me ', me_data)
     return me_data
 
 
 # Calendars
-@app.route('/calendars')
 def get_calendars():
     cal = msgraphapi.get('me/calendars')
     cal_data = json.loads(json.dumps(cal.data))
@@ -145,13 +144,9 @@ def get_calendars():
         #print(response)
         show_success = 'false'
         show_error = 'true'
+    return cal_data
+    #return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1, aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
 
-    return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1,
-                           aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
-
-@app.route('/createRoom')
-def create_room():
-    return render_template('createRoom.html')
 
 @app.route('/create_calendar')
 def create_calendar():
@@ -166,7 +161,7 @@ def create_calendar():
     locationEmailAddress = request.args.get('locationEmailAddress')
     maxAttendees = request.args.get('maxAttendees')
 
-    #data['location']
+    # write new room data to locationConstraint
     create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street,
                         displayName, locationEmailAddress, maxAttendees)
 
@@ -181,25 +176,32 @@ def create_calendar():
         show_success = 'false'
         show_error = 'true'
 
+    room.data = get_calendars()
+
     session['pageRefresh'] = 'false'
     return render_template('main.html', name=session['alias'], username=displayName,
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
 @app.route('/delete_calendar')
 def delete_calendar():
+    me = get_me()
     calendar_name = request.args.get('calName')
-
-    return render_template('calendars.html', name=session['alias'], jsondata=room.data, calName=calendar_name, showDeletedCalendars=1, showCalendars=1)
+    room.data = get_calendars()
+    return render_template('main.html', name=session['alias'], uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
+                           jsondata=room.data, calName=calendar_name, showDeletedCalendars=1, showCalendars=0)
 
 
 # Events
 @app.route('/list_events')
 def list_events():
-    cal_id = request.args.get('cal_id')  # get email address from the form
+
+    cal_id = request.args.get('cal_id')
     cal_name = request.args.get('cal_name')
+    print('calid ', cal_id, ' calname: ', cal_name)
+
     response = call_listevents_endpoint(session['access_token'], cal_id)
     data = json.loads(response.text)
-    #print(data)
+
     if response.ok:
         show_success = 'true'
         show_error = 'false'
@@ -209,10 +211,12 @@ def list_events():
         show_error = 'true'
 
     session['pageRefresh'] = 'false'
-    print(response)
+    if data['value'] is None:
+        print('datavalue is empty')
+    else:
+        print('data ', data['value'])
 
-    return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
-                           showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
+    return render_template('events.html', name=session['alias'],data=data, calName=cal_name, jsondata=room.data)
 
 @app.route('/create_event')
 def create_event():
@@ -588,18 +592,13 @@ def readMeetingTime(Date, Time, Duration, Attendees):
     am_end = getMeetingEndTime(Time, Duration)
     end = convert_amazon_to_ms(Date, am_end)
 
-    freeRoom = getFreeRooms(start, end, Attendees)
 
-    # TODO get events from each calendar
+    result = getFreeRooms(start, end, Attendees)
 
-
-    # TODO get events at that time, time difference because if events in that time frame occur response is not null
-    # TODO create event, in one of the free rooms
-    # TODO frontend, fabric CSS and JS
-    # TODO name and number of attendees intents and parameters
-    return statement('The meeting is in room ' + str(freeRoom))
-    # return statement('The meeting is on ' + str(Date) + ' at ' + str(Time) + ' and lasts ' + str(Duration))
-
+    if (result['roomFound'] == 1):
+        return statement('The meeting is in room ' + str(result['roomName']))
+    else:
+        return statement('Booking failed. Reason: ' + str(result['reason']))
 
 
 def getFreeRooms(t_start, t_end, attendees):
@@ -610,6 +609,8 @@ def getFreeRooms(t_start, t_end, attendees):
 
 
     locConstraint = json.load(open('locationConstraint.json'))
+    if(room.data is None):
+        return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms'}
 
     for cal in room.data['value']:
         if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'): # calendar and    birthdays are ignored
@@ -619,6 +620,10 @@ def getFreeRooms(t_start, t_end, attendees):
         print('name: ' + str(cal['name']))
 
         jdata = call_listevents_for_time_endpoint(room.token, cal['id'], t_start, t_end)
+
+#        if (jdata['401'] is not None):
+#            return {'roomFound': False, 'roomName': cal['name'], 'reason': 'Error while connecting to MS Graph API'}
+
         data = json.loads(jdata.text)
 
         #print(data['value'])
@@ -627,25 +632,23 @@ def getFreeRooms(t_start, t_end, attendees):
             print('Keine Events vorhanden')
 
             for l in locConstraint['locations']:
-               # print('Raumname: ' + str(l['displayName']), str(cal['name']))
-               #  print('Raumgroesse: ' + str(l['maxAttendees']), str(attendees))
 
                 if l['displayName'] == cal['name']:
                     if int(attendees) <= l['maxAttendees']:
-                        print('Raumgroesse: ' +  str(attendees), str(l['maxAttendees']))
+                        print('Raumgroesse: ' +  str(attendees), ' max: ', str(l['maxAttendees']))
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
                         create_event_from_alexa(t_start, t_end, 'Sample Title', cal['name'], cal['id'])
 
-                        return cal['name']
+                        return {'roomFound': 1, 'roomName': cal['name'], 'reason': 'All rooms are booked'}
                     else:
                         print('Raumgroesse: ' + str(attendees), ' > ', str(l['maxAttendees']))
                         print('Raum ist zu klein')
 
         else:
             print('Events vorhanden')
-
+    return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 
 

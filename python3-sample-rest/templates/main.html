@@ -5,7 +5,7 @@
       <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
-           Hier k&ouml;nnen Sie Ihre Kalender verwalten und neue R&auml;ume anlegen.
+           Hier k&ouml;nnen Sie Ihre Meetingr&auml;ume und Termine verwalten und neue  R&auml;ume anlegen.
       </p>
     </div>
 
@@ -20,19 +20,24 @@
           <button type="submit" class="ms-Button ms-Button--compound" onclick="toggleViewRooms()">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Registrierte R&auml;ume</span>
-              <span class="ms-Button-description">Zeigt alle Kalender der registierten R&auml;ume an</span>
+              <span class="ms-Button-description">Zeigt registierten Meeting&auml;ume an</span>
           </button>
 
           {% if showDeletedCalendars == 1 %}
-            <div class="ms-MessageBar ms-MessageBar--success">
+            <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
               <div class="ms-MessageBar-content">
                 <div class="ms-MessageBar-icon">
                   <i class="ms-Icon ms-Icon--Completed"></i>
                 </div>
                 <div class="ms-MessageBar-text">
-                  Der Kalender {{ calName }} wurde geloescht!
+                  Der Raum {{ calName }} wurde geloescht!
                 </div>
               </div>
+            </div>
+            <div class="backtoMainButton">
+                <button class="ms-Button" onclick="window.location.href='/main'">
+                    Zur&uuml;ck zur Startseite
+                </button>
             </div>
 
           {% endif %}
@@ -43,9 +48,35 @@
         <h3 class="ms-font-xl">Account Interaktionen</h3>
         <button onclick="toggleCreateRoom()" class="ms-Button ms-Button--compound">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-              <span class="ms-Button-label">Raum hinzufuegen</span>
+              <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
               <span class="ms-Button-description">&Ouml;ffnet ein Formular, um einen neuen Raum anzulegen</span>
         </button>
+
+        {% if showSuccess_createCalendar == 'true' %}
+        <div>
+         <div class="ms-MessageBar ms-MessageBar--success">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Completed"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                 Der Raum {{ username }} wurde erstellt!
+                </div>
+              </div>
+         </div>
+        </div>
+        {% elif showError_createCalendar == 'true' %}
+            <div class="ms-MessageBar ms-MessageBar--blocked">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Blocked"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                 Beim Erstellen des Raums {{ username }} ist etwas schief gegangen!
+                </div>
+              </div>
+            </div>
+        {% endif %}
 
         <!-- Create Calender for room -->
 
@@ -75,24 +106,18 @@
             </div>
 
         </form>
-        {% if showSuccess_createCalendar == 'true' %}
-        <div>
-          <p class="ms-font-m ms-fontColor-green">Der Raum {{ username }} wurde erstellt!</p>
-        </div>
-        {% elif showError_createCalendar == 'true' %}
-        <div>
-          <p class="ms-font-m ms-fontColor-redDark">Beim erstellen des Kalendars fuer den Raum {{ username }} ist etwas schief gegangen!</p>
-        </div>
-        {% endif %}
+
 
     </div>
 
-      <div id="demo"></div>
 
+
+
+      {% if showCalendars == 1 %}
       <!-- Show Calendars -->
       <div class="viewCalendars">
           <p class="ms-font-xl">
-            Folgende Kalender sind registriert:</br>
+            Folgende Meetingr&auml;ume sind registriert:</br>
           </p>
 
           <ul class="calendars ms-List">
@@ -140,101 +165,10 @@
             {% endif %}
           </ul>
       </div>
-
+      {% endif %}
   </main>
 
   <script>
-      $(function() {
-        var DialogElements = jQuery(".ms-Dialog");
-        var DialogComponents = [];
-
-        for (var i = 0; i < DialogElements.length; i++) {
-          (function() {
-            DialogComponents[i] = new fabric['Dialog'](DialogElements[i]);
-          }());
-        }
-        // When clicking the button, open the dialog
-        jQuery(".dialog-button").click(function() {
-            dialog_id = $(this).data('countid');
-            openDialog(dialog_id-1); //decrement due to later use as array index
-        });
-
-        $('.closeListEvents').click(function() {
-            $('events' +
-                '')
-        });
-
-        function openDialog(i) {
-          // Open the dialog
-            console.log("dialogid " + i);
-            DialogComponents[i].open();
-        }
-
-        //enable submit without any submit button
-        $(".submit-button").click(function() {
-         $("#list_events").submit();
-        });
-    });
-
-      function ajax_loadEvents(className, id, name) {
-          xhttp = new XMLHttpRequest();
-
-          xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-              $(className).html(xhttp.responseText);
-          }};
-
-          console.log('id of ajax calendar ' + id, name, className);
-          xhttp.open("GET", "/list_events?cal_id="+id+"&cal_name="+name, true);
-          xhttp.send();
-
-          $(className).addClass('open');
-          $(className).removeClass('hide');
-          console.log('remove Class from ' + className)
-      }
-
-      function toggleListEvents(id) {
-
-          className = '.events'+id;
-          if ($(className).hasClass('open')) {
-              console.log('classname: ' + className);
-              $(className).addClass('hide');
-          }
-
-      }
-
-      function toggleViewRooms() {
-          if ($('.viewCalendars').hasClass('open')){
-            $('.viewCalendars').removeClass('open');
-            $('.viewCalendars').addClass('hide');
-          }
-          else {
-            $('.viewCalendars').addClass('open');
-            $('.viewCalendars').removeClass('hide');
-
-            /* Close the other view */
-            $('.createRoom').removeClass('open');
-            $('.createRoom').addClass('hide')
-          }
-          $('.ms-MessageBar').addClass('hide');
-      }
-
-      function toggleCreateRoom() {
-          console.log('openCreateRoom');
-          if ($('.createRoom').hasClass('open')){
-            $('.createRoom').removeClass('open');
-            $('.createRoom').addClass('hide');
-          }
-          else {
-            $('.createRoom').addClass('open');
-            $('.createRoom').removeClass('hide');
-
-            /* Close the other view */
-            $('.viewCalendars').removeClass('open');
-            $('.viewCalendars').addClass('hide')
-          }
-          $('.ms-MessageBar').addClass('hide');
-      }
 
   </script>
 
