@@ -89,18 +89,17 @@
       padding: 4px 20px 6px;
     }
 
+    /* MS Lists */
     .ms-ListItem {
         border-bottom: 1px solid #ccc;
         list-decoration: none;
         padding: 20px 20px 0px 0px;
         list-style-type: none;
     }
-    .ms-ListItem form {
-        float: right;
-        position: relative;
-        top: -40px;
-        right: 25px;
+    .calendars .ms-ListItem:nth-child(even) {
+        border-bottom: none;
     }
+
     .ms-ListItem button {
         height: auto;
 
@@ -108,11 +107,17 @@
     .ms-ListItem-tertiaryText {
         line-height: 20px;
     }
-
+    .ms-ListItem th {
+        text-align: center;
+    }
+    .ms-ListItem td {
+        padding: 10px 15px;
+    }
     .accountInformation {
         float: left;
         margin-right: 50px;
     }
+    .accountInteractions { float: left;}
     .ms-Button.ms-Button--compound {
         width: 300px;
         margin: 10px 0;
@@ -120,6 +125,8 @@
         min-height: 90px !important;
         max-width: 300px !important;
     }
+
+    .viewCalendars {clear: both; width: 74%;}
 
     a {
         color: #3aaa35;
@@ -133,17 +140,21 @@
 
     /* Calender Liste */
     .calendars li.ms-ListItem:first-child,
-    .calendars li.ms-ListItem:nth-child(2){
+    .calendars li.ms-ListItem:nth-child(2),
+    .calendars li.ms-ListItem:nth-child(3),
+    .calendars li.ms-ListItem:nth-child(4){
         display: none;
     }
 
     .hide {
-        display: none;
+        display: none !important;
     }
     .show {
         display: block;
     }
 
     .createCalendarButton {
-        margin-left: 50px !important;
+        margin-top: 30px !important;
     }
+
+    .ms-MessageBar {padding: 13px;}

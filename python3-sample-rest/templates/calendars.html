@@ -35,80 +35,9 @@ $(function() {
 	    <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi {{ name }}!</h2>
 
 
-        {% if showDeletedCalendars == 1 %}
-
-            <div class="ms-MessageBar ms-MessageBar--success">
-              <div class="ms-MessageBar-content">
-                <div class="ms-MessageBar-icon">
-                  <i class="ms-Icon ms-Icon--Completed"></i>
-                </div>
-                <div class="ms-MessageBar-text">
-                  Der Kalender {{ calName }} wurde geloescht!
-                </div>
-              </div>
-            </div>
-
-        {% endif %}
 
 
-      <!-- show calendars -->
-      {% if showCalendars == 1 %}
-      <div>
-        <p class="ms-font-xl">
-            Folgende Kalender sind registriert:</br>
-        </p>
 
-        <ul class="calendars ms-List">
-        {% if jsondata != null %}
-        {% for cal in jsondata.value %}
-
-            <li class="ms-ListItem" tabindex="0">
-              <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
-              <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
-              <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
-              <span class="ms-ListItem-metaText"></span>
-              <div class="ms-ListItem-selectionTarget"></div>
-              <div class="ms-ListItem-actions">
-                <!-- Actions for the calendar -->
-                <div class="ms-ListItem-action">
-                  <i class="ms-Icon ms-Icon--Rename"></i>
-
-                  <div class="docs-DialogExample-close">
-                      <div class="ms-Dialog ms-Dialog--close">
-                        <button class="ms-Dialog-button ms-Dialog-buttonClose">
-                          <i class="ms-Icon ms-Icon--Cancel"></i>
-                        </button>
-                        <div class="ms-Dialog-title">M&ouml;chten Sie den Kalender wirklich l&ouml;schen?</div>
-                        <div class="ms-Dialog-content">
-                          <p class="ms-Dialog-subText">Das L&ouml;schen des Kalenders kann nicht r&uuml;ckg&auml;nging gemacht werden.
-                          Alle Raumreservierungen gehen dabei f&uuml;r diesen Raum verloren!</p>
-                        </div>
-                        <div class="ms-Dialog-actions">
-                          <button onclick="window.location.href='/delete_calendar?calID={{ cal.id }}&calName={{cal.name}}'" class="ms-Button ms-Dialog-action ms-Button--primary">
-                            <span class="ms-Button-label">L&ouml;schen</span>
-                          </button>
-                          <button class="ms-Button ms-Dialog-action">
-                            <span class="ms-Button-label">Abbrechen</span>
-                          </button>
-                        </div>
-                      </div>
-                      <i class="dialog-button ms-Icon ms-Icon--Delete " data-countid="{{ loop.index }}"></i>
-                      <label class="docs-DialogExample-label"></label>
-                  </div>
-
-              <form action="/list_events">
-                  <input name="cal_id" value="{{cal.id}}" type="hidden">
-                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
-                  <button type="submit" class="ms-Button ms-Button--small">
-                    <span class="ms-Button-label">Events anzeigen</span>
-                  </button>
-              </form>
-            </li>
-
-        {% endfor %}
-        {% endif %}
-
-        </ul>
 
 
         <!-- Table with amazon data

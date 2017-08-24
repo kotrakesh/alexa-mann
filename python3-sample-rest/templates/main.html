@@ -10,26 +10,32 @@
     </div>
 
   <!-- App main content markup. -->
-  <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
+  <main class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
 
       <!-- Information -->
       <div class="accountInformation">
           <h3 class="ms-font-xl">Account Informationen</h3>
 
-          <!-- get inormation from alexa
-          <form action="/get_information">
-            <button type="submit" class="ms-Button ms-Button--compound">
-              <span class="ms-Button-label">Amazon Daten</span>
-              <span class="ms-Button-description">Uebergebene Daten des Amazon Skills</span>
-            </button>
-          </form>
-          -->
           <!-- Get my calendar -->
-          <button type="submit" class="ms-Button ms-Button--compound" onclick="window.location.href='/calendars'">
+          <button type="submit" class="ms-Button ms-Button--compound" onclick="toggleViewRooms()">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Registrierte R&auml;ume</span>
               <span class="ms-Button-description">Zeigt alle Kalender der registierten R&auml;ume an</span>
           </button>
+
+          {% if showDeletedCalendars == 1 %}
+            <div class="ms-MessageBar ms-MessageBar--success">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Completed"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                  Der Kalender {{ calName }} wurde geloescht!
+                </div>
+              </div>
+            </div>
+
+          {% endif %}
       </div>
 
       <!-- Interaction -->
@@ -42,11 +48,10 @@
         </button>
 
         <!-- Create Calender for room -->
-        <h3 class="ms-font-l">Account Interaktionen</h3>
+
         <form class="createRoom hide" action="/create_calendar">
-
+            <h3 class="ms-font-xl">Account Interaktionen</h3>
             <div class="ms-TextField">
-
               <input type="radio" name="resolveAvailability" value="true" hidden>
               <label class="ms-Label">Stadt</label>
               <input name="city" class="ms-TextField-field" value="Heidelberg" placeholder="City">
@@ -64,12 +69,11 @@
                 <input name="locationEmailAddress" class="ms-TextField-field" value="" placeholder="E-Mail" hidden>
               <label class="ms-Label">Groesse des Zimmers (Personenanzahl)</label>
                 <input name="maxAttendees" class="ms-TextField-field" value="" placeholder="6" required>
-              </br>
-
-            </div>
               <button type="submit" class="ms-Button ms-Button--primary createCalendarButton">
                 <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
               </button>
+            </div>
+
         </form>
         {% if showSuccess_createCalendar == 'true' %}
         <div>
@@ -83,35 +87,168 @@
 
     </div>
 
-  </div>
+      <div id="demo"></div>
+
+      <!-- Show Calendars -->
+      <div class="viewCalendars">
+          <p class="ms-font-xl">
+            Folgende Kalender sind registriert:</br>
+          </p>
+
+          <ul class="calendars ms-List">
+            {% if jsondata != null %}
+            {% for cal in jsondata.value %}
+                <li class="ms-ListItem" tabindex="0">
+                  <span class="ms-ListItem-primaryText"   onclick="toggleListEvents('{{ loop.index }}')">{{ cal.name }}</span>
+                  <span class="ms-ListItem-secondaryText" onclick="toggleListEvents('{{ loop.index }}')">{{ cal.owner.name}}</span>
+                  <span class="ms-ListItem-tertiaryText"  onclick="toggleListEvents('{{ loop.index }}')">{{ cal.owner.address}}</span>
+                  <span class="ms-ListItem-metaText"></span>
+                  <div class="ms-ListItem-selectionTarget"></div>
+                  <div class="ms-ListItem-actions">
+                    <!-- Actions for the calendar -->
+                    <div class="ms-ListItem-action">
+
+                      <div class="docs-DialogExample-close">
+                          <div class="ms-Dialog ms-Dialog--close">
+                            <button class="ms-Dialog-button ms-Dialog-buttonClose">
+                              <i class="ms-Icon ms-Icon--Cancel"></i>
+                            </button>
+                            <div class="ms-Dialog-title">M&ouml;chten Sie den Raum <strong>{{ cal.name }}</strong> wirklich l&ouml;schen?</div>
+                            <div class="ms-Dialog-content">
+                              <p class="ms-Dialog-subText">Das L&ouml;schen kann nicht r&uuml;ckg&auml;nging gemacht werden.
+                              Alle Raumreservierungen f&uuml;r diesen Raum gehen dabei verloren!</p>
+                            </div>
+                            <div class="ms-Dialog-actions">
+                              <button onclick="window.location.href='/delete_calendar?calID={{ cal.id }}&calName={{cal.name}}'" class="ms-Button ms-Dialog-action ms-Button--primary">
+                                <span class="ms-Button-label">L&ouml;schen</span>
+                              </button>
+                              <button class="ms-Button ms-Dialog-action">
+                                <span class="ms-Button-label">Abbrechen</span>
+                              </button>
+                            </div>
+                          </div>
+                      </div>
+
+                      <i class="submit-button ms-Icon ms-Icon--Event"  data-countid="{{ loop.index }}" onclick="ajax_loadEvents('.events{{ loop.index }}', '{{ cal.id }}', '{{ cal.name }}')"></i>
+                      <i class="dialog-button ms-Icon ms-Icon--Delete" data-countid="{{ loop.index }}"></i>
+                    </div>
+                </li>
+                <li class="ms-ListItem">
+                    <div class="events{{ loop.index }}"></div>
+                </li>
+            {% endfor %}
+            {% endif %}
+          </ul>
+      </div>
+
+  </main>
 
   <script>
+      $(function() {
+        var DialogElements = jQuery(".ms-Dialog");
+        var DialogComponents = [];
+
+        for (var i = 0; i < DialogElements.length; i++) {
+          (function() {
+            DialogComponents[i] = new fabric['Dialog'](DialogElements[i]);
+          }());
+        }
+        // When clicking the button, open the dialog
+        jQuery(".dialog-button").click(function() {
+            dialog_id = $(this).data('countid');
+            openDialog(dialog_id-1); //decrement due to later use as array index
+        });
+
+        $('.closeListEvents').click(function() {
+            $('events' +
+                '')
+        });
+
+        function openDialog(i) {
+          // Open the dialog
+            console.log("dialogid " + i);
+            DialogComponents[i].open();
+        }
+
+        //enable submit without any submit button
+        $(".submit-button").click(function() {
+         $("#list_events").submit();
+        });
+    });
+
+      function ajax_loadEvents(className, id, name) {
+          xhttp = new XMLHttpRequest();
+
+          xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              $(className).html(xhttp.responseText);
+          }};
+
+          console.log('id of ajax calendar ' + id, name, className);
+          xhttp.open("GET", "/list_events?cal_id="+id+"&cal_name="+name, true);
+          xhttp.send();
+
+          $(className).addClass('open');
+          $(className).removeClass('hide');
+          console.log('remove Class from ' + className)
+      }
+
+      function toggleListEvents(id) {
+
+          className = '.events'+id;
+          if ($(className).hasClass('open')) {
+              console.log('classname: ' + className);
+              $(className).addClass('hide');
+          }
+
+      }
+
+      function toggleViewRooms() {
+          if ($('.viewCalendars').hasClass('open')){
+            $('.viewCalendars').removeClass('open');
+            $('.viewCalendars').addClass('hide');
+          }
+          else {
+            $('.viewCalendars').addClass('open');
+            $('.viewCalendars').removeClass('hide');
+
+            /* Close the other view */
+            $('.createRoom').removeClass('open');
+            $('.createRoom').addClass('hide')
+          }
+          $('.ms-MessageBar').addClass('hide');
+      }
+
       function toggleCreateRoom() {
           console.log('openCreateRoom');
           if ($('.createRoom').hasClass('open')){
             $('.createRoom').removeClass('open');
-            $('.createRoom').addClass('hide')
+            $('.createRoom').addClass('hide');
           }
           else {
             $('.createRoom').addClass('open');
-            $('.createRoom').removeClass('hide')
-          }
+            $('.createRoom').removeClass('hide');
 
+            /* Close the other view */
+            $('.viewCalendars').removeClass('open');
+            $('.viewCalendars').addClass('hide')
+          }
+          $('.ms-MessageBar').addClass('hide');
       }
 
   </script>
 
 
 
-
-  <div class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
+  <!-- Sidebar -->
+  <aside class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
       <h3 class="ms-font-xl">Account Details</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
             <span class="ms-font-m">UserID: {{ uID }} </span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-font-m">Name: {{ vName }} {{ nName }}</span>
+            <span class="ms-font-m">Name: {{ name }}</span>
         </li>
 		<li class="ms-ListItem">
             <span class="ms-font-m">Mail: {{ mail }}</span>
@@ -136,7 +273,7 @@
         </li>
 	  </ul>
 
-  </div>
+  </aside>
 
 </body>
 
