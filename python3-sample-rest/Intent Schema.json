@@ -1,0 +1,105 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Attendees",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "AttendeesIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION"
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+      ],
+      "intent": "DataTimeDurationIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION"
+        }
+      ],
+      "intent": "DateDurationIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+      ],
+      "intent": "DateIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        }
+      ],
+      "intent": "DateTimeIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION"
+        }
+      ],
+      "intent": "DurationIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION"
+        }
+      ],
+      "intent": "TimeDurationIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        }
+      ],
+      "intent": "TimeIntent"
+    }
+  ]
+}

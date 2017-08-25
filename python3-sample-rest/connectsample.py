@@ -575,10 +575,8 @@ def allKnown(Date, Time, Duration):
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
     vars['attendees'] = Attendees
-
-    #TODO check if dates are set
-
-
+    if room.duration is None or room.date is None or room.time is None:
+        return question("Please, specify the date, time and the duration first")
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
