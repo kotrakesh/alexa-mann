@@ -639,7 +639,7 @@ def getFreeRooms(t_start, t_end, attendees):
             for l in locConstraint['locations']:
 
                 if l['displayName'] == cal['name']:
-                    if int(attendees) <= l['maxAttendees']:
+                    if int(attendees) <= int(l['maxAttendees']):
                         print('Raumgroesse: ' +  str(attendees), ' max: ', str(l['maxAttendees']))
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
