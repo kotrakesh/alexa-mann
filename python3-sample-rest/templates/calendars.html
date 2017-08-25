@@ -1,50 +1,46 @@
 
   {% include "header.html" %}
 
+<script type="text/javascript">
+
+    // Shorthand for $( document ).ready()
+$(function() {
+
+    var DialogElements = jQuery(".ms-Dialog");
+    var DialogComponents = [];
+
+    for (var i = 0; i < DialogElements.length; i++) {
+      (function() {
+        DialogComponents[i] = new fabric['Dialog'](DialogElements[i]);
+      }());
+    }
+    // When clicking the button, open the dialog
+    jQuery(".dialog-button").click(function() {
+        dialog_id = $(this).data('countid');
+        openDialog(dialog_id-1); //decrement due to later use as array index
+    });
+
+    function openDialog(i) {
+      // Open the dialog
+        console.log("dialogid " + i);
+        DialogComponents[i].open();
+    }
+});
+</script>
+
+
   <!-- App main content markup. -->
   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6">
     <div>
 	    <h2 class="ms-font-xxl ms-fontWeight-semibold">Hi {{ name }}!</h2>
 
-      <!-- show calendars -->
-      {% if showCalendars == 1 %}
-      <div>
-        <p class="ms-font-xl">
-            Folgende Kalender sind registriert:</br>
-        </p>
-
-        <ul class="calendars ms-List">
-        {% if jsondata != null %}
-        {% for cal in jsondata.value %}
-
-            <li class="ms-ListItem" tabindex="0">
-              <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
-              <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
-              <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
-              <span class="ms-ListItem-metaText"></span>
-              <div class="ms-ListItem-selectionTarget"></div>
-              <div class="ms-ListItem-actions">
-                <div class="ms-ListItem-action">
-                  <i class="ms-Icon ms-Icon--Mail"></i>
-                  <i class="ms-Icon ms-Icon--Delete"></i>
-                </div>
-              </div>
-              <form action="/list_events">
-                  <input name="cal_id" value="{{cal.id}}" type="hidden">
-                  <input name="cal_name"   value="{{cal.name}} "type="hidden">
-                  <button type="submit" class="ms-Button ms-Button--small">
-                    <span class="ms-Button-label">Events anzeigen</span>
-                  </button>
-              </form>
-            </li>
-
-        {% endfor %}
-        {% endif %}
-
-        </ul>
 
 
-        <!-- Table with amazon data -->
+
+
+
+
+        <!-- Table with amazon data
         <h2>Events during the time specified with Alexa</h2>
 
         {% if jsondata != null %}
@@ -68,9 +64,10 @@
 
         {% endfor %}
         {% endif %}
+      -->
 
 
-          <h2>create an event</h2>
+        <p class="ms-font-xl">create an event</p>
 
         {% if jsondata != null %}
         {% for cal in jsondata.value %}
@@ -78,7 +75,7 @@
               <span class="ms-ListItem-primaryText">{{ cal.name }}</span>
               <span class="ms-ListItem-secondaryText">{{ cal.owner.name}}</span>
               <span class="ms-ListItem-tertiaryText">{{ cal.owner.address}}</span>
-          <h2>&nbsp;</h2>
+
 
           <form action="/create_event">
               <input name="cal_id" value="{{cal.id}}" type="hidden">
@@ -90,7 +87,7 @@
             <input type = "text" name="title" value = "title for this event">
             <input type = "text" name="room" value = "{{cal.name}}">
             <button type="submit" class="ms-Button ms-Button--small">
-                 <span class="ms-Button-label">create an event for this room</span>
+                 <span class="ms-Button-label">Event erstellen f&uuml;r diesen Raum</span>
             </button>
           </form>
           </li>
@@ -117,11 +114,11 @@
         <table class="ms-Table">
         <thead>
             <tr>
-            <th>Subject</th>
+            <th>Titel</th>
             <th>Start</th>
             <th>Ende</th>
             <th>Ort</th>
-            <th>Organizer</th>
+            <th>Organisator</th>
             </tr>
         </thead>
         <tbody>
@@ -150,6 +147,9 @@
     </div>
   </div>
 </div>
+
+
+
 </body>
 
 </html>

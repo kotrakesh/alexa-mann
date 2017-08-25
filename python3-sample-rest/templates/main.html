@@ -1,66 +1,213 @@
   {% include "header.html" %}
 
 
-   <div class="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
-      <h2 class="ms-font-xxl ms-fontWeight-semibold">Guten Tag, {{ name }}!</h2>
+   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md12 ms-u-lgPush1 ms-u-lg12 ms-lg12">
+      <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
-           Hier k&ouml;nnen Sie Ihre Kalender verwalten und neue R&auml;ume anlegen.
+           Hier k&ouml;nnen Sie Ihre Meetingr&auml;ume und Termine verwalten und neue  R&auml;ume anlegen.
       </p>
     </div>
 
   <!-- App main content markup. -->
-  <div class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
+  <main class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
 
       <!-- Information -->
       <div class="accountInformation">
-          <h3 class="ms-font-l">Account Informationen</h3>
-
-          <!-- get inormation from alexa -->
-          <form action="/get_information">
-            <button type="submit" class="ms-Button ms-Button--compound">
-              <span class="ms-Button-label">Amazon Daten</span>
-              <span class="ms-Button-description">Uebergebene Daten des Amazon Skills</span>
-            </button>
-          </form>
+          <h3 class="ms-font-xl">Account Informationen</h3>
 
           <!-- Get my calendar -->
-         <form action="/calendars">
-            <button type="submit" class="ms-Button ms-Button--compound">
+          <button type="submit" class="ms-Button ms-Button--compound" onclick="toggleViewRooms()">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
               <span class="ms-Button-label">Registrierte R&auml;ume</span>
-              <span class="ms-Button-description">Zeigt alle Kalender der registierten R&auml;ume an</span>
-            </button>
-         </form>
+              <span class="ms-Button-description">Zeigt registierten Meeting&auml;ume an</span>
+          </button>
+
+          {% if showDeletedCalendars == 1 %}
+            <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Completed"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                  Der Raum {{ calName }} wurde geloescht!
+                </div>
+              </div>
+            </div>
+            <div class="backtoMainButton">
+                <button class="ms-Button" onclick="window.location.href='/main'">
+                    Zur&uuml;ck zur Startseite
+                </button>
+            </div>
+
+          {% endif %}
       </div>
 
       <!-- Interaction -->
       <div class="accountInteractions">
-        <h3 class="ms-font-l">Account Interaktionen</h3>
-        <button onclick="window.location.href='/createRoom.html'" class="ms-Button ms-Button--compound">
+        <h3 class="ms-font-xl">Account Interaktionen</h3>
+        <button onclick="toggleCreateRoom()" class="ms-Button ms-Button--compound">
               <span class="ms-Button-icon"><i class="ms-Icon ms-Icon--plus"></i></span>
-              <span class="ms-Button-label">Raum hinzufuegen</span>
+              <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
               <span class="ms-Button-description">&Ouml;ffnet ein Formular, um einen neuen Raum anzulegen</span>
         </button>
+
+        {% if showSuccess_createCalendar == 'true' %}
+        <div>
+         <div class="ms-MessageBar ms-MessageBar--success">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Completed"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                 Der Raum {{ username }} wurde erstellt!
+                </div>
+              </div>
+         </div>
+        </div>
+        {% elif showError_createCalendar == 'true' %}
+            <div class="ms-MessageBar ms-MessageBar--blocked">
+              <div class="ms-MessageBar-content">
+                <div class="ms-MessageBar-icon">
+                  <i class="ms-Icon ms-Icon--Blocked"></i>
+                </div>
+                <div class="ms-MessageBar-text">
+                 Beim Erstellen des Raums {{ username }} ist etwas schief gegangen!
+                </div>
+              </div>
+            </div>
+        {% endif %}
+
+        <!-- Create Calender for room -->
+
+        <form class="createRoom hide" action="/create_calendar">
+            <h3 class="ms-font-xl">Account Interaktionen</h3>
+            <div class="ms-TextField">
+              <input type="radio" name="resolveAvailability" value="true" hidden>
+              <label class="ms-Label">Stadt</label>
+              <input name="city" class="ms-TextField-field" value="Heidelberg" placeholder="City">
+              <label class="ms-Label">Land</label>
+                <input name="countryOrRegion" class="ms-TextField-field" value="Deutschland" placeholder="Country">
+              <label class="ms-Label">PLZ</label>
+                <input name="postalCode" class="ms-TextField-field" value="69115" placeholder="Postal code">
+              <label class="ms-Label">Bundesland</label>
+                <input name="state" class="ms-TextField-field" value="Baden-Wuerttemberg" placeholder="State">
+              <label class="ms-Label">Strasse</label>
+                <input name="street" class="ms-TextField-field" value="Mittermaierstrasse 31" placeholder="Street">
+              <label class="ms-Label">Raumname</label>
+                <input name="displayName" class="ms-TextField-field" value="" placeholder="Meeting Raum X" required>
+
+                <input name="locationEmailAddress" class="ms-TextField-field" value="" placeholder="E-Mail" hidden>
+              <label class="ms-Label">Groesse des Zimmers (Personenanzahl)</label>
+                <input name="maxAttendees" class="ms-TextField-field" value="" placeholder="6" required>
+              <button type="submit" class="ms-Button ms-Button--primary createCalendarButton">
+                <span class="ms-Button-label">Raum hinzuf&uuml;gen</span>
+              </button>
+            </div>
+
+        </form>
+
+
     </div>
 
-  </div>
 
-  <div class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
-      <h3 class="ms-font-l">Account Details</h3>
+
+
+      {% if showCalendars == 1 %}
+      <!-- Show Calendars -->
+      <div class="viewCalendars">
+          <p class="ms-font-xl">
+            Folgende Meetingr&auml;ume sind registriert:</br>
+          </p>
+
+          <ul class="calendars ms-List">
+            {% if jsondata != null %}
+            {% for cal in jsondata.value %}
+                <li class="ms-ListItem" tabindex="0">
+                  <span class="ms-ListItem-primaryText"   onclick="toggleListEvents('{{ loop.index }}')">{{ cal.name }}</span>
+                  <span class="ms-ListItem-secondaryText" onclick="toggleListEvents('{{ loop.index }}')">{{ cal.owner.name}}</span>
+                  <span class="ms-ListItem-tertiaryText"  onclick="toggleListEvents('{{ loop.index }}')">{{ cal.owner.address}}</span>
+                  <span class="ms-ListItem-metaText"></span>
+                  <div class="ms-ListItem-selectionTarget"></div>
+                  <div class="ms-ListItem-actions">
+                    <!-- Actions for the calendar -->
+                    <div class="ms-ListItem-action">
+
+                      <div class="docs-DialogExample-close">
+                          <div class="ms-Dialog ms-Dialog--close">
+                            <button class="ms-Dialog-button ms-Dialog-buttonClose">
+                              <i class="ms-Icon ms-Icon--Cancel"></i>
+                            </button>
+                            <div class="ms-Dialog-title">M&ouml;chten Sie den Raum <strong>{{ cal.name }}</strong> wirklich l&ouml;schen?</div>
+                            <div class="ms-Dialog-content">
+                              <p class="ms-Dialog-subText">Das L&ouml;schen kann nicht r&uuml;ckg&auml;nging gemacht werden.
+                              Alle Raumreservierungen f&uuml;r diesen Raum gehen dabei verloren!</p>
+                            </div>
+                            <div class="ms-Dialog-actions">
+                              <button onclick="window.location.href='/delete_calendar?calID={{ cal.id }}&calName={{cal.name}}'" class="ms-Button ms-Dialog-action ms-Button--primary">
+                                <span class="ms-Button-label">L&ouml;schen</span>
+                              </button>
+                              <button class="ms-Button ms-Dialog-action">
+                                <span class="ms-Button-label">Abbrechen</span>
+                              </button>
+                            </div>
+                          </div>
+                      </div>
+
+                      <i class="submit-button ms-Icon ms-Icon--Event"  data-countid="{{ loop.index }}" onclick="ajax_loadEvents('.events{{ loop.index }}', '{{ cal.id }}', '{{ cal.name }}')"></i>
+                      <i class="dialog-button ms-Icon ms-Icon--Delete" data-countid="{{ loop.index }}"></i>
+                    </div>
+                </li>
+                <li class="ms-ListItem">
+                    <div class="events{{ loop.index }}"></div>
+                </li>
+            {% endfor %}
+            {% endif %}
+          </ul>
+      </div>
+      {% endif %}
+  </main>
+
+  <script>
+
+  </script>
+
+
+
+  <!-- Sidebar -->
+  <aside class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
+      <h3 class="ms-font-xl">Account Details</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">UserID: {{ uID }} </span>
+            <span class="ms-font-m">UserID: {{ uID }} </span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">Name: {{ vName }} {{ nName }}</span>
+            <span class="ms-font-m">Name: {{ name }}</span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-ListItem-primaryText">Mail: {{ mail }}</span>
+            <span class="ms-font-m">Mail: {{ mail }}</span>
             <i class="ms-Icon ms-Icon--Mail"></i>
         </li>
 	  </ul>
-  </div>
+
+
+      <h3 class="ms-font-xl">Alexa Informationen</h3>
+      <ul class="ms-List">
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Datum: {{ aDate }} </span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Zeit: {{ aTime }}</span>
+        </li>
+		<li class="ms-ListItem">
+            <span class="ms-font-m">Dauer: {{ aDuration }}</span>
+        </li>
+        <li class="ms-ListItem">
+            <span class="ms-font-m">Anzahl Teilnehmer: {{ aAttendees }}</span>
+        </li>
+	  </ul>
+
+  </aside>
 
 </body>
 

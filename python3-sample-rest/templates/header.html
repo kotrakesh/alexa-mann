@@ -6,15 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Sovanta Room-Monitor Dashboard</title>
 
-  <!-- Third party dependencies. -->
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.css">
-  <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/1.0/fabric.components.css">
-  <link rel= "stylesheet" href= "{{ url_for('static',filename='styles/style.css') }}">
+  <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.min.css" />
+  <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.components.min.css" />
+  <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/js/fabric.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
+  <!-- Custom style sheet and scripts -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+  <script src="{{ url_for('static',filename='script.js') }}"></script>
 
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.min.css" />
-    <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.components.min.css" />
-    <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/js/fabric.min.js"></script>
 </head>
 
 <body class="ms-Grid">
@@ -22,8 +22,11 @@
           <!-- App navigation bar markup. -->
           <div class="ms-NavBar">
             <ul class="ms-NavBar-items">
-              <li class="navbar-header">Sovanta Room Monitor Dashboard</li>
+              <li class="navbar-header ms-font-xxl">
+                  <img src="https://sovanta.com/wp-content/uploads/2017/08/logo_web_120_1x.png" onclick="window.location.href='/main'">
+              </li>
+              <li class="navbar-header dashBoardTitle ms-font-xxl" onclick="window.location.href='/main'">Room Monitor Dashboard</li>
               <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'">
-                  <i class="ms-Icon ms-Icon--x"></i>Ausloggen</li>
+                  <i class="ms-Icon ms-Icon--ChromeClose"></i>Ausloggen</li>
             </ul>
           </div>
