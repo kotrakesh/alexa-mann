@@ -46,3 +46,31 @@ TimeIntent The meeting is at {Time}
 TimeIntent The meeting will be at {Time}
 TimeIntent it is at {Time}
 TimeIntent it will be at {Time}
+TitleIntent The title is {value |Title}
+TitleIntent The title is {one two |Title}
+TitleIntent The title is {one two three |Title}
+TitleIntent The title is {one two three four |Title}
+TitleIntent The title is {one two three four five |Title}
+TitleIntent The title is {one two three four five six |Title}
+TitleIntent The title is {one two three four five six seven|Title}
+TitleIntent The title is {one two three four five six seven eight |Title}
+TitleIntent The title is {one two three four five six seven eight nine|Title}
+TitleIntent The title is {value |Title}
+TitleIntent Title {one |Title}
+TitleIntent Title {one two |Title}
+TitleIntent Title {one two three |Title}
+TitleIntent Title {one two three four |Title}
+TitleIntent Title {one two three four five |Title}
+TitleIntent Title {one two three four five six |Title}
+TitleIntent Title {one two three four five six seven|Title}
+TitleIntent Title {one two three four five six seven eight |Title}
+TitleIntent Title {one two three four five six seven eight nine|Title}
+TitleIntent it's {one |Title}
+TitleIntent it's {one two |Title}
+TitleIntent it's {one two three |Title}
+TitleIntent it's {one two three four |Title}
+TitleIntent it's {one two three four five |Title}
+TitleIntent it's {one two three four five six |Title}
+TitleIntent it's {one two three four five six seven|Title}
+TitleIntent it's {one two three four five six seven eight |Title}
+TitleIntent it's {one two three four five six seven eight nine|Title}

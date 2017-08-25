@@ -580,6 +580,13 @@ def numberOfAttendees(Attendees):
     return readMeetingTime(room.date, room.time, room.duration, Attendees)
 
 
+@ask.intent("TitleIntent")
+def title_of_event(Title):
+    print("Title is : " + Title)
+    #TODO call this function properly
+    return
+
+
 # Print and return the meeting room
 def readMeetingTime(Date, Time, Duration, Attendees):
     print('readMeetingTime')

@@ -180,6 +180,45 @@
           "samples": []
         }
       ]
+    },
+    {
+      "name": "TitleIntent",
+      "samples": [
+        "The title is {value |Title}",
+        "The title is {one two |Title}",
+        "The title is {one two three |Title}",
+        "The title is {one two three four |Title}",
+        "The title is {one two three four five |Title}",
+        "The title is {one two three four five six |Title}",
+        "The title is {one two three four five six seven|Title}",
+        "The title is {one two three four five six seven eight |Title}",
+        "The title is {one two three four five six seven eight nine|Title}",
+        "Title {one |Title}",
+        "Title {one two |Title}",
+        "Title {one two three |Title}",
+        "Title {one two three four |Title}",
+        "Title {one two three four five |Title}",
+        "Title {one two three four five six |Title}",
+        "Title {one two three four five six seven|Title}",
+        "Title {one two three four five six seven eight |Title}",
+        "Title {one two three four five six seven eight nine|Title}",
+        "it's {one |Title}",
+        "it's {one two |Title}",
+        "it's {one two three |Title}",
+        "it's {one two three four |Title}",
+        "it's {one two three four five |Title}",
+        "it's {one two three four five six |Title}",
+        "it's {one two three four five six seven|Title}",
+        "it's {one two three four five six seven eight |Title}",
+        "it's {one two three four five six seven eight nine|Title}"
+      ],
+      "slots": [
+        {
+          "name": "Title",
+          "type": "AMAZON.LITERAL",
+          "samples": []
+        }
+      ]
     }
   ]
 }
