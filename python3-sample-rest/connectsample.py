@@ -462,24 +462,24 @@ def call_getcalendar_endpoint(access_token):
 
 @ask.launch
 def welcome():
-    ask_session.attributes['date'] = room.date = None  # '2017-07-16'
-    ask_session.attributes['time'] = room.time = None  # '03:00'
-    ask_session.attributes['duration'] = room.duration = None  # 'PT5M'
+    room.date = None  # '2017-07-16'
+    room.time = None  # '03:00'
+    room.duration = None  # 'PT5M'
     return question('Hello, please tell me the dates and times when your meeting shall be scheduled')
 
 
 @ask.intent("DateIntent")
 def missing_duration_time(Date):
-    room.date = ask_session.attributes['date'] = Date
+    room.date = Date
 
     print('Date: ' + str(ask_session.attributes['date']))
     print('Date: ' + str(room.date))
 
-    if room.duration is None and room.time is None:
+    if (room.duration is None or not room.duration) and (room.time is None or not room.time):
         return question('What time is the meeting and how long is it?')
-    elif room.duration is not None and room.time is None:
+    elif room.duration and not room.time:
         return missing_time(room.date, room.duration)
-    elif room.time is not None and room.duration is None:
+    elif room.time and not room.duration:
         return missing_duration(room.date, room.time)
     else:
         print('DateIntent')
@@ -488,7 +488,6 @@ def missing_duration_time(Date):
 
 @ask.intent("TimeIntent")
 def missing_date_duration(Time):
-    #room.time = ask_session.attributes['time'] = Time
     room.time = Time
     print('TimeIntent - Date: ' + str(room.date))
     print('TimeIntent - Time: ' + str(room.time))
@@ -496,11 +495,11 @@ def missing_date_duration(Time):
         print('############################\n Time is empty')
         room.time = None
 
-    if room.date is None and room.duration is None:
+    if not room.date and not room.duration:
         return question('Whats the date and the duration of the meeting?')
-    elif room.date is not None and room.duration is None:
+    elif room.date and not room.duration:
         return missing_duration(room.date, room.time)
-    elif room.date is None and room.duration is not None:
+    elif not room.date and room.duration:
         print('TimeIntent - duration!=null, date==null')
         return missing_date(room.time, room.duration)
     else:
@@ -511,11 +510,11 @@ def missing_date_duration(Time):
 def missing_date_time(Duration):
     room.duration = ask_session.attributes['duration'] = Duration
 
-    if room.date is None and room.time is None:
+    if not room.date and not room.time:
         return question('What day and what time is the meeting?')
-    elif room.date is not None and room.time is None:
+    elif room.date and not room.time:
         return missing_time(room.date, room.duration)
-    elif room.date is None and room.time is not None:
+    elif not room.date and room.time:
         return missing_date(room.time, room.duration)
     else:
         print('DurationIntent - All known   ')
@@ -524,40 +523,37 @@ def missing_date_time(Duration):
 
 @ask.intent("DateDurationIntent")
 def missing_time(Date, Duration):
-    room.date = ask_session.attributes['date'] = Date
-    room.duration = ask_session.attributes['duration'] = Duration
+    room.date = Date
+    room.duration = Duration
 
-    if room.time is None:
+    if not room.time:
         return question('What time is the meeting?')
     else:
-        return allKnown(Date, room.time, Duration)
+        return allKnown(room.date, room.time, room.duration)
 
 
 @ask.intent("DateTimeIntent")
 def missing_duration(Date, Time):
-    room.date = ask_session.attributes['date'] = Date
-    room.time = ask_session.attributes['time'] = Time
+    room.date = Date
+    room.time = Time
     print('DateTimeIntent Date: ' + str(room.date))
     print('DateTimeIntent Time: ' + str(room.time))
 
-    if room.duration is None:
+    if not room.duration:
         print('DateTimeIntent no duration')
-        # pprint(dir(question('How long is the meeting?')))
         return question('How long is the meeting?')
     else:
-        return allKnown(Date, Time, room.duration)
+        return allKnown(room.date, room.time, room.duration)
 
 
 @ask.intent("TimeDurationIntent")
 def missing_date(Time, Duration):
-    room.duration = ask_session.attributes['duration'] = Duration
-    room.time = ask_session.attributes['time'] = Time
-    ask_session.attributes['date'] = room.date
-
-    if room.date is None:
+    room.duration = Duration
+    room.time = Time
+    if not room.date:
         return question('What day is the meeting?')
     else:
-        return allKnown(room.date, Time, Duration)
+        return allKnown(room.date, room.time, room.duration)
 
 
 @ask.intent("DataTimeDurationIntent")
@@ -575,15 +571,23 @@ def allKnown(Date, Time, Duration):
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
     room.attendees = vars['attendees'] = Attendees
-    if room.duration is None or room.date is None or room.time is None:
+    if not room.duration or not room.date or not room.time:
         return question("Please, specify the date, time and the duration first")
     return question("Whats the title of the event")
 
 
 @ask.intent("TitleIntent")
 def title_of_event(Title):
+    if room.date and not room.time and room.duration:
+        return missing_time(room.date, room.duration)
+    if not room.date and room.time and room.duration:
+        return missing_date(room.time, room.duration)
+    if room.date and room.time and not room.duration:
+        return missing_duration(room.date, room.time)
+    else:
+        return allKnown(room.date, room.time, room.duration)
+
     print("Title is : " + str(Title))
-    #TODO call this function properly
     return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
 
 
