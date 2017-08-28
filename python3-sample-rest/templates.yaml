@@ -1,0 +1,15 @@
+msg_launch_request: Hello, please tell me the dates and times when your meeting shall be scheduled
+msg_missing_date_time: What day and what time is the meeting?
+msg_missing_date_duration: Whats the date and the duration of the meeting?
+msg_missing_duration_time: What time is the meeting and how long is it?
+msg_missing_date: What day is the meeting?
+msg_missing_time: What time is the meeting?
+msg_missing_duration: How long is the meeting?
+msg_attendees: How many attendees will attend the meeting?
+msg_title: Whats the title of the event?
+msg_booked_room_success: The meeting is in room {{roomname}}
+msg_booked_room_fail: Booking failed. Reason {{fail_reason}}
+card_booked_room_success_title: Booked Meeting
+card_booked_room_success_content: The meeting takes place in Room {{roomname}} \nStart {{start}} \nEnd {{end}} \nTeilnehmer {{attendees}}
+card_booked_room_fail_title: Failed booking
+card_booked_room_fail_content: No meeting room could be booked. \nReason {{fail_reason}}

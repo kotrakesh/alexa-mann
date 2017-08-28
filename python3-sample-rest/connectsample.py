@@ -465,7 +465,7 @@ def welcome():
     room.date = None  # '2017-07-16'
     room.time = None  # '03:00'
     room.duration = None  # 'PT5M'
-    return question('Hello, please tell me the dates and times when your meeting shall be scheduled')
+    return question(render_template('msg_launch_request'))
 
 
 @ask.intent("DateIntent")
@@ -476,7 +476,7 @@ def missing_duration_time(Date):
     print('Date: ' + str(room.date))
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
-        return question('What time is the meeting and how long is it?')
+        return question(render_template('msg_missing_duration_time'))
     elif room.duration and not room.time:
         return missing_time(room.date, room.duration)
     elif room.time and not room.duration:
@@ -496,7 +496,7 @@ def missing_date_duration(Time):
         room.time = None
 
     if not room.date and not room.duration:
-        return question('Whats the date and the duration of the meeting?')
+        return question(render_template('msg_missing_date_duration'))
     elif room.date and not room.duration:
         return missing_duration(room.date, room.time)
     elif not room.date and room.duration:
@@ -511,7 +511,7 @@ def missing_date_time(Duration):
     room.duration = ask_session.attributes['duration'] = Duration
 
     if not room.date and not room.time:
-        return question('What day and what time is the meeting?')
+        return question(render_template('msg_missing_date_time'))
     elif room.date and not room.time:
         return missing_time(room.date, room.duration)
     elif not room.date and room.time:
@@ -527,7 +527,7 @@ def missing_time(Date, Duration):
     room.duration = Duration
 
     if not room.time:
-        return question('What time is the meeting?')
+        return question(render_template('msg_missing_time'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -536,12 +536,10 @@ def missing_time(Date, Duration):
 def missing_duration(Date, Time):
     room.date = Date
     room.time = Time
-    print('DateTimeIntent Date: ' + str(room.date))
-    print('DateTimeIntent Time: ' + str(room.time))
 
     if not room.duration:
         print('DateTimeIntent no duration')
-        return question('How long is the meeting?')
+        return question(render_template('msg_missing_duration'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -551,7 +549,7 @@ def missing_date(Time, Duration):
     room.duration = Duration
     room.time = Time
     if not room.date:
-        return question('What day is the meeting?')
+        return question(render_template('msg_missing_date'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -565,7 +563,7 @@ def allKnown(Date, Time, Duration):
     vars['date'] = Date
     vars['time'] = Time
     vars['duration'] = Duration
-    return question("How many attendees will attend the meeting?")
+    return question(render_template('msg_attendees'))
 
 
 @ask.intent("AttendeesIntent")
@@ -573,7 +571,8 @@ def numberOfAttendees(Attendees):
     room.attendees = vars['attendees'] = Attendees
     if not room.duration or not room.date or not room.time:
         return question("Please, specify the date, time and the duration first")
-    return question("Whats the title of the event")
+    #TODO specify missing information
+    return question(render_template('msg_title'))
 
 
 @ask.intent("TitleIntent")
@@ -602,11 +601,11 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     result = getFreeRooms(start, end, Attendees, Title)
 
     if (result['roomFound'] == 1):
-        return statement('The meeting is in room ' + str(result['roomName']))\
-            .simple_card(title='Booked Meeting', content='The meeting takes place in Room ' + str(result['roomName']) + '.\nStart: ' + str(start) + '\nEnde: ' + str(end) + '\nAnzahl Teilnehmer: ' + str(Attendees))
+        return statement(render_template('msg_booked_room_success', roomname=result['roomName']))\
+            .simple_card(title=render_template('card_booked_room_success_title'), content= render_template('card_booked_room_success_content', roomname=result['roomName'], start=start, end=end, attendees=Attendees))
     else:
-        return statement('Booking failed. Reason: ' + str(result['reason']))\
-            .simple_card(title='Failed booking', content='No meeting room could be booked. \nReason: ' + str(result['reason']))
+        return statement(render_template('msg_booked_room_fail', fail_reason=result['reason']))\
+            .simple_card(title=render_template('card_booked_room_fail_title'), content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
 
