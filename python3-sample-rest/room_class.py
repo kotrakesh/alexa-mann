@@ -5,3 +5,4 @@ class Room  :
         self.duration = None
         self.token = None
         self.data = None
+        self.attendees = None

@@ -574,21 +574,21 @@ def allKnown(Date, Time, Duration):
 
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
-    vars['attendees'] = Attendees
+    room.attendees = vars['attendees'] = Attendees
     if room.duration is None or room.date is None or room.time is None:
         return question("Please, specify the date, time and the duration first")
-    return readMeetingTime(room.date, room.time, room.duration, Attendees)
+    return question("Whats the title of the event")
 
 
 @ask.intent("TitleIntent")
 def title_of_event(Title):
-    print("Title is : " + Title)
+    print("Title is : " + str(Title))
     #TODO call this function properly
-    return
+    return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
 
 
 # Print and return the meeting room
-def readMeetingTime(Date, Time, Duration, Attendees):
+def readMeetingTime(Date, Time, Duration, Attendees, Title):
     print('readMeetingTime')
     get_infor_from_alexa(Date, Time, Duration,Attendees)
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
@@ -598,7 +598,7 @@ def readMeetingTime(Date, Time, Duration, Attendees):
     end = convert_amazon_to_ms(Date, am_end)
 
 
-    result = getFreeRooms(start, end, Attendees)
+    result = getFreeRooms(start, end, Attendees, Title)
 
     if (result['roomFound'] == 1):
         return statement('The meeting is in room ' + str(result['roomName']))
@@ -606,11 +606,11 @@ def readMeetingTime(Date, Time, Duration, Attendees):
         return statement('Booking failed. Reason: ' + str(result['reason']))
 
 
-def getFreeRooms(t_start, t_end, attendees):
+def getFreeRooms(t_start, t_end, attendees, title):
 
     # TODO authenticate with Graph API
 
-    print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' --- cal.data: ')
+    print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
 
     locConstraint = json.load(open('locationConstraint.json'))
@@ -644,7 +644,7 @@ def getFreeRooms(t_start, t_end, attendees):
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
-                        create_event_from_alexa(t_start, t_end, 'Sample Title', cal['name'], cal['id'])
+                        create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
 
                         return {'roomFound': 1, 'roomName': cal['name'], 'reason': 'All rooms are booked'}
                     else:
