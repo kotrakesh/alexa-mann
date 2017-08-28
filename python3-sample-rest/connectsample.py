@@ -585,10 +585,7 @@ def title_of_event(Title):
     if room.date and room.time and not room.duration:
         return missing_duration(room.date, room.time)
     else:
-        return allKnown(room.date, room.time, room.duration)
-
-    print("Title is : " + str(Title))
-    return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
+        return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
 
 
 # Print and return the meeting room
@@ -605,9 +602,12 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     result = getFreeRooms(start, end, Attendees, Title)
 
     if (result['roomFound'] == 1):
-        return statement('The meeting is in room ' + str(result['roomName']))
+        return statement('The meeting is in room ' + str(result['roomName']))\
+            .simple_card(title='Booked Meeting', content='The meeting takes place in Room ' + str(result['roomName']) + '.\nStart: ' + str(start) + '\nEnde: ' + str(end) + '\nAnzahl Teilnehmer: ' + str(Attendees))
     else:
-        return statement('Booking failed. Reason: ' + str(result['reason']))
+        return statement('Booking failed. Reason: ' + str(result['reason']))\
+            .simple_card(title='Failed booking', content='No meeting room could be booked. \nReason: ' + str(result['reason']))
+
 
 
 def getFreeRooms(t_start, t_end, attendees, title):
