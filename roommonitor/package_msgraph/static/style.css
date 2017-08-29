@@ -1,0 +1,172 @@
+.navbar-header {
+      box-sizing: border-box;
+      display: block;
+      height: 40px;
+      font-family: 'Segoe UI Semilight WestEuropean', 'Segoe UI Semilight', 'Segoe WP Semilight', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+
+      padding-left: 20px;
+      position: relative;
+
+    }
+
+@media (min-width: 480px) {
+    .navbar-header {
+        float: left;
+        margin-right: 20px;
+        font-size: 20px;
+        padding: 0;
+    }
+
+   .ms-NavBar-items {
+        display: block;
+        list-style: none;
+        margin: 0 7px 0 0;
+        padding: 0;
+    }
+
+   .ms-NavBar-item.ms-NavBar-item--right {
+       float: right;
+       margin: 10px 0;
+       cursor: hand;
+   }
+   .ms-NavBar-item.ms-NavBar-item--right .ms-Icon {
+       padding-right: 10px;
+   }
+}
+
+.ms-NavBar {
+    color: #333333;
+    font-family: 'Segoe UI Regular WestEuropean', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    background-color: #f4f4f4;
+    height: 80px;
+    padding: 0 10px;
+    width: 100%;
+    outline: 1px solid transparent;
+}
+.dashBoardTitle {
+    top: 15px;
+    left: 14px;
+}
+
+.ms-TextField {
+  width: 300px;
+  display: inline-block;
+}
+
+.icon-holder {
+  display: inline-block;
+  width: 30px;
+}
+
+.big-icon {
+  font-size: 30px;
+  top: 5px;
+  position: relative;
+}
+
+input[type=submit] {
+  color: #333333;
+  font-family: 'Segoe UI Semibold WestEuropean', 'Segoe UI Semibold', 'Segoe WP Semibold', 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  background-color: #f4f4f4;
+  border: 1px solid #f4f4f4;
+  cursor: pointer;
+  display: inline-block;
+  height: 32px;
+  min-width: 80px;
+  padding: 4px 20px 6px;
+}
+
+/* MS Lists */
+.ms-ListItem {
+    border-bottom: 1px solid #ccc;
+    list-decoration: none;
+    padding: 20px 20px 0px 0px;
+    list-style-type: none;
+}
+.calendars .ms-ListItem:nth-child(even) {
+    border-bottom: none;
+}
+
+.ms-ListItem button {
+    height: auto;
+
+}
+.ms-ListItem-tertiaryText {
+    line-height: 20px;
+}
+.ms-ListItem th {
+    text-align: center;
+}
+.ms-ListItem td {
+    padding: 10px 15px;
+}
+.accountInformation {
+    float: left;
+    margin-right: 50px;
+}
+.accountInteractions { float: left;}
+.ms-Button.ms-Button--compound {
+    width: 300px;
+    margin: 10px 0;
+    border-bottom: 2px solid #3aaa35;
+    min-height: 90px !important;
+    max-width: 300px !important;
+}
+
+.viewCalendars {clear: both; width: 74%;}
+
+a {
+    color: #3aaa35;
+}
+
+/* Header */
+.ms-NavBar {
+    border-bottom: 2px solid #3aaa35;
+}
+
+.ms-NavBar li {
+    cursor: pointer;
+}
+
+
+/* Calender Liste */
+.calendars li.ms-ListItem:first-child,
+.calendars li.ms-ListItem:nth-child(2) {
+    display: none;
+}
+
+.hide {
+    display: none !important;
+}
+.show {
+    display: block;
+}
+
+.createCalendarButton {
+    margin-top: 30px !important;
+}
+
+.ms-MessageBar {padding: 13px;}
+
+.backtoMainButton {
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 480px) {
+    .ms-NavBar {height: 140px;}
+    .ms-NavBar-items {list-style: none;}
+    .ms-NavBar-item--right {padding: 30px 22px;}
+    .dashBoardTitle {top: 30px; left: -2px;}
+}

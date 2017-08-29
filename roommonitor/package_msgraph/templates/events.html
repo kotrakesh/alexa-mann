@@ -1,0 +1,37 @@
+<!-- show events -->
+
+{% if data.value  %}
+<div>
+    <table>
+        <thead class="ms-font-m">
+            <tr>
+            <th>Titel</th>
+            <th>Datum</th>
+            <th>Startzeit</th>
+            <th>Endzeit</th>
+            <th>Ort</th>
+            <th>Organisator</th>
+            </tr>
+        </thead>
+
+        <tbody  class="ms-font-s-plus">
+
+            {% for e in data.value %}
+            <tr>
+                <td>{{ e.subject }}</td>
+                <td>{{ e.start.dateTime[:10] }}</td>
+                <td>{{ e.start.dateTime[11:16] }}</td>
+                <td>{{ e.end.dateTime[11:16] }}</td>
+                <td>{{ e.location.displayName }}</td>
+                <td>{{ e.organizer.emailAddress.name }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <p class="ms-font-l ms-fontColor-yellow">Es gibt keine Kalendereintr&auml;ge f&uuml;r den Kalender {{ calName }}</p>
+{% endif %}
+
+
