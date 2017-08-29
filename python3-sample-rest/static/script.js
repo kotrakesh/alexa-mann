@@ -56,6 +56,7 @@ function toggleListEvents(id) {
 }
 
 function toggleViewRooms() {
+  window.location = '/main';
   if ($('.viewCalendars').hasClass('open')){
     $('.viewCalendars').removeClass('open');
     $('.viewCalendars').addClass('hide');
@@ -72,7 +73,7 @@ function toggleViewRooms() {
 }
 
 function toggleCreateRoom() {
-  console.log('openCreateRoom');
+
   if ($('.createRoom').hasClass('open')){
     $('.createRoom').removeClass('open');
     $('.createRoom').addClass('hide');

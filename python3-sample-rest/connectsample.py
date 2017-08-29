@@ -44,7 +44,7 @@ msgraphapi = oauth.remote_app( \
     consumer_key=client_id,
     consumer_secret=client_secret,
     #    request_token_params={'scope': 'User.Read Mail.Send'},
-    request_token_params={'scope': 'User.Read Mail.Send Calendars.ReadWrite'},
+    request_token_params={'scope': 'User.Read Calendars.ReadWrite'},
     base_url='https://graph.microsoft.com/v1.0/',
     request_token_url=None,
     access_token_method='POST',
@@ -125,27 +125,13 @@ def main():
 # Get Information about the current account
 @app.route('/me')
 def get_me():
-    me_response = msgraphapi.get('me')
-    me_data = json.loads(json.dumps(me_response.data))
-#    print('me ', me_data)
-    return me_data
-
+    me = msgraphapi.get('me')
+    return json.loads(json.dumps(me.data))
 
 # Calendars
 def get_calendars():
     cal = msgraphapi.get('me/calendars')
-    cal_data = json.loads(json.dumps(cal.data))
-    room.data = cal_data
-    response = call_getcalendar_endpoint(session['access_token'])
-    if response == 'SUCCESS':
-        show_success = 'true'
-        show_error = 'false'
-    else:
-        #print(response)
-        show_success = 'false'
-        show_error = 'true'
-    return cal_data
-    #return render_template('calendars.html', name=session['alias'], data=cal, jsondata=cal_data, showCalendars=1, aDate=vars['date'], aTime=vars['time'], aDuration=vars['duration'])
+    return json.loads(json.dumps(cal.data))
 
 
 @app.route('/create_calendar')
@@ -178,45 +164,42 @@ def create_calendar():
 
     room.data = get_calendars()
 
-    session['pageRefresh'] = 'false'
+    session['pageRefresh'] = 'true'
     return render_template('main.html', name=session['alias'], username=displayName,
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
 @app.route('/delete_calendar')
 def delete_calendar():
     me = get_me()
+    cal_id = request.args.get('calID')
     calendar_name = request.args.get('calName')
-    room.data = get_calendars()
+    room.data = None
+
+    response = call_deletecalendar_endpoint(session['access_token'], cal_id)
+
+    errormessage = ''
+
+    if response == 'SUCCESS':
+        show_success = 'true'
+        show_error = 'false'
+    else:
+        #print(response.error)
+        show_success = 'false'
+        show_error = 'true'
+        jsonresponse = json.loads(response)
+        errormessage = jsonresponse['error']['message']
     return render_template('main.html', name=session['alias'], uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
-                           jsondata=room.data, calName=calendar_name, showDeletedCalendars=1, showCalendars=0)
+                           jsondata=room.data, calName=calendar_name, showSuccess_deletedCalendar=show_success, showError_deletedCalendar=show_error, error_deleteCalendar=errormessage, showCalendars=0)
 
 
 # Events
 @app.route('/list_events')
 def list_events():
-
     cal_id = request.args.get('cal_id')
     cal_name = request.args.get('cal_name')
-    print('calid ', cal_id, ' calname: ', cal_name)
+    events = msgraphapi.get('me/calendars/'+cal_id+'/events')
+    return render_template('events.html', name=session['alias'], data=events.data, calName=cal_name, jsondata=room.data)
 
-    response = call_listevents_endpoint(session['access_token'], cal_id)
-    data = json.loads(response.text)
-
-    if response.ok:
-        show_success = 'true'
-        show_error = 'false'
-    else:
-        print(response)
-        show_success = 'false'
-        show_error = 'true'
-
-    session['pageRefresh'] = 'false'
-    if data['value'] is None:
-        print('datavalue is empty')
-    else:
-        print('data ', data['value'])
-
-    return render_template('events.html', name=session['alias'],data=data, calName=cal_name, jsondata=room.data)
 
 @app.route('/create_event')
 def create_event():
@@ -350,31 +333,6 @@ def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName, cal_id):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
-
-def call_listevents_endpoint(access_token, id):
-    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/events'
-    # set request headers
-    headers = {'User-Agent': 'python_tutorial/1.0',
-               'Authorization': 'Bearer {0}'.format(access_token),
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-
-    request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id': request_id,
-                       'return-client-request-id': 'true'}
-    headers.update(instrumentation)
-
-    response = requests.get(url=list_events_url,
-                            headers=headers,
-                            verify=False,
-                            params=None)
-
-    if response.ok:
-        return response
-    else:
-        return '{0}: {1}'.format(response.status_code, response.text)
-
-
 def call_listevents_for_time_endpoint(access_token, id, start, end):
     list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startDateTime=' + start + 'Z&endDateTime=' + end + 'Z'
     # set request headers
@@ -426,10 +384,9 @@ def call_createcalendar_endpoint(access_token, name):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
-
-def call_getcalendar_endpoint(access_token):
+def call_deletecalendar_endpoint(access_token, id):
     """Call the resource URL for the sendMail action."""
-    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/microsoft.graph.calendars'
+    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+id
 
     # set request headers
     headers = {'User-Agent': 'python_tutorial/1.0',
@@ -446,14 +403,11 @@ def call_getcalendar_endpoint(access_token):
     headers.update(instrumentation)
 
     # Create the email that is to be sent via the Graph API
-    response = requests.get(url=send_calendar_url, headers=headers)
-
+    response = requests.delete(url=send_calendar_url, headers=headers)
     if response.ok:
         return 'SUCCESS'
     else:
-        return '{0}: {1}'.format(response.status_code, response.text)
-
-
+        return '{0}'.format(response.text)
 
 
 ################################################################################################################3

@@ -1,16 +1,16 @@
   {% include "header.html" %}
 
 
-   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md12 ms-u-lgPush1 ms-u-lg12 ms-lg12">
+   <div class="ms-Grid-col ms-u-mdPush1 ms-u-md12 ms-u-lgPush1 ms-u-lg10 ms-lg12">
       <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
            Hier k&ouml;nnen Sie Ihre Meetingr&auml;ume und Termine verwalten und neue  R&auml;ume anlegen.
       </p>
-    </div>
+   </div>
 
   <!-- App main content markup. -->
-  <main class="ms-Grid-col ms-u-mdPush1 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
+  <main  class="ms-Grid-col ms-u-mdPush1 ms-sm6 ms-md9 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
 
       <!-- Information -->
       <div class="accountInformation">
@@ -22,26 +22,8 @@
               <span class="ms-Button-label">Registrierte R&auml;ume</span>
               <span class="ms-Button-description">Zeigt registierten Meeting&auml;ume an</span>
           </button>
-
-          {% if showDeletedCalendars == 1 %}
-            <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
-              <div class="ms-MessageBar-content">
-                <div class="ms-MessageBar-icon">
-                  <i class="ms-Icon ms-Icon--Completed"></i>
-                </div>
-                <div class="ms-MessageBar-text">
-                  Der Raum {{ calName }} wurde geloescht!
-                </div>
-              </div>
-            </div>
-            <div class="backtoMainButton">
-                <button class="ms-Button" onclick="window.location.href='/main'">
-                    Zur&uuml;ck zur Startseite
-                </button>
-            </div>
-
-          {% endif %}
       </div>
+
 
       <!-- Interaction -->
       <div class="accountInteractions">
@@ -52,34 +34,7 @@
               <span class="ms-Button-description">&Ouml;ffnet ein Formular, um einen neuen Raum anzulegen</span>
         </button>
 
-        {% if showSuccess_createCalendar == 'true' %}
-        <div>
-         <div class="ms-MessageBar ms-MessageBar--success">
-              <div class="ms-MessageBar-content">
-                <div class="ms-MessageBar-icon">
-                  <i class="ms-Icon ms-Icon--Completed"></i>
-                </div>
-                <div class="ms-MessageBar-text">
-                 Der Raum {{ username }} wurde erstellt!
-                </div>
-              </div>
-         </div>
-        </div>
-        {% elif showError_createCalendar == 'true' %}
-            <div class="ms-MessageBar ms-MessageBar--blocked">
-              <div class="ms-MessageBar-content">
-                <div class="ms-MessageBar-icon">
-                  <i class="ms-Icon ms-Icon--Blocked"></i>
-                </div>
-                <div class="ms-MessageBar-text">
-                 Beim Erstellen des Raums {{ username }} ist etwas schief gegangen!
-                </div>
-              </div>
-            </div>
-        {% endif %}
-
         <!-- Create Calender for room -->
-
         <form class="createRoom hide" action="/create_calendar">
             <h3 class="ms-font-xl">Account Interaktionen</h3>
             <div class="ms-TextField">
@@ -106,16 +61,11 @@
             </div>
 
         </form>
+      </div>
 
-
-    </div>
-
-
-
-
+      <!-- Information Calendars -->
       {% if showCalendars == 1 %}
-      <!-- Show Calendars -->
-      <div class="viewCalendars">
+        <div class="viewCalendars">
           <p class="ms-font-xl">
             Folgende Meetingr&auml;ume sind registriert:</br>
           </p>
@@ -166,16 +116,85 @@
           </ul>
       </div>
       {% endif %}
+
+      <!-- Error Messages -->
+      {% if showSuccess_createCalendar == 'true' %}
+        <div class="ms-MessageBar ms-MessageBar--success">
+          <div class="ms-MessageBar-content">
+            <div class="ms-MessageBar-icon">
+              <i class="ms-Icon ms-Icon--Completed"></i>
+            </div>
+            <div class="ms-MessageBar-text">
+             Der Raum {{ username }} wurde erstellt!
+            </div>
+          </div>
+        </div>
+        <div class="backtoMainButton">
+            <button class="ms-Button" onclick="window.location.href='/main'">
+                Zur&uuml;ck zur Startseite
+            </button>
+        </div>
+
+      {% elif showError_createCalendar == 'true' %}
+        <div class="ms-MessageBar ms-MessageBar--blocked">
+          <div class="ms-MessageBar-content">
+            <div class="ms-MessageBar-icon">
+              <i class="ms-Icon ms-Icon--Blocked"></i>
+            </div>
+            <div class="ms-MessageBar-text">
+             Beim Erstellen des Raums {{ username }} ist etwas schief gegangen!
+            </div>
+          </div>
+        </div>
+        <div class="backtoMainButton">
+        <button class="ms-Button" onclick="window.location.href='/main'">
+            Zur&uuml;ck zur Startseite
+        </button>
+      </div>
+      {% endif %}
+
+
+      {% if showSuccess_deletedCalendar == 'true' %}
+        <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
+          <div class="ms-MessageBar-content">
+            <div class="ms-MessageBar-icon">
+              <i class="ms-Icon ms-Icon--Completed"></i>
+            </div>
+            <div class="ms-MessageBar-text">
+              Der Raum {{ calName }} wurde geloescht!
+            </div>
+          </div>
+        </div>
+        <div class="backtoMainButton">
+            <button class="ms-Button" onclick="window.location.href='/main'">
+                Zur&uuml;ck zur Startseite
+            </button>
+        </div>
+
+      {% elif showError_deletedCalendar == 'true' %}
+        <div class="ms-MessageBar ms-MessageBar--blocked deletedCalendarSuccessMessage">
+          <div class="ms-MessageBar-content">
+            <div class="ms-MessageBar-icon">
+              <i class="ms-Icon ms-Icon--Blocked"></i>
+            </div>
+            <div class="ms-MessageBar-text">
+              <p>Der Raum {{ calName }} konnte nicht gel&ouml;scht werden!</p>
+              <p>Fehler: {{ error_deleteCalendar }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="backtoMainButton">
+            <button class="ms-Button" onclick="window.location.href='/main'">
+                Zur&uuml;ck zur Startseite
+            </button>
+        </div>
+      {% endif %}
+
   </main>
-
-  <script>
-
-  </script>
-
 
 
   <!-- Sidebar -->
-  <aside class="ms-Grid-col ms-sm6 ms-md3 ms-lg3">
+  <aside class="ms-Grid-col ms-u-mdPush1 ms-sm6 ms-md3 ms-u-md3 ms-u-lgPush1 ms-u-lg3 ms-lg3">
       <h3 class="ms-font-xl">Account Details</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
@@ -190,7 +209,7 @@
         </li>
 	  </ul>
 
-
+    <!--
       <h3 class="ms-font-xl">Alexa Informationen</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
@@ -206,7 +225,7 @@
             <span class="ms-font-m">Anzahl Teilnehmer: {{ aAttendees }}</span>
         </li>
 	  </ul>
-
+    -->
   </aside>
 
 </body>
