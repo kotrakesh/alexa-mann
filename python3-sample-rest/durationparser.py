@@ -15,6 +15,9 @@ def getMeetingEndTime(start, duration):
 
     time = hours + ':' + minutes
 
+    if (not re.search(r':', start)):
+        start = start + ":00"
+
     timeList = [start, time]
     sum = datetime.timedelta()
     for i in timeList:
