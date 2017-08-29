@@ -29,6 +29,6 @@ def getMeetingEndTime(start, duration):
         return  '0' + str(sum)
     return str(sum)
 
-print(getMeetingEndTime("14:00", "PT3H12M"))
+print(getMeetingEndTime("14", "PT3H12M"))
 #print(getMeetingEndTime("10:20","PT12H10M50S"))
 
