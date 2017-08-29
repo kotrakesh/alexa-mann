@@ -11,13 +11,12 @@ app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
-
 @ask.launch
-
+#initial
 def predective_maintenance():
 	initial_help = render_template('initialhelp')
 	return question(initial_help)
-
+#past
 @ask.intent("YesterdayIntent")
 def past_yesterday():
 	currentRecieved = [randint(0, 9) for _ in range(1)]
@@ -29,7 +28,7 @@ def past_week():
 	currentRecieved = [randint(0, 9) for _ in range(1)]
 	pastWeekCurrent = render_template('lastweekCurrent', numbers=currentRecieved)
 	return statement(pastWeekCurrent)
-
+#present
 @ask.intent("TillnowcurrentIntent")
 def present_tillNow():
 	currentRecieved = [randint(0, 9) for _ in range(1)]
@@ -59,7 +58,7 @@ def present_Now_weather():
 	weatherRecieved = [randint(0, 9) for _ in range(1)]
 	presentNowWeather = render_template('todayWeatherNow', numbers=weatherRecieved)
 	return statement(presentNowWeather) 
-
+#future
 @ask.intent("TomorrowcurrentIntent")
 def future_tomorrow_current():
 	currentRecieved = [randint(0, 9) for _ in range(1)]
