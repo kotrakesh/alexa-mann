@@ -1,26 +1,30 @@
-
 import json
 import urllib2
 import MySQLdb
 import datetime
-
+import annotate_current
 
 db = MySQLdb.connect(host="eu-cdbr-west-01.cleardb.com",
                      user="b3465148a734be",
                      passwd="a2c4eda1",
                      db="heroku_c0277ef6294fdf7")
 
-
 cur = db.cursor()
 
 now = datetime.datetime.now()
 date_string = now.strftime('%Y-%m-%d %H:%M:%S')
 
-
-
 url = "http://api.openweathermap.org/data/2.5/weather?zip=69115,de&appid=04ac6f7772b575cbd7bb17063a1430f2"
 data = json.load(urllib2.urlopen(url))
-sqlinsert = "insert into heroku_c0277ef6294fdf7.current_data (longitude, latitude, city, description, temperature, temperature_min, temperature_max, humidity, wind, sunrise, sunset, curr_timestamp) values ('"  + str(data['coord']['lon'])+ "', '" + str(data['coord']['lat']) + "', '"  + str(data['name']) + "', '"  + str(data['weather'][0]['description']) + "', "  + str(data['main']['temp']) + ", "  + str(data['main']['temp_min']) + ", "  + str(data['main']['temp_max']) + ", "  + str(data['main']['humidity']) + ", "  + str(data['wind']['speed']) + ", "  + str(data['sys']['sunrise']) + ", "  + str(data['sys']['sunset']) + ", '" + date_string + "' )"
+sqlinsert = "insert into heroku_c0277ef6294fdf7.current_data (longitude, latitude, city, description, temperature, temperature_min, temperature_max, humidity, wind, sunrise, sunset, current_output, curr_timestamp) values ('" + str(
+    data['coord']['lon']) + "', '" + str(data['coord']['lat']) + "', '" + str(data['name']) + "', '" + str(
+    data['weather'][0]['description']) + "', " + str(data['main']['temp']) + ", " + str(
+    data['main']['temp_min']) + ", " + str(data['main']['temp_max']) + ", " + str(
+    data['main']['humidity']) + ", " + str(data['wind']['speed']) + ", " + str(data['sys']['sunrise']) + ", " + str(
+    data['sys']['sunset']) + ", " + annotate_current.estimate_current(str(data['weather'][0]['description']),
+                                                                     date_string, data['main']['temp'],
+                                                                     data['sys']['sunrise'], data['sys'][
+                                                                         'sunset']) + ", '" + date_string + "' )"
 try:
     cur.execute(sqlinsert)
 

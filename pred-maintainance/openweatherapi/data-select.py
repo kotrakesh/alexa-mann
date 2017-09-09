@@ -14,8 +14,7 @@ db = MySQLdb.connect(host="eu-cdbr-west-01.cleardb.com",
 cur = db.cursor()
 
 
-
-cur.execute("SELECT * FROM current_data")
+cur.execute("SELECT * FROM current_data where current_output is null")
 
 rows = cur.fetchall()
 
