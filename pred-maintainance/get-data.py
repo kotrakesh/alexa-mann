@@ -1,7 +1,10 @@
-import urllib.request as urllib2
 import json
+
 import mysql.connector
+import urllib.request as urllib2
+
 import config
+
 
 class weatherDataGetter:
 	def get_data(self):
@@ -31,8 +34,8 @@ class weatherDataGetter:
 		query = "INSERT INTO `heroku_c0277ef6294fdf7`.`weather_data` SET`longitude`= '"+self.lon+"',`latitude`= '"+self.lat+"',`city`= '"+self.city+"',`description`= '"+self.description+"',`temperature`= '"+self.temperature+"',`temperature_min`= '"+self.temp_min+"',`temperature_max`= '"+self.temp_max+"',`humidity`= '"+self.humidity+"',`wind`= '"+self.wind+"',`sunrise`= '"+self.sunrise+"',`sunset`='"+self.sunset+"'"
 		#print (query)
 		cnx = mysql.connector.connect(user=config.dbUser, password=config.dbPassowrd,
-		                              host=config.dbHost,
-		                             database=config.dbDatabase)
+                                      host=config.dbHost,
+                                      database=config.dbDatabase)
 		x = cnx.cursor()
 
 		x.execute(query)
