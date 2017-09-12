@@ -1,15 +1,13 @@
 initialhelp: Hello, It's been a good day. how can I help you.
 
 yesterdayCurrent: current receieved yesterday was {{ numbers }}.
-lastweekCurrent: current receieved last week was ().
-
-todayCurrentTillNow: current receieved today ().
-todayCurrentNow: current receieving now ().
-todayCurrentAfter: current expected today is ().
-todayWeather: today's weather is ().
-todayWeatherNow: weather now is ().
-
-tomorrowCurrent: current expected for tomorrow is ().
-nextweekCurrent: current expected for next week ().
-tomorrowWeather: tomorrow's expected weather ().
-nextweekWeather: next week's expected weather ().
+lastweekCurrent: current receieved last week was {{ numbers }}.
+todayCurrentTillNow: current receieved today {{ numbers }}.
+todayCurrentNow: current receieving now {{ numbers }}.
+todayCurrentAfter: current expected today is {{ numbers }}.
+todayWeather: today's weather is {{ numbers }}.
+todayWeatherNow: weather now is {{ numbers }}.
+tomorrowCurrent: current expected for tomorrow is {{ numbers }}.
+nextweekCurrent: current expected for next week {{ numbers }}.
+tomorrowWeather: tomorrow's expected weather {{ numbers }}.
+nextweekWeather: next week's expected weather {{ numbers }}.
