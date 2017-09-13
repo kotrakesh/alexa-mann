@@ -1,16 +1,8 @@
 {
   "name": "Start on Heroku: Python",
-  "description": " app, which can easily be deployed to Heroku.",
+  "description": " app, solar.",
   "image": "heroku/python",
-  "repository": "https://github.com/heroku/python-getting-started",
+  "repository": "https://github.com/kotrakeh/alexa-mann",
   "keywords": ["python" ],
   "addons": [ "heroku-ClearDBMySQL" ],
-  "environments": {
-    "test": {
-      "scripts": {
-        "test-setup": "python manage.py collectstatic --noinput",
-        "test": "python manage.py test"
-      }
-    }
-  }
 }
