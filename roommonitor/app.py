@@ -42,7 +42,7 @@ app.secret_key = 'development'
 oauth = OAuth(app)
 ask = Ask(app, "/")
 room = Room()
-app.run()
+
 
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
@@ -591,4 +591,5 @@ def getFreeRooms(t_start, t_end, attendees, title):
             print('Events vorhanden')
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
-
+if __name__ == '__main__':
+	app.run(debug=True)
