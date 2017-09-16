@@ -82,11 +82,11 @@ def create_room_to_json(isAvailable, city, country, postalCode, state, street, d
 
 load()
 
-def delete_room_to_json(name, email):
+def delete_room_to_json(name):
     data=load()
     x=0
     for i in range(0, len(data['locations'])):
-        if(data['locations'][i]['displayName']==name and  data['locations'][i]['locationEmailAddress']==email ):
+        if(data['locations'][i]['displayName']==name ):
             print("find it")
             x=i
         else:

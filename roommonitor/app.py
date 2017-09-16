@@ -216,9 +216,11 @@ def delete_calendar():
     me = get_me()
     cal_id = request.args.get('calID')
     calendar_name = request.args.get('calName')
+
     room.data = None
 
     response = ms_endpoints.call_deletecalendar(session['access_token'], cal_id)
+    util.delete_room_to_json(calendar_name)
 
     errormessage = ''
 
