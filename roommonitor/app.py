@@ -42,6 +42,7 @@ app.secret_key = 'development'
 oauth = OAuth(app)
 ask = Ask(app, "/")
 room = Room()
+app.run()
 
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
