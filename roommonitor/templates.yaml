@@ -10,6 +10,6 @@ msg_title: Whats the title of the event?
 msg_booked_room_success: The meeting is in room {{roomname}}
 msg_booked_room_fail: Booking failed. Reason {{fail_reason}}
 card_booked_room_success_title: Booked Meeting
-card_booked_room_success_content: The meeting takes place in Room {{roomname}} \nStart {{start}} \nEnd {{end}} \nTeilnehmer {{attendees}}
+card_booked_room_success_content: The meeting takes place in Room {{roomname}}. Start {{start}}, End {{end}}, Teilnehmer {{attendees}}
 card_booked_room_fail_title: Failed booking
-card_booked_room_fail_content: No meeting room could be booked. \nReason {{fail_reason}}
+card_booked_room_fail_content: No meeting room could be booked. Reason {{fail_reason}}

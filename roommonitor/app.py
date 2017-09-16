@@ -8,6 +8,7 @@
 """
 ##################################################################################
 
+# import all needed packages and modules
 import json
 import sys
 import uuid
@@ -18,8 +19,7 @@ from flask     import Flask, redirect, url_for, session, request, render_templat
 from flask_ask import Ask, statement, question, session as ask_session
 from flask_oauthlib.client import OAuth
 
-#Custom
-#from durationparser import getMeetingEndTime
+# import custom modules
 from room_class import Room
 import util
 import ms_endpoints
@@ -66,9 +66,13 @@ msgraphapi = oauth.remote_app( \
 
 ##################################
 
+
 @app.route('/')
 def index():
-    """Handler for home page."""
+    """
+    Handler for home page.
+    :return: Microsoft login page
+    """
     return login()
 
 
@@ -122,12 +126,14 @@ def authorized():
 
 @app.route('/main')
 def main():
+    """
+    Main function to display the Dashboard after successful login
+    :return: renders Dashboard with all necessary information about the users calenders (rooms) and account information
+    """
     room.data = cal_data = get_calendars()  # directly load the calenders after login
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
-    print(room.data)
 
-    """Handler for main route."""
     if session['alias']:
         username = session['alias']
         email_address = session['userEmailAddress']
@@ -136,20 +142,37 @@ def main():
         return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
 
 
-# Get Information about the current account
-@app.route('/me')
+
+#@app.route('/me')
 def get_me():
+    """
+    Get Information about the current account
+    :return: account information about the currently logged in user
+    """
     me = msgraphapi.get('me')
     return json.loads(json.dumps(me.data))
 
-# Calendars
+
+
+### Calendars ###
+
 def get_calendars():
+    """
+    Retrieves calendars
+    :return: all calendars which belongs to the logged in user
+    """
     cal = msgraphapi.get('me/calendars')
     return json.loads(json.dumps(cal.data))
 
 
+
 @app.route('/create_calendar')
 def create_calendar():
+    """
+    Creates MS calendar, called by the form on the main page (Dashboard)
+    not displayed to the user, used only for internal calls, output is displayed on the Dashboard
+    :return: renders Dashboard including a success message upon the creation of the calendar
+    """
     """Handler for send_mail route."""
     resolveAvailability = request.args.get('resolveAvailability')  # get name of the user the calendar is created for
     city = request.args.get('city')
@@ -161,11 +184,10 @@ def create_calendar():
     locationEmailAddress = request.args.get('locationEmailAddress')
     maxAttendees = request.args.get('maxAttendees')
 
-    # write new room data to locationConstraint
-    util.create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street,
-                        displayName, locationEmailAddress, maxAttendees)
+    # write new room data to json database,
+    util.create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street, displayName, locationEmailAddress, maxAttendees)
 
-
+    # new calendar is created in the Microsoft Account
     response = ms_endpoints.call_createcalendar(session['access_token'], displayName)
 
     if response == 'SUCCESS':
@@ -179,17 +201,26 @@ def create_calendar():
     room.data = get_calendars()
 
     session['pageRefresh'] = 'true'
+    # returns Dashboard
     return render_template('main.html', name=session['alias'], username=displayName,
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
+
 @app.route('/delete_calendar')
 def delete_calendar():
+    """
+    Deletes MS calendar, called by the form on the main page (Dashboard)
+    not displayed to the user, used only for internal calls, output is displayed on the Dashboard
+    :return: renders Dashboard including a success message upon the deletion of the calendar
+    """
     me = get_me()
     cal_id = request.args.get('calID')
     calendar_name = request.args.get('calName')
+
     room.data = None
 
     response = ms_endpoints.call_deletecalendar(session['access_token'], cal_id)
+    util.delete_room_to_json(calendar_name)
 
     errormessage = ''
 
@@ -202,71 +233,76 @@ def delete_calendar():
         show_error = 'true'
         jsonresponse = json.loads(response)
         errormessage = jsonresponse['error']['message']
+    #return Dashboard
     return render_template('main.html', name=session['alias'], uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
                            jsondata=room.data, calName=calendar_name, showSuccess_deletedCalendar=show_success, showError_deletedCalendar=show_error, error_deleteCalendar=errormessage, showCalendars=0)
 
 
-# Events
+### Events ###
 @app.route('/list_events')
 def list_events():
+    """
+    Ajax function for retrieving events per calendar
+    :return:  template of events which is asynchronously loaded into the Dashboard
+    """
     cal_id = request.args.get('cal_id')
     cal_name = request.args.get('cal_name')
     events = msgraphapi.get('me/calendars/'+cal_id+'/events')
     return render_template('events.html', name=session['alias'], data=events.data, calName=cal_name, jsondata=room.data)
 
-
-@app.route('/create_event')
-def create_event():
-    """Handler for create_event route."""
-    cal_id = request.args.get('cal_id')
-    cal_date = request.args.get('date')
-    cal_start_time = request.args.get('start')
-    cal_end_time = request.args.get('end')
-    cal_title = request.args.get('title')
-    cal_room = request.args.get('room')
-    start = util.convert_amazon_to_ms(cal_date, cal_start_time)
-    end = util.convert_amazon_to_ms(cal_date, cal_end_time)
-    print("cal id:"+cal_id)
-    response = ms_endpoints.call_createvent(session['access_token'], start, end, cal_title, cal_room, cal_id)
-    if response == 'SUCCESS':
-        show_success = 'true'
-        show_error = 'false'
-    else:
-        print(response)
-        show_success = 'false'
-        show_error = 'true'
-
-    session['pageRefresh'] = 'false'
-    return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
-                           showError=show_error)
+# # still necessary?
+# @app.route('/create_event')
+# def create_event():
+#     """Handler for create_event route."""
+#     cal_id = request.args.get('cal_id')
+#     cal_date = request.args.get('date')
+#     cal_start_time = request.args.get('start')
+#     cal_end_time = request.args.get('end')
+#     cal_title = request.args.get('title')
+#     cal_room = request.args.get('room')
+#     start = util.convert_amazon_to_ms(cal_date, cal_start_time)
+#     end = util.convert_amazon_to_ms(cal_date, cal_end_time)
+#     print("cal id:"+cal_id)
+#     response = ms_endpoints.call_createvent(session['access_token'], start, end, cal_title, cal_room, cal_id)
+#     if response == 'SUCCESS':
+#         show_success = 'true'
+#         show_error = 'false'
+#     else:
+#         print(response)
+#         show_success = 'false'
+#         show_error = 'true'
+#
+#     session['pageRefresh'] = 'false'
+#     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
+#                            showError=show_error)
 
 #still needed??
-@app.route('/list_events_for_time')
-def list_events_for_time():
-    cal_id = request.args.get('cal_id')  # get email address from the form
-    cal_name = request.args.get('cal_name')
-    cal_date = request.args.get('date')
-    cal_start_time = request.args.get('start_time')
-    cal_end_time = request.args.get('end_time')
-    start = util.convert_amazon_to_ms(cal_date, cal_start_time)
-    end = util.convert_amazon_to_ms(cal_date, cal_end_time)
-    response = ms_endpoints.call_listevents_for_time(session['access_token'], cal_id, start, end)
-    data = json.loads(response.text)
-
-    print(cal_name, cal_date, cal_start_time, cal_end_time)
-    if response.ok:
-        show_success = 'true'
-        show_error = 'false'
-    else:
-        print(response)
-        show_success = 'false'
-        show_error = 'true'
-
-    session['pageRefresh'] = 'false'
-    #print(response)
-
-    return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
-                           showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
+# @app.route('/list_events_for_time')
+# def list_events_for_time():
+#     cal_id = request.args.get('cal_id')  # get email address from the form
+#     cal_name = request.args.get('cal_name')
+#     cal_date = request.args.get('date')
+#     cal_start_time = request.args.get('start_time')
+#     cal_end_time = request.args.get('end_time')
+#     start = util.convert_amazon_to_ms(cal_date, cal_start_time)
+#     end = util.convert_amazon_to_ms(cal_date, cal_end_time)
+#     response = ms_endpoints.call_listevents_for_time(session['access_token'], cal_id, start, end)
+#     data = json.loads(response.text)
+#
+#     print(cal_name, cal_date, cal_start_time, cal_end_time)
+#     if response.ok:
+#         show_success = 'true'
+#         show_error = 'false'
+#     else:
+#         print(response)
+#         show_success = 'false'
+#         show_error = 'true'
+#
+#     session['pageRefresh'] = 'false'
+#     #print(response)
+#
+#     return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
+#                            showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
 
 
 @msgraphapi.tokengetter
@@ -281,6 +317,10 @@ def get_token():
 
 @ask.launch
 def welcome():
+    """
+    A launch function invoked at the beginnning when user starts Alexa (LaunchIntent)
+    :return: Hello, please tell me the dates and times when your meeting shall be scheduled
+    """
     room.date = None  # '2017-07-16'
     room.time = None  # '03:00'
     room.duration = None  # 'PT5M'
@@ -289,6 +329,11 @@ def welcome():
 
 @ask.intent("DateIntent")
 def missing_duration_time(Date):
+    """
+    Function called when user specifies the date only
+    :param Date:    date of the event
+    :return:        What time is the meeting and how long is it?
+    """
     room.date = Date
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
@@ -304,6 +349,11 @@ def missing_duration_time(Date):
 
 @ask.intent("TimeIntent")
 def missing_date_duration(Time):
+    """
+    Function called when user specifies the time only
+    :param Time:    time of the event
+    :return:        Whats the date and the duration of the meeting?
+    """
     room.time = Time
     print('TimeIntent - Date: ' + str(room.date))
     print('TimeIntent - Time: ' + str(room.time))
@@ -324,6 +374,11 @@ def missing_date_duration(Time):
 
 @ask.intent("DurationIntent")
 def missing_date_time(Duration):
+    """
+    Function called when user specifies the duration only
+    :param Duration:    duration of the event
+    :return:            What day and what time is the meeting?
+    """
     room.duration = ask_session.attributes['duration'] = Duration
 
     if not room.date and not room.time:
@@ -339,6 +394,12 @@ def missing_date_time(Duration):
 
 @ask.intent("DateDurationIntent")
 def missing_time(Date, Duration):
+    """
+    Function called when user specifies date and duration
+    :param Date:        date of the event
+    :param Duration:    duration of the event
+    :return:            What time is the meeting?
+    """
     room.date = Date
     room.duration = Duration
 
@@ -350,6 +411,12 @@ def missing_time(Date, Duration):
 
 @ask.intent("DateTimeIntent")
 def missing_duration(Date, Time):
+    """
+    Function called when user specifies date and time
+    :param Date:    date of the event
+    :param Time:    time of the event
+    :return:        How long is the meeting?
+    """
     room.date = Date
     room.time = Time
 
@@ -362,6 +429,12 @@ def missing_duration(Date, Time):
 
 @ask.intent("TimeDurationIntent")
 def missing_date(Time, Duration):
+    """
+    Function called when user specifies time and duration
+    :param Time:        time of the event
+    :param Duration:    duration of the event
+    :return:            What day is the meeting?
+    """
     room.duration = Duration
     room.time = Time
     if not room.date:
@@ -372,6 +445,13 @@ def missing_date(Time, Duration):
 
 @ask.intent("DataTimeDurationIntent")
 def allKnown(Date, Time, Duration):
+    """
+    Function called when user specifies the date, time and duration
+    :param Date:        date of the event
+    :param Time:        time of the event
+    :param Duration:    duration of the event
+    :return:            How many attendees will attend the meeting?
+    """
     room.date = Date
     room.time = Time
     room.duration = Duration
@@ -382,6 +462,11 @@ def allKnown(Date, Time, Duration):
 
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
+    """
+    Function called when the user specifies the number of attendees
+    :param Attendees:   number of attendees who will attend the meeting
+    :return:            Whats the title of the event?
+    """
     room.attendees = Attendees
     if not room.duration or not room.date or not room.time:
         return question("Please, specify the date, time and the duration first")
@@ -391,6 +476,11 @@ def numberOfAttendees(Attendees):
 
 @ask.intent("TitleIntent")
 def title_of_event(Title):
+    """
+    Function called when user specifies the title of the event
+    :param Title:   title of the event
+    :return:        readMeeetingTime(date, time, duration, attendees, title)
+    """
     if room.date and not room.time and room.duration:
         return missing_time(room.date, room.duration)
     if not room.date and room.time and room.duration:
@@ -401,68 +491,98 @@ def title_of_event(Title):
         return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
 
 
-# Print and return the meeting room
+
 def readMeetingTime(Date, Time, Duration, Attendees, Title):
+    """
+    Function which initialized the room search and room booking
+    :param Date:        date of the event
+    :param Time:        time of the event
+    :param Duration:    duration of the event
+    :param Attendees:   number of attendees at the event
+    :param Title:       title of the event
+    :return:            statement for Amazon Echo including card information
+    """
     print('readMeetingTime')
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
+    # Changing datatypes for Microsoft
     start = util.convert_amazon_to_ms(Date, Time)
+    # calculate: end = start_time + duration
     am_end = util.getMeetingEndTime(Time, Duration)
     end = util.convert_amazon_to_ms(Date, am_end)
 
+    # check for free rooms with the constraints
     result = getFreeRooms(start, end, Attendees, Title)
 
     if (result['roomFound'] == 1):
+        # returns answer to Alexa and displays the card in the Alexa App, at this time the calendar event already has been booked
         return statement(render_template('msg_booked_room_success', roomname=result['roomName']))\
             .simple_card(title=render_template('card_booked_room_success_title'), content= render_template('card_booked_room_success_content', roomname=result['roomName'], start=start, end=end, attendees=Attendees))
     else:
+        # Alexa gets informed about the failed booking, in some cases the fail reason is send and also displayed on the Alexa Card
         return statement(render_template('msg_booked_room_fail', fail_reason=result['reason']))\
             .simple_card(title=render_template('card_booked_room_fail_title'), content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
 
-def getFreeRooms(t_start, t_end, attendees, title):
 
+def getFreeRooms(t_start, t_end, attendees, title):
+    """
+    Searches for free rooms with the given constraints of start, end and number of attendees
+        First loop: iterate through the Microsoft Calendars to find rooms
+        Second loop: iterate through the json database to check the number of attendees constraint as this value can't be saved in the Microsoft calendar
+
+    :param t_start:     start of the event
+    :param t_end:       end of the event
+    :param attendees:   number of people attending the meeting (room constraint)
+    :param title:       title of the event
+    :return:            python object, with information about status of room booking and fail reason on error
+    """
     # TODO authenticate with Graph API
 
     print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
-
+    # opens the json database
     locConstraint = json.load(open('./resources/locationConstraint.json'))
+
+    # Workaround to load rooms from Microsoft, User MUST login in on the portal before
     if(room.data is None):
-        return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms'}
+        return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms from Microsoft API'}
+
 
     for cal in room.data['value']:
-        if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'): # calendar and    birthdays are ignored
+        # ignore some standard calendars
+        if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'):
             continue
 
         print(' ------------ ')
         print('name: ' + str(cal['name']))
 
+        #returns events for the specified times
         jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
-
-#        if (jdata['401'] is not None):
-#            return {'roomFound': False, 'roomName': cal['name'], 'reason': 'Error while connecting to MS Graph API'}
-
         data = json.loads(jdata.text)
 
-        #print(data['value'])
-
         if not data['value']:
+            # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
             print('Keine Events vorhanden')
 
+            # second constraint: load rooms from the local database, often the main error source as localdatabase is not updated
             for l in locConstraint['locations']:
 
                 if l['displayName'] == cal['name']:
+                    # check if the room is big enough to hold the number of specified people
                     if int(attendees) <= int(l['maxAttendees']):
                         print('Raumgroesse: ' +  str(attendees), ' max: ', str(l['maxAttendees']))
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
+                        # create calendar event for that room
                         util.create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
 
-                        return {'roomFound': 1, 'roomName': cal['name'], 'reason': 'All rooms are booked'}
+                        # Free room found
+                        return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
                     else:
+                        # room is too small, look for the next room
                         print('Raumgroesse: ' + str(attendees), ' > ', str(l['maxAttendees']))
                         print('Raum ist zu klein')
 
