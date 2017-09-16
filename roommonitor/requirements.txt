@@ -9,7 +9,6 @@ click==6.7
 crcelk==1.1
 cryptography==2.0
 cycler==0.10.0
-debtags==2.1
 decorator==4.1.1
 dnspython==1.15.0
 Flask==0.12.2
