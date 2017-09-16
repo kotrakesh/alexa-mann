@@ -6,5 +6,5 @@ import flask_script
 import application
 
 MANAGER = flask_script.Manager(application.app)
-MANAGER.add_command('runserver', flask_script.Server(host='localhost'))
+MANAGER.add_command('runserver', flask_script.Server(host='roommonitor.heroku.com'))
 MANAGER.run()
