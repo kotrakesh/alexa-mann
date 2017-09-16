@@ -1,6 +1,13 @@
-# Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
-# See LICENSE in the project root for license information.
-"""Main program for Microsoft Graph API Connect demo."""
+##################################################################################
+"""
+        Main Program including all functionalities from MS Graph and Amazon Alexa
+        Other functions are import from other files and packages.
+
+        Developer: Micha (02468), Yide, Arthur, Lev
+        Last modified: 2017/09/13
+"""
+##################################################################################
+
 import json
 import sys
 import uuid
@@ -12,10 +19,12 @@ from flask_ask import Ask, statement, question, session as ask_session
 from flask_oauthlib.client import OAuth
 
 #Custom
-from durationparser import getMeetingEndTime
+#from durationparser import getMeetingEndTime
 from room_class import Room
+import util
+import ms_endpoints
 
-room = Room()
+
 
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
@@ -32,8 +41,7 @@ app.debug = False
 app.secret_key = 'development'
 oauth = OAuth(app)
 ask = Ask(app, "/")
-
-vars = {'date': None, 'time': None, 'duration': None, 'attendees': None}
+room = Room()
 
 # since this sample runs locally without HTTPS, disable InsecureRequestWarning
 requests.packages.urllib3.disable_warnings()
@@ -52,6 +60,11 @@ msgraphapi = oauth.remote_app( \
     authorize_url='https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
 )
 
+
+
+
+
+##################################
 
 @app.route('/')
 def index():
@@ -97,12 +110,12 @@ def authorized():
     session['microsoft_token'] = (response['access_token'], '')
     # Store the token in another session variable for easy access
     session['access_token'] = response['access_token']
-    me_response = msgraphapi.get('me')
-    me_data = json.loads(json.dumps(me_response.data))
-    username = me_data['displayName']
-    email_address = me_data['userPrincipalName']
-    session['alias'] = username
-    session['userEmailAddress'] = email_address
+    # me_response = msgraphapi.get('me')
+    # me_data = json.loads(json.dumps(me_response.data))
+    # username = me_data['displayName']
+    # email_address = me_data['userPrincipalName']
+    # session['alias'] = username
+    # session['userEmailAddress'] = email_address
     room.token = session['access_token']             # save room token for further useage
     return redirect('main')
 
@@ -112,6 +125,7 @@ def main():
     room.data = cal_data = get_calendars()  # directly load the calenders after login
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
+    print(room.data)
 
     """Handler for main route."""
     if session['alias']:
@@ -148,11 +162,11 @@ def create_calendar():
     maxAttendees = request.args.get('maxAttendees')
 
     # write new room data to locationConstraint
-    create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street,
+    util.create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street,
                         displayName, locationEmailAddress, maxAttendees)
 
 
-    response = call_createcalendar_endpoint(session['access_token'], displayName)
+    response = ms_endpoints.call_createcalendar(session['access_token'], displayName)
 
     if response == 'SUCCESS':
         show_success = 'true'
@@ -175,7 +189,7 @@ def delete_calendar():
     calendar_name = request.args.get('calName')
     room.data = None
 
-    response = call_deletecalendar_endpoint(session['access_token'], cal_id)
+    response = ms_endpoints.call_deletecalendar(session['access_token'], cal_id)
 
     errormessage = ''
 
@@ -210,10 +224,10 @@ def create_event():
     cal_end_time = request.args.get('end')
     cal_title = request.args.get('title')
     cal_room = request.args.get('room')
-    start = convert_amazon_to_ms(cal_date, cal_start_time)
-    end = convert_amazon_to_ms(cal_date, cal_end_time)
+    start = util.convert_amazon_to_ms(cal_date, cal_start_time)
+    end = util.convert_amazon_to_ms(cal_date, cal_end_time)
     print("cal id:"+cal_id)
-    response = call_createvent_endpoint(session['access_token'], start, end, cal_title, cal_room, cal_id)
+    response = ms_endpoints.call_createvent(session['access_token'], start, end, cal_title, cal_room, cal_id)
     if response == 'SUCCESS':
         show_success = 'true'
         show_error = 'false'
@@ -226,6 +240,7 @@ def create_event():
     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
                            showError=show_error)
 
+#still needed??
 @app.route('/list_events_for_time')
 def list_events_for_time():
     cal_id = request.args.get('cal_id')  # get email address from the form
@@ -233,9 +248,9 @@ def list_events_for_time():
     cal_date = request.args.get('date')
     cal_start_time = request.args.get('start_time')
     cal_end_time = request.args.get('end_time')
-    start = convert_amazon_to_ms(cal_date, cal_start_time)
-    end = convert_amazon_to_ms(cal_date, cal_end_time)
-    response = call_listevents_for_time_endpoint(session['access_token'], cal_id, start, end)
+    start = util.convert_amazon_to_ms(cal_date, cal_start_time)
+    end = util.convert_amazon_to_ms(cal_date, cal_end_time)
+    response = ms_endpoints.call_listevents_for_time(session['access_token'], cal_id, start, end)
     data = json.loads(response.text)
 
     print(cal_name, cal_date, cal_start_time, cal_end_time)
@@ -248,166 +263,16 @@ def list_events_for_time():
         show_error = 'true'
 
     session['pageRefresh'] = 'false'
-    print(response)
+    #print(response)
 
     return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
                            showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
 
-def create_event_from_alexa(start, end, title, room_name, cal_id):
-    """Handler for create_event route."""
-    print("cal id:"+cal_id)
-    call_createvent_endpoint(room.token, start, end, title, room_name, cal_id)
 
-
-
-##################################
-
-
-# If library is having trouble with refresh, uncomment below and implement
-# refresh handler see https://github.com/lepture/flask-oauthlib/issues/160 for
-# instructions on how to do this. Implements refresh token logic.
-# @app.route('/refresh', methods=['POST'])
-# def refresh():
 @msgraphapi.tokengetter
 def get_token():
     """Return the Oauth token."""
     return session.get('microsoft_token')
-
-# Events
-def call_createvent_endpoint(access_token,tStart,tEnd,title,roomName, cal_id):
-    """Call the resource URL for the create event action."""
-    send_event_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+cal_id+'/events'
-    print("test2")
-    # set request headers
-    headers = {'User-Agent': 'python_tutorial/1.0',
-               'Authorization': 'Bearer {0}'.format(access_token),
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'
-               }
-
-    # Use these headers to instrument calls. Makes it easier to correlate
-    # requests and responses in case of problems and is a recommended best
-    # practice.
-    request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id': request_id,
-                       'return-client-request-id': 'true'}
-    headers.update(instrumentation)
-
-    # Create the email that is to be sent via the Graph API
-    event = {
-        "subject": title,
-        "body": {
-            "contentType": "HTML",
-            "content": ""
-        },
-        "start": {
-            "dateTime": tStart,
-            "timeZone": "W. Europe Standard Time"
-        },
-        "end": {
-            "dateTime": tEnd,
-            "timeZone": "W. Europe Standard Time"
-        },
-        "location": {
-            "displayName": roomName
-        },
-        #"attendees": [
-        #   {
-        #        "emailAddress": {
-        #            "address": "fannyd@contoso.onmicrosoft.com",
-        #           "name": "Fanny Downs"
-        #        },
-        #        "type": "required"
-        #   }
-        #]
-    }
-
-    response = requests.post(url=send_event_url,
-                             headers=headers,
-                             data=json.dumps(event),
-                             verify=False,
-                             params=None)
-
-    if response.ok:
-        return 'SUCCESS'
-    else:
-        return '{0}: {1}'.format(response.status_code, response.text)
-
-def call_listevents_for_time_endpoint(access_token, id, start, end):
-    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startDateTime=' + start + 'Z&endDateTime=' + end + 'Z'
-    # set request headers
-    #print(list_events_url)
-    headers = {'User-Agent': 'python_tutorial/1.0',
-               'Authorization': 'Bearer {0}'.format(access_token),
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-
-    request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id': request_id,
-                       'return-client-request-id': 'true'}
-    headers.update(instrumentation)
-
-    response = requests.get(url=list_events_url,
-                            headers=headers,
-                            verify=False,
-                            params=None)
-
-    if response.ok:
-        return response
-    else:
-        return '{0}: {1}'.format(response.status_code, response.text)
-
-
-# Calendars
-def call_createcalendar_endpoint(access_token, name):
-    create_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
-    # set request headers
-    headers = {'User-Agent': 'python_tutorial/1.0',
-               'Authorization': 'Bearer {0}'.format(access_token),
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-
-    request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id': request_id,
-                       'return-client-request-id': 'true'}
-    headers.update(instrumentation)
-    user_data = {'name': name}
-
-    response = requests.post(url=create_calendar_url,
-                             headers=headers,
-                             data=json.dumps(user_data),
-                             verify=False,
-                             params=None)
-
-    if response.ok:
-        return 'SUCCESS'
-    else:
-        return '{0}: {1}'.format(response.status_code, response.text)
-
-def call_deletecalendar_endpoint(access_token, id):
-    """Call the resource URL for the sendMail action."""
-    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+id
-
-    # set request headers
-    headers = {'User-Agent': 'python_tutorial/1.0',
-               'Authorization': 'Bearer {0}'.format(access_token),
-               'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-
-    # Use these headers to instrument calls. Makes it easier to correlate
-    # requests and responses in case of problems and is a recommended best
-    # practice.
-    request_id = str(uuid.uuid4())
-    instrumentation = {'client-request-id': request_id,
-                       'return-client-request-id': 'true'}
-    headers.update(instrumentation)
-
-    # Create the email that is to be sent via the Graph API
-    response = requests.delete(url=send_calendar_url, headers=headers)
-    if response.ok:
-        return 'SUCCESS'
-    else:
-        return '{0}'.format(response.text)
 
 
 ################################################################################################################3
@@ -425,9 +290,6 @@ def welcome():
 @ask.intent("DateIntent")
 def missing_duration_time(Date):
     room.date = Date
-
-    print('Date: ' + str(ask_session.attributes['date']))
-    print('Date: ' + str(room.date))
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
         return question(render_template('msg_missing_duration_time'))
@@ -514,15 +376,13 @@ def allKnown(Date, Time, Duration):
     room.time = Time
     room.duration = Duration
     print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
-    vars['date'] = Date
-    vars['time'] = Time
-    vars['duration'] = Duration
+
     return question(render_template('msg_attendees'))
 
 
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
-    room.attendees = vars['attendees'] = Attendees
+    room.attendees = Attendees
     if not room.duration or not room.date or not room.time:
         return question("Please, specify the date, time and the duration first")
     #TODO specify missing information
@@ -544,13 +404,11 @@ def title_of_event(Title):
 # Print and return the meeting room
 def readMeetingTime(Date, Time, Duration, Attendees, Title):
     print('readMeetingTime')
-    get_infor_from_alexa(Date, Time, Duration,Attendees)
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
-    start = convert_amazon_to_ms(Date, Time)
-    am_end = getMeetingEndTime(Time, Duration)
-    end = convert_amazon_to_ms(Date, am_end)
-
+    start = util.convert_amazon_to_ms(Date, Time)
+    am_end = util.getMeetingEndTime(Time, Duration)
+    end = util.convert_amazon_to_ms(Date, am_end)
 
     result = getFreeRooms(start, end, Attendees, Title)
 
@@ -570,7 +428,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
     print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
 
-    locConstraint = json.load(open('locationConstraint.json'))
+    locConstraint = json.load(open('./resources/locationConstraint.json'))
     if(room.data is None):
         return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms'}
 
@@ -581,7 +439,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
         print(' ------------ ')
         print('name: ' + str(cal['name']))
 
-        jdata = call_listevents_for_time_endpoint(room.token, cal['id'], t_start, t_end)
+        jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
 
 #        if (jdata['401'] is not None):
 #            return {'roomFound': False, 'roomName': cal['name'], 'reason': 'Error while connecting to MS Graph API'}
@@ -601,7 +459,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
-                        create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
+                        util.create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
 
                         return {'roomFound': 1, 'roomName': cal['name'], 'reason': 'All rooms are booked'}
                     else:
@@ -613,54 +471,3 @@ def getFreeRooms(t_start, t_end, attendees, title):
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 
-
-################################################################################
-# Functions
-
-
-# Amzazon Date: “today”: 2015-11-24
-# Amazon Duration: “ten minutes”: PT10M, “five hours”: PT5H
-# Amazon Time: “two fifteen pm”: 14:15
-# MS DateTime: "2017-04-17T09:00:00",
-# MS Duration : PT2H
-def convert_amazon_to_ms(Date, Time):
-    date_time = str(Date) + 'T' + str(Time)
-    return date_time
-
-
-def get_infor_from_alexa(Date, Time, Duration, Attendees):
-    print(Date, Time, Duration,Attendees)
-    vars['date'] = Date
-    vars['time'] = Time
-    vars['duration'] = Duration
-    vars['attendees'] = Attendees
-
-
-def store(data):
-    with open('locationConstraint.json', 'w') as json_file:
-        json_file.write(json.dumps(data))
-
-
-def load():
-    with open('locationConstraint.json') as json_file:
-        data = json.load(json_file)
-        return data
-
-
-def create_room_to_json(isAvailable, city, country, postalCode, state, street, displayName, email, attendees):
-    json_data = {
-        "resolveAvailability": isAvailable,
-        "address": {
-            "city": city,
-            "countryOrRegion": country,
-            "postalCode": postalCode,
-            "state": state,
-            "street": street
-        },
-        "displayName": displayName,
-        "locationEmailAddress": email,
-        "maxAttendees": attendees
-    }
-    data = load()
-    data['locations'].append(json_data)
-    store(data)
