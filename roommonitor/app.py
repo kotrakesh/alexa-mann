@@ -281,6 +281,10 @@ def get_token():
 
 @ask.launch
 def welcome():
+    '''
+    A launch function invoked atthe beginnning when user starts alexa
+    :return: Hello, please tell me the dates and times when your meeting shall be scheduled
+    '''
     room.date = None  # '2017-07-16'
     room.time = None  # '03:00'
     room.duration = None  # 'PT5M'
@@ -289,6 +293,11 @@ def welcome():
 
 @ask.intent("DateIntent")
 def missing_duration_time(Date):
+    '''
+    Function called when user specifies the date only
+    :param Date: Date of the event
+    :return: What time is the meeting and how long is it?
+    '''
     room.date = Date
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
@@ -304,6 +313,11 @@ def missing_duration_time(Date):
 
 @ask.intent("TimeIntent")
 def missing_date_duration(Time):
+    '''
+    Function called when user specifies the time only
+    :param Time: Time of the event
+    :return: Whats the date and the duration of the meeting?
+    '''
     room.time = Time
     print('TimeIntent - Date: ' + str(room.date))
     print('TimeIntent - Time: ' + str(room.time))
@@ -324,6 +338,11 @@ def missing_date_duration(Time):
 
 @ask.intent("DurationIntent")
 def missing_date_time(Duration):
+    '''
+    Function called when user specifies the duration only
+    :param Duration: Duration of the event
+    :return: What day and what time is the meeting?
+    '''
     room.duration = ask_session.attributes['duration'] = Duration
 
     if not room.date and not room.time:
@@ -339,6 +358,12 @@ def missing_date_time(Duration):
 
 @ask.intent("DateDurationIntent")
 def missing_time(Date, Duration):
+    '''
+    Function called when user specifies date and duration
+    :param Date: Date of the event
+    :param Duration: Duration of the event
+    :return: What time is the meeting?
+    '''
     room.date = Date
     room.duration = Duration
 
@@ -350,6 +375,12 @@ def missing_time(Date, Duration):
 
 @ask.intent("DateTimeIntent")
 def missing_duration(Date, Time):
+    '''
+    Function called when user specifies date and time
+    :param Date: date of the event
+    :param Time: time of the event
+    :return: How long is the meeting?
+    '''
     room.date = Date
     room.time = Time
 
@@ -362,6 +393,12 @@ def missing_duration(Date, Time):
 
 @ask.intent("TimeDurationIntent")
 def missing_date(Time, Duration):
+    '''
+    Function called when user specifies time and duration
+    :param Time: time of the event
+    :param Duration: duration of the event
+    :return: hat day is the meeting?
+    '''
     room.duration = Duration
     room.time = Time
     if not room.date:
@@ -372,6 +409,13 @@ def missing_date(Time, Duration):
 
 @ask.intent("DataTimeDurationIntent")
 def allKnown(Date, Time, Duration):
+    '''
+    Function called when user specifies the date, time and duration
+    :param Date: date of the event
+    :param Time: time of the event
+    :param Duration: duration of the event
+    :return: How many attendees will attend the meeting?
+    '''
     room.date = Date
     room.time = Time
     room.duration = Duration
@@ -382,6 +426,11 @@ def allKnown(Date, Time, Duration):
 
 @ask.intent("AttendeesIntent")
 def numberOfAttendees(Attendees):
+    '''
+    Function called when the user specifies the number of attendees
+    :param Attendees: number of attendees who will attend the meeting
+    :return: Whats the title of the event?
+    '''
     room.attendees = Attendees
     if not room.duration or not room.date or not room.time:
         return question("Please, specify the date, time and the duration first")
@@ -391,6 +440,11 @@ def numberOfAttendees(Attendees):
 
 @ask.intent("TitleIntent")
 def title_of_event(Title):
+    '''
+    Function called when user specifies the title of the event
+    :param Title: title of the event
+    :return: readMeeetingTime(date, time, duration, attendees, title)
+    '''
     if room.date and not room.time and room.duration:
         return missing_time(room.date, room.duration)
     if not room.date and room.time and room.duration:
@@ -403,6 +457,15 @@ def title_of_event(Title):
 
 # Print and return the meeting room
 def readMeetingTime(Date, Time, Duration, Attendees, Title):
+    '''
+    Function which gives informatio about availible rooms
+    :param Date: date of the event
+    :param Time: time of the event
+    :param Duration: duration of the event
+    :param Attendees: number of attendees at the event
+    :param Title: title of the event
+    :return: Message about the state of room booking
+    '''
     print('readMeetingTime')
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
