@@ -2,12 +2,13 @@ import logging
 from random import randint
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
-
+import dataBaseAccess_main
+#from dataBaseAccess_main.py 
 
 app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
-
+dbco = dbc()
 
 @ask.launch
 
@@ -17,19 +18,19 @@ def predective_maintenance():
 
 @ask.intent("YesterdayIntent")
 def past_yesterday():
-	currentRecieved = pastYesterday()
+	currentRecieved = dbco.pastYesterday()
 	pastCurrent = render_template('yesterdayCurrent', numbers=currentRecieved)
 	return statement(pastCurrent)
 
 @ask.intent("LastweekIntent")
 def past_week():
-	currentRecieved = pastlastWeek()
+	currentRecieved = dbco.pastlastWeek()
 	pastWeekCurrent = render_template('lastweekCurrent', numbers=currentRecieved)
 	return statement(pastWeekCurrent)
 
 @ask.intent("TillnowcurrentIntent")
 def present_tillNow():
-	currentRecieved = tillNowCurrent()
+	currentRecieved = dbco.tillNowCurrent()
 	presentTillNowCurrent = render_template('todayCurrentTillNow', numbers=currentRecieved)
 	return statement(presentTillNowCurrent)
 
@@ -41,13 +42,13 @@ def present_tillNow():
 
 @ask.intent("TodayaftercurrentIntent")
 def present_after():
-	currentRecieved = todayAfterCurrent()
+	currentRecieved = dbco.todayAfterCurrent()
 	presentAfterCurrent = render_template('todayCurrentAfter', numbers=currentRecieved)
 	return statement(presentAfterCurrent) 
 
 @ask.intent("TodayweatherIntent")
 def present_weather():
-	weatherRecieved = todayWeather()
+	weatherRecieved = dbco.todayWeather()
 	presentWeather = render_template('todayWeather', numbers=weatherRecieved)
 	return statement(presentWeather) 
 
@@ -59,25 +60,25 @@ def present_weather():
 
 @ask.intent("TomorrowcurrentIntent")
 def future_tomorrow_current():
-	currentRecieved = tomorrowCurrent()
+	currentRecieved = dbco.tomorrowCurrent()
 	futureTomorrowCurrent = render_template('tomorrowCurrent', numbers=currentRecieved)
 	return statement(futureTomorrowCurrent) 
 
 @ask.intent("NextweekcurrentIntent")
 def future_week_current():
-	currentRecieved = next5DaysCurrent()
+	currentRecieved = dbco.next5DaysCurrent()
 	futureWeekCurrent = render_template('nextweekCurrent', numbers=currentRecieved)
 	return statement(futureWeekCurrent)
 
 @ask.intent("TomorroweatherIntent")
 def future_Tomorrow_weather():
-	weatherRecieved = tomorrowWeather()
+	weatherRecieved = dbco.tomorrowWeather()
 	futureTomorrowWeather = render_template('tomorrowWeather', numbers=weatherRecieved)
 	return statement(futureTomorrowWeather)  
 
 @ask.intent("NextweekweatherIntent")
 def future_Week_weather():
-	weatherRecieved = Nnext5DaysWeather()
+	weatherRecieved = dbco.Nnext5DaysWeather()
 	futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved)
 	return statement(futureWeekWeather)  
 

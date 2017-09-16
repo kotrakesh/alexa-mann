@@ -1,6 +1,8 @@
 import MySQLdb
 from config.py import dataBaseConnection
-	
+
+class dbc:
+	"""docstring for ClassName"""
 	def pastYesterday(self):
 		cursor = global dataBaseConnection()
 		query = "SELECT sum(current_output*900) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-1 and curr_timestamp <curdate() " #actual SQL statement to be executed
@@ -79,4 +81,3 @@ from config.py import dataBaseConnection
 
 
 
-# ask how are we piontng which metho to call.
