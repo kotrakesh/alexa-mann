@@ -12,7 +12,7 @@
   <!-- App main content markup. -->
   <main  class="ms-Grid-col ms-u-mdPush1 ms-sm6 ms-md9 ms-u-md9 ms-u-lgPush1 ms-u-lg6 ms-lg9">
 
-      <!-- Information -->
+      <!-- Account Information - Display Calendars -->
       <div class="accountInformation">
           <h3 class="ms-font-xl">Account Informationen</h3>
 
@@ -25,7 +25,7 @@
       </div>
 
 
-      <!-- Interaction -->
+      <!-- Interaction - Create calendars -->
       <div class="accountInteractions">
         <h3 class="ms-font-xl">Account Interaktionen</h3>
         <button onclick="toggleCreateRoom()" class="ms-Button ms-Button--compound">
@@ -117,7 +117,7 @@
       </div>
       {% endif %}
 
-      <!-- Error Messages -->
+      <!-- Success messages, displayed after creating or deleting a calendar -->
       {% if showSuccess_createCalendar == 'true' %}
         <div class="ms-MessageBar ms-MessageBar--success">
           <div class="ms-MessageBar-content">
@@ -195,6 +195,7 @@
 
   <!-- Sidebar -->
   <aside class="ms-Grid-col ms-u-mdPush1 ms-sm6 ms-md3 ms-u-md3 ms-u-lgPush1 ms-u-lg3 ms-lg3">
+      <!-- displays Account details -->
       <h3 class="ms-font-xl">Account Details</h3>
       <ul class="ms-List">
 		<li class="ms-ListItem">
