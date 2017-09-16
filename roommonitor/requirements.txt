@@ -71,7 +71,6 @@ termcolor==1.1.0
 termineter==0.2.7
 tzlocal==1.4
 urllib3==1.21.1
-vboxapi==1.0
 virtualenv==15.1.0
 websocket-client==0.37.0
 Werkzeug==0.12.2
