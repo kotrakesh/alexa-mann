@@ -2,8 +2,7 @@ import logging
 from random import randint
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
-import dataBaseAccess_main
-#from dataBaseAccess_main.py 
+from dataBaseAccess_main import dbc
 
 app = Flask(__name__)
 ask = Ask(app, "/")
