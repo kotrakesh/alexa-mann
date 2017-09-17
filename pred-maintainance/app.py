@@ -34,11 +34,12 @@ def present_tillNow():
 	presentTillNowCurrent = render_template('todayCurrentTillNow', numbers=currentRecieved)
 	return statement(presentTillNowCurrent)
 
-#@ask.intent("NowcurrentIntent")
-#def present_now():
-#	#urrentRecieved = #-----------------------------------------------------------------
-#	presentNowCurrent = render_template('todayCurrentNow', numbers=currentRecieved)
-#	return statement(presentTillNowCurrent)
+@ask.intent("NowcurrentIntent")
+def present_now():
+	currentRecieved = dbco.currentNow()
+	
+	presentNowCurrent = render_template('todayCurrentNow', numbers=currentRecieved)
+	return statement(presentNowCurrent)
 
 @ask.intent("TodayaftercurrentIntent")
 def present_after():

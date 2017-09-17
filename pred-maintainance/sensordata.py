@@ -2,7 +2,7 @@ import time
 import json
 import config
 import pymysql
-from flask import Flask, render_template
+from flask import Flask, render_template,Response
 import Adafruit_GPIO.SPI as SPI# Import SPI library (for hardware SPI) and MCP3008 library.
 import Adafruit_MCP3008
 app = Flask(__name__)
@@ -25,20 +25,8 @@ def sesnordata():
         for i in range(8):
             # The read_adc function will get the value of the specified channel (0-7).
             values[i] = mcp.read_adc(i)
-
-        return json.dumps(values)
+        jsondata  = json.dumps(values)   
+        return Response(jsondata, mimetype='application/json')
 
 if __name__ == "__main__":
-	query = "SELECT ip from `heroku_c0277ef6294fdf7`.`raspi_ip` WHERE `status`=1 limit 1";
-		#print (query)
-	cnx = pymysql.connect(user=config.dbUser, password=config.dbPassowrd,
-                                  host=config.dbHost,
-                                  database=config.dbDatabase)
-	x = cnx.cursor()
-	x.execute(query)
-	for row in x:
-		data = row
-	tempip=data[0]
-	cnx.commit()
-	cnx.close()
-	app.run(host= tempip,debug=True)
+	app.run(debug=True)
