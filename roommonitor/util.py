@@ -27,6 +27,10 @@ def create_event_from_alexa(start, end, title, room_name, cal_id):
 
 def getMeetingEndTime(start, duration):
 
+    if re.search(r'AF', start):
+        start = re.search(r'(\d\d:\d\d)', start).group(1)
+        #start + 12:00
+
     if re.search(r'\d*H', duration):
         hours = re.search(r'(\d*)H', duration).group(1)
     else:
@@ -49,6 +53,7 @@ def getMeetingEndTime(start, duration):
     if len(str(sum)) < 8:
         return  '0' + str(sum)
     return str(sum)
+print(getMeetingEndTime("AF 10:30","PT12H10M50S"))
 
 # Check the right filepath
 def store(data):
