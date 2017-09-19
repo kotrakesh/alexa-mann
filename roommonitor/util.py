@@ -24,12 +24,35 @@ def create_event_from_alexa(start, end, title, room_name, cal_id):
     print("cal id:"+cal_id)
     ms_endpoints.call_createvent(room.token, start, end, title, room_name, cal_id)
 
+def timeSum(timeA, timeB):
+    timeList = [timeA, timeB]
+    sum = datetime.timedelta()
+    for i in timeList:
+        (h, m) = i.split(':')
+        d = datetime.timedelta(hours=int(h), minutes=int(m))
+        sum += d
+    if len(str(sum)) < 8:
+        return '0' + str(sum)
+    return strfdelta(sum, "{hours}:{minutes}")
+
+def strfdelta(tdelta, fmt):
+    d = {"days": tdelta.days}
+    d["hours"], rem = divmod(tdelta.seconds, 3600)
+    d["minutes"], d["seconds"] = divmod(rem, 60)
+    return fmt.format(**d)
+
+def stringToTime(AF=True, time="10:30"):
+    if AF:
+        time = time + 'PM'
+    else:
+        time = time + 'AM'
+    datetime_object = datetime.datetime.strptime(time, '%I:%M%p')
+    return datetime_object
 
 def getMeetingEndTime(start, duration):
-
     if re.search(r'AF', start):
-        start = re.search(r'(\d\d:\d\d)', start).group(1)
-        #start + 12:00
+        tmp = stringToTime(AF = True, time = re.sub('(AF )?', '', start))
+        start = tmp.strftime("%H:%M")
 
     if re.search(r'\d*H', duration):
         hours = re.search(r'(\d*)H', duration).group(1)
@@ -41,19 +64,11 @@ def getMeetingEndTime(start, duration):
     else:
         minutes = '00'
 
-    time = hours + ':' + minutes
+    time = hours + ':' + minutes#
 
-    timeList = [start, time]
-    sum = datetime.timedelta()
-    for i in timeList:
-        (h, m) = i.split(':')
-        d = datetime.timedelta(hours=int(h), minutes=int(m))
-        sum += d
+    return timeSum(start, time)
+print(getMeetingEndTime("10:30", "PT12H10M50S"))
 
-    if len(str(sum)) < 8:
-        return  '0' + str(sum)
-    return str(sum)
-print(getMeetingEndTime("AF 10:30","PT12H10M50S"))
 
 # Check the right filepath
 def store(data):
@@ -99,3 +114,4 @@ def delete_room_to_json(name):
 
     data['locations'].pop(x)
     store(data)
+
