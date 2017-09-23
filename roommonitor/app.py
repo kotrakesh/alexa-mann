@@ -121,7 +121,7 @@ def authorized():
     # email_address = me_data['userPrincipalName']
     # session['alias'] = username
     # session['userEmailAddress'] = email_address
-    room.token = session['access_token']             # save room token for further useage
+    room.token = session['access_token']             # save room token for further usage
     return redirect('main')
 
 
@@ -131,7 +131,7 @@ def main():
     Main function to display the Dashboard after successful login
     :return: renders Dashboard with all necessary information about the users calenders (rooms) and account information
     """
-    room.data = cal_data = get_calendars()  # directly load the calenders after login
+    room.data = cal_data = get_calendars(session['access_token'])  # directly load the calenders after login
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
 
@@ -157,16 +157,23 @@ def get_me():
 
 ### Calendars ###
 
-def get_calendars():
+def get_calendars(token):
     """
     Retrieves calendars
+    :param:  session token to authenticate with Microsoft, used by Amazon as well
     :return: all calendars which belongs to the logged in user
     """
-    cal = msgraphapi.get('me/calendars')
-    return json.loads(json.dumps(cal.data))
+    cal = ms_endpoints.call_getcalendars(token)
+    print('cal: ')
+    print(cal)
+    #convert to json
+    cal_json = json.loads(cal)
+    print('cal_json')
+    print(cal_json)
+    return cal_json
 
 
-
+# USED only for the MS Frontend
 @app.route('/create_calendar')
 def create_calendar():
     """
@@ -199,7 +206,7 @@ def create_calendar():
         show_success = 'false'
         show_error = 'true'
 
-    room.data = get_calendars()
+    room.data = get_calendars(session['access_token'])
 
     session['pageRefresh'] = 'true'
     # returns Dashboard
@@ -207,6 +214,7 @@ def create_calendar():
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
 
 
+# USED only for the MS Frontend
 @app.route('/delete_calendar')
 def delete_calendar():
     """
@@ -239,6 +247,7 @@ def delete_calendar():
                            jsondata=room.data, calName=calendar_name, showSuccess_deletedCalendar=show_success, showError_deletedCalendar=show_error, error_deleteCalendar=errormessage, showCalendars=0)
 
 
+# USED only for the MS Frontend
 ### Events ###
 @app.route('/list_events')
 def list_events():
@@ -336,6 +345,22 @@ def missing_duration_time(Date):
     :return:        What time is the meeting and how long is it?
     """
     room.date = Date
+
+
+
+    if not ask_session['user']['accessToken']:
+        print('room token was not set')
+        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+    room.token = ask_session['user']['accessToken']
+    print(room.token)
+
+    response = get_calendars(room.token)
+    print(response)
+
+   # if not room.token:
+   #     print('room token was not set')
+   #     return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+   # print(room.token)
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
         return question(render_template('msg_missing_duration_time'))
@@ -469,9 +494,12 @@ def numberOfAttendees(Attendees):
     :return:            Whats the title of the event?
     """
     room.attendees = Attendees
-    if not room.duration or not room.date or not room.time:
-        return question("Please, specify the date, time and the duration first")
-    #TODO specify missing information
+    if room.date and not room.time and room.duration:
+        return missing_time(room.date, room.duration)
+    if not room.date and room.time and room.duration:
+        return missing_date(room.time, room.duration)
+    if room.date and room.time and not room.duration:
+        return missing_duration(room.date, room.time)
     return question(render_template('msg_title'))
 
 
@@ -503,18 +531,28 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     :param Title:       title of the event
     :return:            statement for Amazon Echo including card information
     """
-    print('readMeetingTime')
+
+    if not ask_session['user']['accessToken']:
+        print('room token was not set')
+        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+
+    room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
+
+
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
     # Changing datatypes for Microsoft
     start = util.convert_amazon_to_ms(Date, Time)
+
     # calculate: end = start_time + duration
     am_end = util.getMeetingEndTime(Time, Duration)
     end = util.convert_amazon_to_ms(Date, am_end)
+    print('start and endtimes: ' , start, end)
 
     # check for free rooms with the constraints
     result = getFreeRooms(start, end, Attendees, Title)
 
+    print(result)
     if (result['roomFound'] == 1):
         # returns answer to Alexa and displays the card in the Alexa App, at this time the calendar event already has been booked
         return statement(render_template('msg_booked_room_success', roomname=result['roomName']))\
@@ -539,17 +577,20 @@ def getFreeRooms(t_start, t_end, attendees, title):
     :param title:       title of the event
     :return:            python object, with information about status of room booking and fail reason on error
     """
-    # TODO authenticate with Graph API
+    print('getFreeRooms')
 
     print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
     # opens the json database
     locConstraint = json.load(open('./resources/locationConstraint.json'))
+    print('getCalendars')
+    room.data = get_calendars(room.token)
+    #print(room.data)
 
-    # Workaround to load rooms from Microsoft, User MUST login in on the portal before
+    print('looking for rooms')
+
     if(room.data is None):
         return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms from Microsoft API'}
-
 
     for cal in room.data['value']:
         # ignore some standard calendars
@@ -561,6 +602,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
 
         #returns events for the specified times
         jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+        print(jdata)
         data = json.loads(jdata.text)
 
         if not data['value']:
@@ -573,13 +615,13 @@ def getFreeRooms(t_start, t_end, attendees, title):
                 if l['displayName'] == cal['name']:
                     # check if the room is big enough to hold the number of specified people
                     if int(attendees) <= int(l['maxAttendees']):
-                        print('Raumgroesse: ' +  str(attendees), ' max: ', str(l['maxAttendees']))
+                        print('Anzahl Teilnehmer: ' +  str(attendees), ' max Raumgroesse: ', str(l['maxAttendees']))
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
                         # create calendar event for that room
-                        util.create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
-
+                        #util.create_event_from_alexa(t_start, t_end, title, cal['name'], cal['id'])
+                        ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
                         # Free room found
                         return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
                     else:
@@ -592,4 +634,5 @@ def getFreeRooms(t_start, t_end, attendees, title):
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
+	#app.run()

@@ -92,6 +92,31 @@ def call_listevents_for_time(access_token, id, start, end):
 
 
 
+def call_getcalendars(access_token):
+    """Call the resource URL for the sendMail action."""
+    send_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
+
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'}
+
+    # Use these headers to instrument calls. Makes it easier to correlate
+    # requests and responses in case of problems and is a recommended best
+    # practice.
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+
+    # Create the email that is to be sent via the Graph API
+    response = requests.get(url=send_calendar_url, headers=headers)
+    if response.ok:
+        return response.text # make sure to return the text attribute instead of the full object
+    else:
+        print('error: ')
+        return '{0}: {1}'.format(response.status_code, response.text)
 
 ### Calendars
 
