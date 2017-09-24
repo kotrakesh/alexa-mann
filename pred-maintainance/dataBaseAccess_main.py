@@ -89,6 +89,6 @@ class dbc:
 		print(url)
 		f = requests.get(url)
 		jdata= f.json()
-		powq = (jdata[0] * jdata[1])+jdata[0]#actual conversion	
+		powq = jdata[0] * config.powerFactor #actual conversion	
 		ret = str(powq)		
 		return ret
