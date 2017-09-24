@@ -117,7 +117,7 @@
       </div>
       {% endif %}
 
-      <!-- Success messages, displayed after creating or deleting a calendar -->
+      <!-- Show message box after creating a calendar -->
       {% if showSuccess_createCalendar == 'true' %}
         <div class="ms-MessageBar ms-MessageBar--success">
           <div class="ms-MessageBar-content">
@@ -153,7 +153,7 @@
       </div>
       {% endif %}
 
-
+      <!-- Show message box after deleting a calendar -->
       {% if showSuccess_deletedCalendar == 'true' %}
         <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
           <div class="ms-MessageBar-content">
@@ -209,26 +209,8 @@
             <i class="ms-Icon ms-Icon--Mail"></i>
         </li>
 	  </ul>
-
-    <!--
-      <h3 class="ms-font-xl">Alexa Informationen</h3>
-      <ul class="ms-List">
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Datum: {{ aDate }} </span>
-        </li>
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Zeit: {{ aTime }}</span>
-        </li>
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Dauer: {{ aDuration }}</span>
-        </li>
-        <li class="ms-ListItem">
-            <span class="ms-font-m">Anzahl Teilnehmer: {{ aAttendees }}</span>
-        </li>
-	  </ul>
-    -->
   </aside>
 
-</body>
+</body><!-- end body -->
 
 </html>
