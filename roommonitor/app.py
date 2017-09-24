@@ -62,9 +62,6 @@ msgraphapi = oauth.remote_app( \
 )
 
 
-
-
-
 ##################################
 
 
@@ -76,9 +73,6 @@ def index():
     """
     return login()
 
-
-# https://forums.developer.amazon.com/questions/5428/how-to-link-an-amazon-alexa-skill-using-azure-app.html
-# http://www.macadamian.com/2016/03/24/creating-a-new-alexa-skill/
 
 @app.route('/login')
 def login():
@@ -260,66 +254,6 @@ def list_events():
     events = msgraphapi.get('me/calendars/'+cal_id+'/events')
     return render_template('events.html', name=session['alias'], data=events.data, calName=cal_name, jsondata=room.data)
 
-# # still necessary?
-# @app.route('/create_event')
-# def create_event():
-#     """Handler for create_event route."""
-#     cal_id = request.args.get('cal_id')
-#     cal_date = request.args.get('date')
-#     cal_start_time = request.args.get('start')
-#     cal_end_time = request.args.get('end')
-#     cal_title = request.args.get('title')
-#     cal_room = request.args.get('room')
-#     start = util.convert_amazon_to_ms(cal_date, cal_start_time)
-#     end = util.convert_amazon_to_ms(cal_date, cal_end_time)
-#     print("cal id:"+cal_id)
-#     response = ms_endpoints.call_createvent(session['access_token'], start, end, cal_title, cal_room, cal_id)
-#     if response == 'SUCCESS':
-#         show_success = 'true'
-#         show_error = 'false'
-#     else:
-#         print(response)
-#         show_success = 'false'
-#         show_error = 'true'
-#
-#     session['pageRefresh'] = 'false'
-#     return render_template('main.html', name=session['alias'], data=response, showSuccess=show_success,
-#                            showError=show_error)
-
-#still needed??
-# @app.route('/list_events_for_time')
-# def list_events_for_time():
-#     cal_id = request.args.get('cal_id')  # get email address from the form
-#     cal_name = request.args.get('cal_name')
-#     cal_date = request.args.get('date')
-#     cal_start_time = request.args.get('start_time')
-#     cal_end_time = request.args.get('end_time')
-#     start = util.convert_amazon_to_ms(cal_date, cal_start_time)
-#     end = util.convert_amazon_to_ms(cal_date, cal_end_time)
-#     response = ms_endpoints.call_listevents_for_time(session['access_token'], cal_id, start, end)
-#     data = json.loads(response.text)
-#
-#     print(cal_name, cal_date, cal_start_time, cal_end_time)
-#     if response.ok:
-#         show_success = 'true'
-#         show_error = 'false'
-#     else:
-#         print(response)
-#         show_success = 'false'
-#         show_error = 'true'
-#
-#     session['pageRefresh'] = 'false'
-#     #print(response)
-#
-#     return render_template('calendars.html', name=session['alias'], calName=cal_name, data=data,
-#                            showSuccess_listEvents=show_success, showError_listEvents=show_error, showEvents=1)
-
-
-@msgraphapi.tokengetter
-def get_token():
-    """Return the Oauth token."""
-    return session.get('microsoft_token')
-
 
 ################################################################################################################3
 
@@ -350,7 +284,7 @@ def missing_duration_time(Date):
 
     if not ask_session['user']['accessToken']:
         print('room token was not set')
-        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+        return statement(render_template('msg_failed_linking')).link_account_card()
     room.token = ask_session['user']['accessToken']
     print(room.token)
 
@@ -630,7 +564,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
                         print('Raum ist zu klein')
 
         else:
-            print('Events vorhanden')
+            print('Events vorhanden in room ', cal['name'])
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 if __name__ == '__main__':
