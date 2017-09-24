@@ -334,7 +334,7 @@ def welcome():
     room.date = None  # '2017-07-16'
     room.time = None  # '03:00'
     room.duration = None  # 'PT5M'
-    return question(render_template('msg_launch_request'))
+    return question(render_template('msg_launch_request')).repromt(render_template('repromt'))
 
 
 @ask.intent("DateIntent")
@@ -363,7 +363,7 @@ def missing_duration_time(Date):
    # print(room.token)
 
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
-        return question(render_template('msg_missing_duration_time'))
+        return question(render_template('msg_missing_duration_time')).repromt(render_template('repromt'))
     elif room.duration and not room.time:
         return missing_time(room.date, room.duration)
     elif room.time and not room.duration:
@@ -388,7 +388,7 @@ def missing_date_duration(Time):
         room.time = None
 
     if not room.date and not room.duration:
-        return question(render_template('msg_missing_date_duration'))
+        return question(render_template('msg_missing_date_duration')).repromt(render_template('repromt'))
     elif room.date and not room.duration:
         return missing_duration(room.date, room.time)
     elif not room.date and room.duration:
@@ -408,7 +408,7 @@ def missing_date_time(Duration):
     room.duration = ask_session.attributes['duration'] = Duration
 
     if not room.date and not room.time:
-        return question(render_template('msg_missing_date_time'))
+        return question(render_template('msg_missing_date_time')).repromt(render_template('repromt'))
     elif room.date and not room.time:
         return missing_time(room.date, room.duration)
     elif not room.date and room.time:
@@ -430,7 +430,7 @@ def missing_time(Date, Duration):
     room.duration = Duration
 
     if not room.time:
-        return question(render_template('msg_missing_time'))
+        return question(render_template('msg_missing_time')).repromt(render_template('repromt'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -448,7 +448,7 @@ def missing_duration(Date, Time):
 
     if not room.duration:
         print('DateTimeIntent no duration')
-        return question(render_template('msg_missing_duration'))
+        return question(render_template('msg_missing_duration')).repromt(render_template('repromt'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -464,7 +464,7 @@ def missing_date(Time, Duration):
     room.duration = Duration
     room.time = Time
     if not room.date:
-        return question(render_template('msg_missing_date'))
+        return question(render_template('msg_missing_date')).repromt(render_template('repromt'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -483,7 +483,7 @@ def allKnown(Date, Time, Duration):
     room.duration = Duration
     print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
 
-    return question(render_template('msg_attendees'))
+    return question(render_template('msg_attendees')).repromt(render_template('repromt'))
 
 
 @ask.intent("AttendeesIntent")
@@ -500,7 +500,7 @@ def numberOfAttendees(Attendees):
         return missing_date(room.time, room.duration)
     if room.date and room.time and not room.duration:
         return missing_duration(room.date, room.time)
-    return question(render_template('msg_title'))
+    return question(render_template('msg_title')).repromt(render_template('repromt'))
 
 
 @ask.intent("TitleIntent")
@@ -634,5 +634,5 @@ def getFreeRooms(t_start, t_end, attendees, title):
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 if __name__ == '__main__':
-	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
-	#app.run()
+	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
+	app.run()
