@@ -25,34 +25,35 @@ def create_event_from_alexa(start, end, title, room_name, cal_id):
     ms_endpoints.call_createvent(room.token, start, end, title, room_name, cal_id)
 
 def timeSum(timeA, timeB):
-    timeList = [timeA, timeB]
-    sum = datetime.timedelta()
-    for i in timeList:
-        (h, m) = i.split(':')
-        d = datetime.timedelta(hours=int(h), minutes=int(m))
-        sum += d
-    if len(str(sum)) < 8:
-        return '0' + str(sum)
-    return strfdelta(sum, "{hours}:{minutes}")
+    hoursA = re.search(r'(^[^:]+)', timeA).group(1)
+    minutesA = re.search(r'([^:]+$)', timeA).group(1)
+    hoursB = re.search(r'(^[^:]+)', timeB).group(1)
+    minutesB = re.search(r'([^:]+$)', timeB).group(1)
 
-def strfdelta(tdelta, fmt):
-    d = {"days": tdelta.days}
-    d["hours"], rem = divmod(tdelta.seconds, 3600)
-    d["minutes"], d["seconds"] = divmod(rem, 60)
-    return fmt.format(**d)
-
-def stringToTime(AF=True, time="10:30"):
-    if AF:
-        time = time + 'PM'
+    minutes = (int(minutesA) + int(minutesB))
+    if minutes > 60:
+        extraHour = 1
+        minutes = minutes % 60
     else:
-        time = time + 'AM'
-    datetime_object = datetime.datetime.strptime(time, '%I:%M%p')
-    return datetime_object
+        extraHour = 0
+
+    hours = (extraHour + int(hoursA) + int(hoursB)) % 24
+
+    if hours < 10:
+        hours = "0" + str(hours)
+    if minutes < 10:
+        minutes = "0" + str(minutes)
+    time = str(hours) + ":" + str(minutes)
+    return time
 
 def getMeetingEndTime(start, duration):
+    if not re.search(r'\d\d:\d\d', start):
+        start = start + ":00"
     if re.search(r'AF', start):
-        tmp = stringToTime(AF = True, time = re.sub('(AF )?', '', start))
-        start = tmp.strftime("%H:%M")
+        if re.search(r'\b[1-9]\b', start):
+            start = timeSum("0" + re.search(r'(\b[1-9]\b)', start).group(1) + ":00", "12:00")
+        else:
+            start = timeSum(re.search(r'(\d\d:\d\d)', start).group(1), "12:00")
 
     if re.search(r'\d*H', duration):
         hours = re.search(r'(\d*)H', duration).group(1)
@@ -64,11 +65,8 @@ def getMeetingEndTime(start, duration):
     else:
         minutes = '00'
 
-    time = hours + ':' + minutes#
-
+    time = hours + ':' + minutes
     return timeSum(start, time)
-print(getMeetingEndTime("10:30", "PT12H10M50S"))
-
 
 # Check the right filepath
 def store(data):
