@@ -505,6 +505,9 @@ def getFreeRooms(t_start, t_end, attendees, title):
     print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
     # opens the json database
+    # TODO http get request von hoster
+    #requests.get(url)
+
     locConstraint = json.load(open('./resources/locationConstraint.json'))
     print('getCalendars')
     room.data = get_calendars(room.token)
@@ -525,7 +528,8 @@ def getFreeRooms(t_start, t_end, attendees, title):
 
         #returns events for the specified times
         jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
-        print(jdata)
+        print(jdata.text)
+        print('---')
         data = json.loads(jdata.text)
 
         if not data['value']:
