@@ -255,6 +255,12 @@ def list_events():
     return render_template('events.html', name=session['alias'], data=events.data, calName=cal_name, jsondata=room.data)
 
 
+@msgraphapi.tokengetter
+def get_token():
+    """Return the Oauth token."""
+    return session.get('microsoft_token')
+
+
 ################################################################################################################3
 
 # Alexa Skill Part
@@ -268,7 +274,7 @@ def welcome():
     room.date = None  # '2017-07-16'
     room.time = None  # '03:00'
     room.duration = None  # 'PT5M'
-    return question(render_template('msg_launch_request')).repromt(render_template('repromt'))
+    return question(render_template('msg_launch_request'))
 
 
 @ask.intent("DateIntent")
@@ -280,24 +286,8 @@ def missing_duration_time(Date):
     """
     room.date = Date
 
-
-
-    if not ask_session['user']['accessToken']:
-        print('room token was not set')
-        return statement(render_template('msg_failed_linking')).link_account_card()
-    room.token = ask_session['user']['accessToken']
-    print(room.token)
-
-    response = get_calendars(room.token)
-    print(response)
-
-   # if not room.token:
-   #     print('room token was not set')
-   #     return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
-   # print(room.token)
-
     if (room.duration is None or not room.duration) and (room.time is None or not room.time):
-        return question(render_template('msg_missing_duration_time')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_duration_time'))
     elif room.duration and not room.time:
         return missing_time(room.date, room.duration)
     elif room.time and not room.duration:
@@ -322,7 +312,7 @@ def missing_date_duration(Time):
         room.time = None
 
     if not room.date and not room.duration:
-        return question(render_template('msg_missing_date_duration')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_date_duration'))
     elif room.date and not room.duration:
         return missing_duration(room.date, room.time)
     elif not room.date and room.duration:
@@ -342,7 +332,7 @@ def missing_date_time(Duration):
     room.duration = ask_session.attributes['duration'] = Duration
 
     if not room.date and not room.time:
-        return question(render_template('msg_missing_date_time')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_date_time'))
     elif room.date and not room.time:
         return missing_time(room.date, room.duration)
     elif not room.date and room.time:
@@ -364,7 +354,7 @@ def missing_time(Date, Duration):
     room.duration = Duration
 
     if not room.time:
-        return question(render_template('msg_missing_time')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_time'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -382,7 +372,7 @@ def missing_duration(Date, Time):
 
     if not room.duration:
         print('DateTimeIntent no duration')
-        return question(render_template('msg_missing_duration')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_duration'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -398,7 +388,7 @@ def missing_date(Time, Duration):
     room.duration = Duration
     room.time = Time
     if not room.date:
-        return question(render_template('msg_missing_date')).repromt(render_template('repromt'))
+        return question(render_template('msg_missing_date'))
     else:
         return allKnown(room.date, room.time, room.duration)
 
@@ -417,7 +407,7 @@ def allKnown(Date, Time, Duration):
     room.duration = Duration
     print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
 
-    return question(render_template('msg_attendees')).repromt(render_template('repromt'))
+    return question(render_template('msg_attendees'))
 
 
 @ask.intent("AttendeesIntent")
@@ -434,7 +424,7 @@ def numberOfAttendees(Attendees):
         return missing_date(room.time, room.duration)
     if room.date and room.time and not room.duration:
         return missing_duration(room.date, room.time)
-    return question(render_template('msg_title')).repromt(render_template('repromt'))
+    return question(render_template('msg_title'))
 
 
 @ask.intent("TitleIntent")
@@ -466,12 +456,11 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     :return:            statement for Amazon Echo including card information
     """
 
-    if not ask_session['user']['accessToken']:
+    try:
+        room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
+    except:
         print('room token was not set')
         return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
-
-    room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
-
 
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
@@ -568,5 +557,5 @@ def getFreeRooms(t_start, t_end, attendees, title):
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 if __name__ == '__main__':
-	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
-	app.run()
+	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
+	#app.run()
