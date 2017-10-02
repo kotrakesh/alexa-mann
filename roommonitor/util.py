@@ -3,6 +3,8 @@ import datetime
 import json
 import ms_endpoints
 import room_class
+import ssl
+import urllib
 room = room_class.Room()
 
 ################################################################################
@@ -69,15 +71,44 @@ def getMeetingEndTime(start, duration):
     return timeSum(start, time)
 
 # Check the right filepath
-def store(data):
-    with open('./resources/locationConstraint.json', 'w') as json_file:
-        json_file.write(json.dumps(data))
+# Check the right filepath
+def store(d):
+    #with open('./resources/locationConstraint.json', 'w') as json_file:
+    #   json_file.write(json.dumps(data))
+
+    # headers = {'content-type': 'application/json'}
+    # requests.post(url, data=json.dumps(data), headers=headers, verify=False)
+
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    data = {'ids': [12, 14, 50]}
+    url = "https://sovanta.ddnss.de/locationConstraint.json"
+    req = urllib.request.Request(url)
+    req.add_header('Content-Type', 'application/json; charset=utf-8')
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')  # needs to be bytes
+    req.add_header('Content-Length', len(jsondataasbytes))
+    print(jsondataasbytes)
+    urllib.request.urlopen(url, jsondataasbytes, context=ctx)
+
+
+
 
 
 def load():
-    with open('./resources/locationConstraint.json') as json_file:
-        data = json.load(json_file)
+    #with open('./resources/locationConstraint.json') as json_file:
+        #url = "https://sovanta.ddnss.de/locationConstraint.json"
+        #data = json.load(json_file)
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    with urllib.request.urlopen("https://sovanta.ddnss.de/locationConstraint.json",context=ctx) as url:
+        data = json.loads(url.read().decode())
+        #print(data)
         return data
+
+
 
 
 def create_room_to_json(isAvailable, city, country, postalCode, state, street, displayName, email, attendees):
