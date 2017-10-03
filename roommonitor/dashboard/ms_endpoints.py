@@ -59,6 +59,7 @@ def call_createvent(access_token, tStart, tEnd, title, roomName, cal_id):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
+# TODO correct api function for frontend
 
 # This function returns an array of events for the specified times
 # @param access_token   Security token for the MS Graph API
@@ -73,7 +74,9 @@ def call_listevents_for_time(access_token, id, start, end):
     headers = {'User-Agent': 'python_tutorial/1.0',
                'Authorization': 'Bearer {0}'.format(access_token),
                'Accept': 'application/json',
-               'Content-Type': 'application/json'}
+               'Content-Type': 'application/json',
+               'Prefer' : 'outlook.timezone="W. Europe Standard Time"'
+               }
 
     request_id = str(uuid.uuid4())
     instrumentation = {'client-request-id': request_id,
@@ -88,6 +91,8 @@ def call_listevents_for_time(access_token, id, start, end):
     if response.ok:
         return response
     else:
+        print('ms listevents failed !!!!!')
+        #TODO try and exception
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
