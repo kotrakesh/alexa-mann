@@ -71,26 +71,28 @@ def getMeetingEndTime(start, duration):
     return timeSum(start, time)
 
 # Check the right filepath
-# Check the right filepath
-def store(d):
+def store(data):
     #with open('./resources/locationConstraint.json', 'w') as json_file:
     #   json_file.write(json.dumps(data))
-
-    # headers = {'content-type': 'application/json'}
-    # requests.post(url, data=json.dumps(data), headers=headers, verify=False)
-
+    #print(data)
+    '''
+    headers = {'content-type': 'application/json'}
+    url = "https://sovanta.ddnss.de/locationConstraint.json"
+    requests.post(url, data=json.dumps(data), headers=headers, verify=False)
+    '''
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
-    data = {'ids': [12, 14, 50]}
-    url = "https://sovanta.ddnss.de/locationConstraint.json"
+    url = "https://sovanta.ddnss.de/locationConstraint"
     req = urllib.request.Request(url)
     req.add_header('Content-Type', 'application/json; charset=utf-8')
     jsondata = json.dumps(data)
     jsondataasbytes = jsondata.encode('utf-8')  # needs to be bytes
     req.add_header('Content-Length', len(jsondataasbytes))
+    req.get_method = lambda: 'POST'
     print(jsondataasbytes)
-    urllib.request.urlopen(url, jsondataasbytes, context=ctx)
+    response = urllib.request.urlopen(url, jsondataasbytes, context=ctx)
+    print(response)
 
 
 
@@ -105,8 +107,15 @@ def load():
     ctx.verify_mode = ssl.CERT_NONE
     with urllib.request.urlopen("https://sovanta.ddnss.de/locationConstraint.json",context=ctx) as url:
         data = json.loads(url.read().decode())
-        #print(data)
+        print(data)
         return data
+    #url = 'https://sovanta.ddnss.de/locationConstraint.json'
+    #req = urllib.request.get(url,{'Content-Type': 'application/json'},verify=False)
+    #data = urllib.urlopen(req)
+    #url = 'https://sovanta.ddnss.de/locationConstraint.json'
+    #headers = {'content-type': 'application/json'}
+    #data=requests.get(url, data=json.load(), headers=headers)
+    #return data
 
 
 
