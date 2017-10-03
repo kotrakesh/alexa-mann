@@ -126,13 +126,7 @@ def main():
     room.data = cal_data = get_calendars(session['access_token'])  # directly load the calenders after login
 #    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
     me = get_me()
-
-    if session['alias']:
-        username = session['alias']
-        email_address = session['userEmailAddress']
-        return render_template('main.html', name=username, emailAddress=email_address, uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
-    else:
-        return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
+    return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
 
 
 
@@ -255,8 +249,3 @@ def list_events():
 def get_token():
     """Return the Oauth token."""
     return session.get('microsoft_token')
-
-
-if __name__ == '__main__':
-	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
-	app.run()
