@@ -129,7 +129,6 @@ def create_room_to_json(isAvailable, city, country, postalCode, state, street, d
     data['locations'].append(json_data)
     store(data)
 
-load()
 
 def delete_room_to_json(name):
     data=load()

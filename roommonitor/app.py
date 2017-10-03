@@ -508,7 +508,8 @@ def getFreeRooms(t_start, t_end, attendees, title):
     # TODO http get request von hoster
     #requests.get(url)
 
-    locConstraint = json.load(open('./resources/locationConstraint.json'))
+    locConstraint = util.load()
+
     print('getCalendars')
     room.data = get_calendars(room.token)
     #print(room.data)
