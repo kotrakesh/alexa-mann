@@ -125,16 +125,13 @@ def main():
     Main function to display the Dashboard after successful login
     :return: renders Dashboard with all necessary information about the users calenders (rooms) and account information
     """
-    room.data = cal_data = get_calendars(session['access_token'])  # directly load the calenders after login
-#    getFreeRooms('2017-08-15T08:00', '2017-08-15T10:00', 7) # directly test the function
-    me = get_me()
 
-    if session['alias']:
-        username = session['alias']
-        email_address = session['userEmailAddress']
-        return render_template('main.html', name=username, emailAddress=email_address, uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
-    else:
-        return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'], jsondata=cal_data, showCalendars=1)
+    room.data = cal_data = get_calendars(session['access_token'])  # directly load the calenders after login
+    me = get_me()
+    locationConstraint = util.load_locationConstraint()
+
+    return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
+                               jsondata=cal_data, showCalendars=1, locConstraint=locationConstraint)
 
 
 
@@ -204,9 +201,9 @@ def create_calendar():
 
     session['pageRefresh'] = 'true'
     # returns Dashboard
-    return render_template('main.html', name=session['alias'], username=displayName,
+    me = get_me()
+    return render_template('main.html', name=session['alias'], uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
-
 
 # USED only for the MS Frontend
 @app.route('/delete_calendar')

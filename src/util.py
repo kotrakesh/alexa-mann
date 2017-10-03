@@ -3,8 +3,10 @@ import datetime
 import json
 import ms_endpoints
 import room_class
+import shutil
 room = room_class.Room()
-load_locationConstraint_path = '/tmp/locationConstraint.json'
+tmp_locationConstraint_path = '/tmp/locationConstraint.json'
+load_locationConstraint_path = './resources/locationConstraint.json'
 
 ################################################################################
 # Functions
@@ -69,10 +71,19 @@ def getMeetingEndTime(start, duration):
     time = hours + ':' + minutes
     return timeSum(start, time)
 
-# Check the right filepath
+
+
+
 def store_locationConstraint(data):
-    with open(load_locationConstraint_path, 'w') as json_file:
+    with open(tmp_locationConstraint_path, 'w') as json_file:
         json_file.write(json.dumps(data))
+    try:
+        #as lambda only allows writing access to the /tmp directory, this is a workaround
+        shutil.copy2(tmp_locationConstraint_path, load_locationConstraint_path)
+        print('store -- file was successfully updated!')
+    except:
+        print('store -- no file was found in /tmp')
+
 
 
 def load_locationConstraint():
@@ -96,13 +107,14 @@ def create_room_to_json(isAvailable, city, country, postalCode, state, street, d
         "locationEmailAddress": email,
         "maxAttendees": attendees
     }
-    data = load_locationConstraint()
+    data = load_locationConstraint() #load from resources
     data['locations'].append(json_data)
-    store_locationConstraint(data)
+    store_locationConstraint(data) #write to /tmp and copy back to resources
 
-#load_locationConstraint()
+
 
 def delete_room_to_json(name):
+    print('delete room from json')
     data=load_locationConstraint()
     x=0
     for i in range(0, len(data['locations'])):
@@ -115,3 +127,4 @@ def delete_room_to_json(name):
     data['locations'].pop(x)
     store_locationConstraint(data)
 
+#copyLocationConstraint()

@@ -209,6 +209,21 @@
             <i class="ms-Icon ms-Icon--Mail"></i>
         </li>
 	  </ul>
+
+      <br/>
+
+      <h3 class="ms-font-xl">Roomdata aus der JSON-DB</h3>
+      <small>
+       <ul class="ms-List">
+           {% if locConstraint != null %}
+            {% for loc in locConstraint.locations %}
+                    <li class="ms-ListItem">
+                        <span class="ms-font-m">{{ loc.displayName }} ({{ loc.maxAttendees }}) </span>
+                    </li>
+             {% endfor %}
+            {% endif %}
+        </ul>
+      </small>
   </aside>
 
 </body><!-- end body -->
