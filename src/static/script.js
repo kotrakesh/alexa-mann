@@ -72,7 +72,6 @@ function toggleListEvents(id) {
  * It furthermore redirects to the main page after each click to avoid being stuck in virtual subpages after form submissions
  */
 function toggleViewRooms() {
-  window.location = '/main';
   if ($('.viewCalendars').hasClass('open')){
     $('.viewCalendars').removeClass('open');
     $('.viewCalendars').addClass('hide');

@@ -59,7 +59,6 @@ def call_createvent(access_token, tStart, tEnd, title, roomName, cal_id):
     else:
         return '{0}: {1}'.format(response.status_code, response.text)
 
-# TODO correct api function for frontend
 
 # This function returns an array of events for the specified times
 # @param access_token   Security token for the MS Graph API

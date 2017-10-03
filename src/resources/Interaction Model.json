@@ -1,0 +1,224 @@
+{
+  "intents": [
+    {
+      "name": "AMAZON.CancelIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.HelpIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.StopIntent",
+      "samples": []
+    },
+    {
+      "name": "AttendeesIntent",
+      "samples": [
+        "{Attendees}",
+        "{Attendees} people",
+        "{Attendees} attendees"
+      ],
+      "slots": [
+        {
+          "name": "Attendees",
+          "type": "AMAZON.NUMBER",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "DataTimeDurationIntent",
+      "samples": [
+        "The meeting will be {Date} at {Time} for {Duration}",
+        "The meeting will be on {Date} at {Time} for {Duration}",
+        "The meeting is {Date} at {Time} for {Duration}",
+        "The meeting {Date} at {Time} will take {Duration}",
+        "The meeting {Date} at {Time} will take {Duration} long"
+      ],
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME",
+          "samples": []
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION",
+          "samples": []
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "DateDurationIntent",
+      "samples": [
+        "The meeting is {Date} for {Duration}",
+        "{Date} for {Duration}",
+        "it is {Date} for {Duration}",
+        "{Duration} {Date}",
+        "it is {Duration} {Date}"
+      ],
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE",
+          "samples": []
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "DateIntent",
+      "samples": [
+        "the meeting will be at {Date}",
+        "the meeting will be {Date}",
+        "the meeting will be on {Date}",
+        "the meeting will be in {Date}",
+        "the meeting is {Date}",
+        "the meeting is on {Date}",
+        "it will be at {Date}",
+        "it will be {Date}",
+        "it will be on {Date}",
+        "it will be in {Date}",
+        "it is {Date}",
+        "it is on {Date}",
+        "{Date}"
+      ],
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "DateTimeIntent",
+      "samples": [
+        "The meeting is {Date} at {Time}",
+        "it is {Date} at {Time}",
+        "The meeting is {Time} at {Date}",
+        "it is {Time} at {Date}"
+      ],
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE",
+          "samples": []
+        },
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "DurationIntent",
+      "samples": [
+        "The meeting is {Duration}",
+        "The meeting takes {Duration}",
+        "The meeting will be {Duration}",
+        "The meeting will take {Duration}",
+        "it is {Duration}",
+        "it takes {Duration}",
+        "it will be {Duration}",
+        "it will take {Duration}",
+        "{Duration}"
+      ],
+      "slots": [
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "TimeDurationIntent",
+      "samples": [
+        "the meeting will be at {Time} for {Duration}",
+        "the meeting is at {Time} for {Duration}",
+        "the meeting will be at {Time} and will take {Duration}",
+        "the meeting is at {Time} and will take {Duration}",
+        "the meeting will take {Duration} and will start at {Time}"
+      ],
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME",
+          "samples": []
+        },
+        {
+          "name": "Duration",
+          "type": "AMAZON.DURATION",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "TimeIntent",
+      "samples": [
+        "The meeting is at {Time}",
+        "The meeting will be at {Time}",
+        "it is at {Time}",
+        "it will be at {Time}"
+      ],
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME",
+          "samples": []
+        }
+      ]
+    },
+    {
+      "name": "TitleIntent",
+      "samples": [
+        "The title is {value |Title}",
+        "The title is {one two |Title}",
+        "The title is {one two three |Title}",
+        "The title is {one two three four |Title}",
+        "The title is {one two three four five |Title}",
+        "The title is {one two three four five six |Title}",
+        "The title is {one two three four five six seven|Title}",
+        "The title is {one two three four five six seven eight |Title}",
+        "The title is {one two three four five six seven eight nine|Title}",
+        "Title {one |Title}",
+        "Title {one two |Title}",
+        "Title {one two three |Title}",
+        "Title {one two three four |Title}",
+        "Title {one two three four five |Title}",
+        "Title {one two three four five six |Title}",
+        "Title {one two three four five six seven|Title}",
+        "Title {one two three four five six seven eight |Title}",
+        "Title {one two three four five six seven eight nine|Title}",
+        "it's {one |Title}",
+        "it's {one two |Title}",
+        "it's {one two three |Title}",
+        "it's {one two three four |Title}",
+        "it's {one two three four five |Title}",
+        "it's {one two three four five six |Title}",
+        "it's {one two three four five six seven|Title}",
+        "it's {one two three four five six seven eight |Title}",
+        "it's {one two three four five six seven eight nine|Title}"
+      ],
+      "slots": [
+        {
+          "name": "Title",
+          "type": "AMAZON.LITERAL",
+          "samples": []
+        }
+      ]
+    }
+  ]
+}
