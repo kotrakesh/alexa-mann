@@ -43,9 +43,11 @@ function ajax_loadEvents(className, id, name) {
   if (this.readyState == 4 && this.status == 200) {
       $(className).html(xhttp.responseText); // injects the html code of events.html into the current page
   }
-  else {
+  if (this.status == 500) {
       $(className).html('An error occured while loading the events!')
-      console.log(xhttp)
+  }
+  else {
+      $(className).html('<p class="ms-font-l ms-fontColor-yellow">Bitte warten ...</p>'); // injects the html code of events.html into the current page
   }
   };
 

@@ -148,8 +148,6 @@ def get_calendars(token):
     :return: all calendars which belongs to the logged in user
     """
     cal = ms_endpoints.call_getcalendars(token)
-    print('cal: ')
-    print(cal)
     #convert to json
     cal_json = json.loads(cal)
     print('cal_json')
@@ -194,9 +192,9 @@ def create_calendar():
 
     session['pageRefresh'] = 'true'
     # returns Dashboard
-    return render_template('main.html', name=session['alias'], username=displayName,
+    me = get_me()
+    return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
                            showSuccess_createCalendar=show_success, showError_createCalendar=show_error)
-
 
 
 @app.route('/delete_calendar')
@@ -227,7 +225,8 @@ def delete_calendar():
         jsonresponse = json.loads(response)
         errormessage = jsonresponse['error']['message']
     #return Dashboard
-    return render_template('main.html', name=session['alias'], uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
+    me = get_me()
+    return render_template('main.html', uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
                            jsondata=room.data, calName=calendar_name, showSuccess_deletedCalendar=show_success, showError_deletedCalendar=show_error, error_deleteCalendar=errormessage, showCalendars=0)
 
 
@@ -242,10 +241,20 @@ def list_events():
     cal_id = request.args.get('cal_id')
     cal_name = request.args.get('cal_name')
     events = msgraphapi.get('me/calendars/'+cal_id+'/events')
-    return render_template('events.html', name=session['alias'], data=events.data, calName=cal_name, jsondata=room.data)
+    print('')
+    print('id: ', cal_id)
+    print('name: ', cal_name)
+    print('events')
+    print(events)
+    me = get_me()
+    return render_template('events.html',  uID=me['id'], vName=me['givenName'], nName=me['surname'], mail=me['userPrincipalName'],
+                           data=events.data, calName=cal_name, jsondata=room.data)
 
 
 @msgraphapi.tokengetter
 def get_token():
     """Return the Oauth token."""
     return session.get('microsoft_token')
+
+if __name__ == '__main__':
+	app.run()
