@@ -42,10 +42,15 @@ function ajax_loadEvents(className, id, name) {
   xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
       $(className).html(xhttp.responseText); // injects the html code of events.html into the current page
-  }};
+  }
+  else {
+      $(className).html('An error occured while loading the events!')
+      console.log(xhttp)
+  }
+  };
 
   console.log('id of ajax calendar ' + id, name, className);
-  xhttp.open("GET", "/list_events?cal_id="+id+"&cal_name="+name, true);
+  xhttp.open("GET", "list_events?cal_id="+id+"&cal_name="+name, true);
   xhttp.send();
 
   $(className).addClass('open');
