@@ -75,12 +75,18 @@ def future_Tomorrow_weather():
 	weatherRecieved = dbco.tomorrowWeather()
 	futureTomorrowWeather = render_template('tomorrowWeather', numbers=weatherRecieved)
 	return statement(futureTomorrowWeather)  
-
+@ask.intent("FailurePossibilityIntent")
+def failure_weather():
+	futureTomorrowWeather = render_template('failurePoss')
+	return statement(futureTomorrowWeather)
 @ask.intent("NextweekweatherIntent")
 def future_Week_weather():
 	weatherRecieved = dbco.Nnext5DaysWeather()
 	futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved)
-	return statement(futureWeekWeather)  
+	return statement(futureWeekWeather)	 
+@app.route("/admin")
+def admin():
+    return ""
 
 if __name__ == '__main__':
 
