@@ -98,9 +98,9 @@ class dbc:
 		query = "SELECT ip from `heroku_c0277ef6294fdf7`.`raspi_ip` WHERE `status`=1 limit 1";
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		x = cursor.cursor()
-		x.execute(query)
-		for row in x:
+		lines= cursor.execute(query)
+		datax = cursor.fetchall()
+		for row in datax:
 			data = row
 		tempip=data[0]
 		cursor.close()
