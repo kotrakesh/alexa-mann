@@ -34,8 +34,10 @@ class regression:
 	def insertPredictedData(self,id,current):
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		query = "UPDATE `future_data`  SET  current_output ="+str(current)+" WHERE id="+str(id)
+		query = "UPDATE `future_data`  SET  current_output ="+str(current)+" WHERE id="+str(id)+""
+		print(query)
 		ret = cursor.execute(query)
+		cnx.commit()
 		cursor.close()
 		cnx.close()
 		return ret	
@@ -78,7 +80,8 @@ if __name__ == '__main__':
 		attr=[i[2],wval]
 		#attr = map(float,attr)
 		currentPredicted=r.getPrediction(xdata,ydata,attr)
-		print(currentPredicted)
-		ret= r.insertPredictedData(i[0],currentPredicted[0])
+		print(round(currentPredicted[0],2))
+		print(i[0])
+		ret= r.insertPredictedData(i[0],round(currentPredicted[0],2))
 		print(ret)
 
