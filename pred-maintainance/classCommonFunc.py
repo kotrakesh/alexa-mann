@@ -6,5 +6,5 @@ class classCommonFunc:
 		cnx = pymysql.connect(user=config.dbUser, password=config.dbPassowrd,
                                   host=config.dbHost,
                                   database=config.dbDatabase)
-		x = cnx.cursor()
+		cursor = cnx.cursor()
 		return cnx
