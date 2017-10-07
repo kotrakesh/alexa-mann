@@ -3,10 +3,17 @@ import datetime
 import json
 import ms_endpoints
 import room_class
-import shutil
+import requests
+import ssl
+import urllib.request
+
+
+tmp_locationConstraint_path = '/tmp/locationConstraint.json'            # not used
+load_locationConstraint_path = './resources/locationConstraint.json'    # not used
+url_locationConstraint      = 'https://sovanta.ddnss.de/writeToFile.php'            # script for uploading the file
+url_locationConstraint_file = 'https://sovanta.ddnss.de/locationConstraint.json'    # path of remote database
+
 room = room_class.Room()
-tmp_locationConstraint_path = '/tmp/locationConstraint.json'
-load_locationConstraint_path = './resources/locationConstraint.json'
 
 ################################################################################
 # Functions
@@ -20,7 +27,6 @@ load_locationConstraint_path = './resources/locationConstraint.json'
 def convert_amazon_to_ms(Date, Time):
     date_time = str(Date) + 'T' + str(Time)
     return date_time
-
 
 def create_event_from_alexa(start, end, title, room_name, cal_id):
     """Handler for create_event route."""
@@ -72,28 +78,49 @@ def getMeetingEndTime(start, duration):
     return timeSum(start, time)
 
 
-
+### IO - Functions
 
 def store_locationConstraint(data):
-    with open(tmp_locationConstraint_path, 'w') as json_file:
-        json_file.write(json.dumps(data))
-    try:
-        #as lambda only allows writing access to the /tmp directory, this is a workaround
-        shutil.copy2(tmp_locationConstraint_path, load_locationConstraint_path)
-        print('store -- file was successfully updated!')
-    except:
-        print('store -- no file was found in /tmp')
-
+    '''
+    Stores an updated version of the database on the server
+    :param data: updated database content, will overwrite the current version on the server
+    :return: return the http status code (200 for success)
+    '''
+    headers = {'content-type': 'application/json'}
+    url = url_locationConstraint + '?text=' + str(data)
+    r = requests.get(url, headers=headers, verify=False)
+    return r.status_code
 
 
 def load_locationConstraint():
-    with open(load_locationConstraint_path) as json_file:
-        data = json.load(json_file)
-        print(data)
+    '''
+    Loads the json database from the server
+    :return: full content of the database
+    '''
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    with urllib.request.urlopen(url_locationConstraint_file, context=ctx) as url:
+        data = json.loads(url.read().decode())
+        print(type(data))
         return data
 
 
 def create_room_to_json(isAvailable, city, country, postalCode, state, street, displayName, email, attendees):
+    '''
+    Creates a new room in the json database, triggered from the Sovanta Dashboard "Raum erstellen"
+    Loads the current version of the database and appends the new data for the new room and uploads it on the server
+    :param isAvailable: shows the availability
+    :param city:        city the room is located in
+    :param country:     county the room is located in
+    :param postalCode:  postal code of the city
+    :param state:       state the room is located in
+    :param street:      street the room is located in
+    :param displayName: displayed Name of the calendar, this will be seen as a primary key to identify rooms, will be displayed in Outlook
+    :param email:       email of the room
+    :param attendees:   size of the room
+    :return: http status code of uploading the file
+    '''
     json_data = {
         "resolveAvailability": isAvailable,
         "address": {
@@ -109,11 +136,16 @@ def create_room_to_json(isAvailable, city, country, postalCode, state, street, d
     }
     data = load_locationConstraint() #load from resources
     data['locations'].append(json_data)
-    store_locationConstraint(data) #write to /tmp and copy back to resources
-
+    print('data appended')
+    return store_locationConstraint(data)
 
 
 def delete_room_to_json(name):
+    '''
+    Deletes a room from the database. Loads the current version and deletes the entry with the specific "display name"
+    :param name: identifier of the room: display name
+    :return: http status code of uploading the file
+    '''
     print('delete room from json')
     data=load_locationConstraint()
     x=0
@@ -125,6 +157,65 @@ def delete_room_to_json(name):
             print("not find")
 
     data['locations'].pop(x)
-    store_locationConstraint(data)
+    return store_locationConstraint(data)
 
-#copyLocationConstraint()
+
+
+
+
+#create_room_to_json('true', 'city', 'country', 'postalcode', 'state', 'street', 'display', 'email', 4)
+
+
+### Old functions ###
+
+# Solution for locally storing the database, only for development mode!!
+def store_locationConstraint_local(data):
+    with open('./resources/locationConstraint.json', 'w') as json_file:
+        json_file.write(json.dumps(data))
+        print(data)
+def load_locationConstraint_local():
+    with open('./resources/locationConstraint.json') as json_file:
+        data = json.load(json_file)
+        return data
+
+
+# Tmp Solution for Storing database on lambda, not working !!
+def store_locationConstraint_lambda(data):
+    json_file = open(tmp_locationConstraint_path, 'w+')
+    json_file.write(json.dumps(data))
+    print(json_file)
+    json_file.close()
+
+    print('data to be added')
+    print(json.dumps(data))
+    try:
+        new_file = open(tmp_locationConstraint_path, 'r')
+        print('file has been opened in the /tmp directory')
+        for l in new_file:
+            print(str(l))
+    except:
+        print('file couldnt be found')
+
+    try:
+        #as lambda only allows writing access to the /tmp directory, this is a workaround
+        shutil.copy2(tmp_locationConstraint_path, load_locationConstraint_path)
+        print('store -- file was successfully copied to ./resources!')
+    except:
+        print('store -- copy of file failed')
+def load_locationConstraint_lambda():
+    data = ''
+    try:
+        with open(tmp_locationConstraint_path, 'r') as new_file:
+            # print(new_file)
+            print('file has been opened in the /tmp directory')
+            # print(json.load(new_file))
+            data = json.load(new_file)
+            #return data
+    except:
+        # print('file couldnt be found, copy from ./resources')
+        shutil.copy2(load_locationConstraint_path, tmp_locationConstraint_path)
+        # print('load -- file was successfully copied to from ./resources to /tmp')
+        data = json.load(open(load_locationConstraint_path, 'r'))
+    finally:
+        return data
+
