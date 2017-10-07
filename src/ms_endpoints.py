@@ -2,18 +2,18 @@ import requests
 import uuid
 import json
 
-# Events
-
-# This function calls the API to create an event in the specified calendar
-# The parameters are used to fill the data for the event
-# @param access_token   Security token for the MS Graph API
-# @param cal_id         ID of the calendar the events are searched in
-# @param tStart         Start time of the event
-# @param tEnd           End time of the event
-# @param title          Title of the event
-# @parm roomName        Name of the room, displayed as location in the Outlook Calendar
-# @return list of events. On error the status code and error message are returned
+### Events
 def call_createvent(access_token, tStart, tEnd, title, roomName, cal_id):
+    '''
+    Creates an event in the outlook calendar with the given parameters
+    :param access_token: Security token for the MS Graph API
+    :param tStart: Start time of the event
+    :param tEnd: End time of the event
+    :param title: Title of the event
+    :param roomName: Name of the room, displayed as location in the Outlook Calendar
+    :param cal_id: ID of the calendar the events are searched in
+    :return: list of events. On error the status code and error message are returned
+    '''
     send_event_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+cal_id+'/events'
 
     # set request headers
@@ -60,13 +60,15 @@ def call_createvent(access_token, tStart, tEnd, title, roomName, cal_id):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-# This function returns an array of events for the specified times
-# @param access_token   Security token for the MS Graph API
-# @param id             ID of the calendar the events are searched in
-# @param start          Start time of the event
-# @param end            End time of the event
-# @return list of events. On error the status code and error message are returned
 def call_listevents_for_time(access_token, id, start, end):
+    '''
+    This function returns an array of events for the specified times
+    :param access_token: Security token for the MS Graph API
+    :param id: ID of the calendar the events are searched in
+    :param start: Start time of the event
+    :param end: End time of the event
+    :return: list of events. On error the status code and error message are returned
+    '''
     list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startDateTime=' + start + 'Z&endDateTime=' + end + 'Z'
 
     # set request headers
@@ -96,8 +98,14 @@ def call_listevents_for_time(access_token, id, start, end):
 
 
 
+### Calendars
+
 def call_getcalendars(access_token):
-    """Call the resource URL for the sendMail action."""
+    '''
+    Retrieves all calendars (rooms)
+    :param access_token: Security token for the MS Graph API
+    :return: list of all calendars stored for the logged in Microsoft account
+    '''
     send_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
 
     # set request headers
@@ -122,13 +130,15 @@ def call_getcalendars(access_token):
         print('error: ')
         return '{0}: {1}'.format(response.status_code, response.text)
 
-### Calendars
 
-# This function creates a new calendar in the Office Account
-# Calendars are used as rooms, so one calendar exists for each meeting room
-# @param access_token   Security token for the MS Graph API
-# @param name           Name of the calendar as it is displayed in Outlook
+
 def call_createcalendar(access_token, name):
+    '''
+    This function creates a new calendar in the Office Account
+    :param access_token: Security token for the MS Graph API
+    :param name: Name of the calendar as it is displayed in Outlook
+    :return: Success or error message on fail
+    '''
     create_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars'
 
     # set request headers
@@ -156,12 +166,14 @@ def call_createcalendar(access_token, name):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-
-# This function deletes a calendar in the Office Account
-# Upon deletion all events in the respective calendar will be lost
-# @param access_token   Security token for the MS Graph API
-# @param id             ID of the calender to be deleted
 def call_deletecalendar(access_token, id):
+    '''
+    This function deletes a calendar in the Office Account
+    Upon deletion all events in the respective calendar will be lost
+    :param access_token:  Security token for the MS Graph API
+    :param id:  ID of the calender to be deleted
+    :return: Success or error message on fail
+    '''
     send_calendar_url = 'https://graph.microsoft.com/v1.0/me/calendars/'+id
 
     # set request headers
