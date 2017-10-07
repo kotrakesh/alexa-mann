@@ -34,6 +34,13 @@ def create_event_from_alexa(start, end, title, room_name, cal_id):
     ms_endpoints.call_createvent(room.token, start, end, title, room_name, cal_id)
 
 def timeSum(timeA, timeB):
+
+    '''
+    Sums two times in HH:MM 24h format together.
+    :param timeA: Time in the HH:MM 24h format as string
+    :param timeB: Time in the HH:MM 24h format as string which you want to add to timeA
+    :return: Sum of timeA and timeB. Time sums over 23:59 starts from 00:00 again. 
+    '''
     hoursA = re.search(r'(^[^:]+)', timeA).group(1)
     minutesA = re.search(r'([^:]+$)', timeA).group(1)
     hoursB = re.search(r'(^[^:]+)', timeB).group(1)
@@ -52,6 +59,13 @@ def timeSum(timeA, timeB):
     return time
 
 def getMeetingEndTime(start, duration):
+    '''
+    Takes a start time in HH:MM 24h format, adds the Amazon duration to it
+    and returns the end time in HH:MM 24h format.
+    :param start: Starting time in the HH:MM 24h format as string
+    :param duration: Amazon duration format
+    :return: Meeting end time in the HH:MM 24h format as string
+    '''
     if not re.search(r'\d\d:\d\d', start):
         start = start + ":00"
     if re.search(r'AF', start):
