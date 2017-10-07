@@ -562,7 +562,7 @@ def checkRoomAvailable(t_start, t_end, room_name):
        """
     print('getAllRooms')
     room.data = get_calendars(room.token)
-    # print(room.data)
+    #print(room.data)
 
     print('looking for rooms')
 
@@ -570,6 +570,8 @@ def checkRoomAvailable(t_start, t_end, room_name):
         return {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
     for cal in room.data['value']:
         # ignore some standard calendars
+        print("test!")
+        print(cal['name'])
         if (cal['name'] == room_name):
             print("find this room"+ room_name)
             # check whether this room is free at that time.
@@ -582,8 +584,8 @@ def checkRoomAvailable(t_start, t_end, room_name):
                 return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
             else:
                 return {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'some event in this room'}
-        else:
-            return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
+    print("cannot find this room")
+    return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
 
 def checkEventsForRoom(data, room_name):
     """
@@ -601,7 +603,6 @@ def checkEventsForRoom(data, room_name):
     if (room.data is None):
         return {'roomFound': False, 'roomName': '', 'roomId': '', 'eventlist': '', 'reason': 'Error while loading rooms from Microsoft API'}
     for cal in room.data['value']:
-        # ignore some standard calendars
         if (cal['name'] == room_name):
             print("find this room"+ room_name)
             # check whether this room is free at that time.
@@ -614,8 +615,14 @@ def checkEventsForRoom(data, room_name):
                 return {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': '', 'reason': 'No event for this time'}
             else:
                 {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'], 'reason': ''}
-        else:
-            return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
+    return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
+
+
+###nur for test
+@app.route('/check_ava')
+def testFunc():
+    data = checkRoomAvailable("2017-10-07T15:00:00", "2017-10-07T15:30:00", "Room 1")
+    print(data['roomAvailable'])
 
 if __name__ == '__main__':
 	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
