@@ -554,7 +554,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
 
 def checkRoomAvailable(t_start, t_end, room_name):
     """
-       check whether a specific room is still available
+       check whether a specific room is still available for a time
 
        :param t_start:     start of the event
        :param t_end:       end of the event
@@ -587,14 +587,52 @@ def checkRoomAvailable(t_start, t_end, room_name):
     print("cannot find this room")
     return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
 
-def checkEventsForRoom(data, room_name):
+def checkRoomAvailable(date, room_name):
+    """
+       check whether a specific room is still available for a day
+
+       :param t_start:     start of the event
+       :param t_end:       end of the event
+       :param room_name:   name of the room
+       """
+    timeData = util.deleteHourMinSec(date)
+    t_start = timeData['start_time']
+    t_end = timeData['end_time']
+    print('getAllRooms')
+    room.data = get_calendars(room.token)
+    #print(room.data)
+
+    print('looking for rooms')
+
+    if (room.data is None):
+        return {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
+    for cal in room.data['value']:
+        # ignore some standard calendars
+        print("test!")
+        print(cal['name'])
+        if (cal['name'] == room_name):
+            print("find this room"+ room_name)
+            # check whether this room is free at that time.
+            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+            print(jdata.text)
+            data = json.loads(jdata.text)
+            if not data['value']:
+                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
+                print('Keine Events vorhanden')
+                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
+            else:
+                return {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'some event in this room'}
+    print("cannot find this room")
+    return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
+
+def checkEventsForRoom(date, room_name):
     """
        Get all events from a room for a specific time
        :param t_start:     start of the event
        :param t_end:       end of the event
        :param room_name:   name of the room
        """
-    timeData = util.deleteHourMinSec(data)
+    timeData = util.deleteHourMinSec(date)
     t_start = timeData['start_time']
     t_end = timeData['end_time']
     print('getAllRooms')
