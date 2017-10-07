@@ -40,12 +40,8 @@ def timeSum(timeA, timeB):
     minutesB = re.search(r'([^:]+$)', timeB).group(1)
 
     minutes = (int(minutesA) + int(minutesB))
-    if minutes > 60:
-        extraHour = 1
-        minutes = minutes % 60
-    else:
-        extraHour = 0
-
+    extraHour = int(minutes/60)
+    minutes = minutes % 60
     hours = (extraHour + int(hoursA) + int(hoursB)) % 24
 
     if hours < 10:
@@ -76,7 +72,6 @@ def getMeetingEndTime(start, duration):
 
     time = hours + ':' + minutes
     return timeSum(start, time)
-
 
 ### IO - Functions
 
