@@ -554,6 +554,41 @@ def getFreeRooms(t_start, t_end, attendees, title):
             print('Events vorhanden in room ', cal['name'])
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
+def checkRoomAvailable(t_start, t_end, room_name):
+    """
+       check whether a specific room is still available
+
+       :param t_start:     start of the event
+       :param t_end:       end of the event
+       :param room_name:   name of the room
+       """
+    print('getFreeRooms')
+    room.data = get_calendars(room.token)
+    # print(room.data)
+
+    print('looking for rooms')
+
+    if (room.data is None):
+        return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms from Microsoft API'}
+    for cal in room.data['value']:
+        # ignore some standard calendars
+        if (cal['name'] == room_name):
+            print("find this room"+ room_name)
+            # check whether this room is free at that time.
+            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+            print(jdata.text)
+            data = json.loads(jdata.text)
+            if not data['value']:
+                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
+                print('Keine Events vorhanden')
+                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id']}
+            else:
+                return {'roomFound': True, 'roomAvailable': False,}
+        else:
+            return {'roomFound': False, 'roomAvailable': False, }
+
+
 if __name__ == '__main__':
-	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
-	#app.run()
+	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
+	app.run()
+    #checkRoomAvailable("123","123","Room 1")
