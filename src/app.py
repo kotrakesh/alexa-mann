@@ -483,8 +483,6 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
             .simple_card(title=render_template('card_booked_room_fail_title'), content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
-
-
 def getFreeRooms(t_start, t_end, attendees, title):
     """
     Searches for free rooms with the given constraints of start, end and number of attendees
@@ -562,14 +560,14 @@ def checkRoomAvailable(t_start, t_end, room_name):
        :param t_end:       end of the event
        :param room_name:   name of the room
        """
-    print('getFreeRooms')
+    print('getAllRooms')
     room.data = get_calendars(room.token)
     # print(room.data)
 
     print('looking for rooms')
 
     if (room.data is None):
-        return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms from Microsoft API'}
+        return {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
     for cal in room.data['value']:
         # ignore some standard calendars
         if (cal['name'] == room_name):
@@ -581,14 +579,44 @@ def checkRoomAvailable(t_start, t_end, room_name):
             if not data['value']:
                 # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
                 print('Keine Events vorhanden')
-                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id']}
+                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
             else:
-                return {'roomFound': True, 'roomAvailable': False,}
+                return {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'some event in this room'}
         else:
-            return {'roomFound': False, 'roomAvailable': False, }
+            return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
 
+def checkEventsForRoom(data, room_name):
+    """
+       Get all events from a room for a specific time
+       :param t_start:     start of the event
+       :param t_end:       end of the event
+       :param room_name:   name of the room
+       """
+    timeData = util.deleteHourMinSec(data)
+    t_start = timeData['start_time']
+    t_end = timeData['end_time']
+    print('getAllRooms')
+    room.data = get_calendars(room.token)
+
+    if (room.data is None):
+        return {'roomFound': False, 'roomName': '', 'roomId': '', 'eventlist': '', 'reason': 'Error while loading rooms from Microsoft API'}
+    for cal in room.data['value']:
+        # ignore some standard calendars
+        if (cal['name'] == room_name):
+            print("find this room"+ room_name)
+            # check whether this room is free at that time.
+            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+            print(jdata.text)
+            data = json.loads(jdata.text)
+            if not data['value']:
+                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
+                print('Keine Events vorhanden')
+                return {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': '', 'reason': 'No event for this time'}
+            else:
+                {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'], 'reason': ''}
+        else:
+            return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
 
 if __name__ == '__main__':
 	#app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
 	app.run()
-    #checkRoomAvailable("123","123","Room 1")

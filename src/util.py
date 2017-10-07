@@ -82,6 +82,14 @@ def getMeetingEndTime(start, duration):
     time = hours + ':' + minutes
     return timeSum(start, time)
 
+def deleteHourMinSec(date):
+    ''''
+    used for get all events for a day
+    '''
+    start_time = str(date) + 'T00:00:00'
+    end_time = str(date)+'T24:00:00'
+    return {'start_time': start_time, 'end_time': end_time}
+
 
 ### IO - Functions ###
 
