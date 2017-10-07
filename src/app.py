@@ -552,7 +552,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
             print('Events vorhanden in room ', cal['name'])
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
-def checkRoomAvailable(t_start, t_end, room_name):
+def checkRoomAvailable(t_start, t_end, room_number):
     """
        check whether a specific room is still available for a time
 
@@ -560,6 +560,7 @@ def checkRoomAvailable(t_start, t_end, room_name):
        :param t_end:       end of the event
        :param room_name:   name of the room
        """
+    room_name = 'Meeting Room'+ str(room_number)
     print('getAllRooms')
     room.data = get_calendars(room.token)
     #print(room.data)
@@ -587,7 +588,7 @@ def checkRoomAvailable(t_start, t_end, room_name):
     print("cannot find this room")
     return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
 
-def checkRoomAvailable(date, room_name):
+def checkRoomAvailable(date, room_number):
     """
        check whether a specific room is still available for a day
 
@@ -595,6 +596,7 @@ def checkRoomAvailable(date, room_name):
        :param t_end:       end of the event
        :param room_name:   name of the room
        """
+    room_name = 'Meeting Room' + str(room_number)
     timeData = util.deleteHourMinSec(date)
     t_start = timeData['start_time']
     t_end = timeData['end_time']
