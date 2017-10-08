@@ -48,7 +48,7 @@ def scheduled_job():
 def scheduled_job_eve():
 	fordathd.fordatahd()
 	print('This job is run everyday at 9pm.')
-@sched.scheduled_job('cron', hour=15,minute=25)
+@sched.scheduled_job('cron', hour=16,minute=29)
 def scheduled_job_eve():
 	r = regression.regression()
 	trainArr = r.getTrainData()
