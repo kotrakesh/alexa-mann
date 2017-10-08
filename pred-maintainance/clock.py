@@ -13,4 +13,3 @@ def scheduled_job():
 	print('This job is run everyday at 5pm.')
 
 sched.start()
-sched.start()
