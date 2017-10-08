@@ -25,7 +25,7 @@ class regression:
 	def getfurturedata(self):
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 LIMIT 100"
+		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 LIMIT 10000"
 		lines = cursor.execute(query) #execute the query
 		data = cursor.fetchall()
 		cursor.close()
