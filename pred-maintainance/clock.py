@@ -4,7 +4,7 @@ import fordathd
 import regression
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', minute=*/15)
+@sched.scheduled_job('cron', minute='*/5')
 def timed_job():
 	curcomplete.curcomplete()
 	print('This job is run every 15 minutes.')
