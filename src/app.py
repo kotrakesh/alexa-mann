@@ -324,6 +324,7 @@ def missing_duration_time(Date):
     :param Date:    date of the event
     :return:        What time is the meeting and how long is it?
     """
+    checkAccessToken()
     room.date = Date
     return checkMissingAttributes_Phase1()
 
@@ -335,6 +336,7 @@ def missing_date_duration(Time):
     :param Time:    time of the event
     :return:        Whats the date and the duration of the meeting?
     """
+    checkAccessToken()
     room.time = Time
     return checkMissingAttributes_Phase1()
 
@@ -346,6 +348,7 @@ def missing_date_time(Duration):
     :param Duration:    duration of the event
     :return:            What day and what time is the meeting?
     """
+    checkAccessToken()
     room.duration = Duration
     return checkMissingAttributes_Phase1()
 
@@ -358,6 +361,7 @@ def missing_time(Date, Duration):
     :param Duration:    duration of the event
     :return:            What time is the meeting?
     """
+    checkAccessToken()
     room.date = Date
     room.duration = Duration
     return checkMissingAttributes_Phase1()
@@ -371,6 +375,7 @@ def missing_duration(Date, Time):
     :param Time:    time of the event
     :return:        How long is the meeting?
     """
+    checkAccessToken()
     room.date = Date
     room.time = Time
     return checkMissingAttributes_Phase1()
@@ -384,6 +389,7 @@ def missing_date(Time, Duration):
     :param Duration:    duration of the event
     :return:            What day is the meeting?
     """
+    checkAccessToken()
     room.time = Time
     room.duration = Duration
     return checkMissingAttributes_Phase1()
@@ -398,6 +404,7 @@ def allKnown(Date, Time, Duration):
     :param Duration:    duration of the event
     :return:            How many attendees will attend the meeting?
     """
+    checkAccessToken()
     room.date = Date
     room.time = Time
     room.duration = Duration
@@ -412,6 +419,12 @@ def numberOfAttendees(Attendees):
     :return:            Whats the title of the event?
     """
     room.attendees = Attendees
+    # check if Attendees is really a valid number, Problem: also invoked if title intent is misused
+    # try:
+    #     isinstance(int(Attendees), int)
+    # except:
+    #     return question(render_template('msg_NaN'))
+
     if Attendees is None:
         return question(render_template('msg_attendees'))
     else:
@@ -591,11 +604,7 @@ def checkRoomAvailable(Date, Room):
        :param t_end:       end of the event
        :param room_name:   name of the room
        """
-    try:
-        room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
-    except:
-        print('room token was not set')
-        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+    checkAccessToken()
 
     room_name = 'Meetingroom ' + str(Room)
     timeData = util.deleteHourMinSec(Date)
@@ -658,6 +667,13 @@ def checkEventsForRoom(date, room_name):
                 {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'], 'reason': ''}
     return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
 
+
+def checkAccessToken():
+    try:
+        room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
+    except:
+        print('room token was not set')
+        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
 
 
 # Tests for missing attributes
