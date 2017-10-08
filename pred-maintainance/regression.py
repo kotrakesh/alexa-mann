@@ -9,7 +9,7 @@ class regression:
 	def getTrainData(self):
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		query = "SELECT (sunset - sunrise) AS suntime,description, temperature,current_output  FROM `current_data` LIMIT 100" #actual SQL statement to be executed
+		query = "SELECT (sunset - sunrise) AS suntime,description, temperature,current_output  FROM `current_data` WHERE current_output>=0 ORDER BY id DESC LIMIT 100" #actual SQL statement to be executed
 		lines = cursor.execute(query) #execute the query
 		data = cursor.fetchall()
 		cursor.close()
@@ -25,7 +25,7 @@ class regression:
 	def getfurturedata(self):
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 LIMIT 10000"
+		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 OR current_output IS NULL LIMIT 10000"
 		lines = cursor.execute(query) #execute the query
 		data = cursor.fetchall()
 		cursor.close()
