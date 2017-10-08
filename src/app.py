@@ -324,18 +324,8 @@ def missing_duration_time(Date):
     :param Date:    date of the event
     :return:        What time is the meeting and how long is it?
     """
-    if room.date is None:
-        room.date = Date
-
-    if (room.duration is None or not room.duration) and (room.time is None or not room.time):
-        return question(render_template('msg_missing_duration_time'))
-    elif room.duration and not room.time:
-        return missing_time(room.date, room.duration)
-    elif room.time and not room.duration:
-        return missing_duration(room.date, room.time)
-    else:
-        print('DateIntent')
-        return allKnown(Date, room.time, room.duration)
+    room.date = Date
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("TimeIntent")
@@ -346,21 +336,7 @@ def missing_date_duration(Time):
     :return:        Whats the date and the duration of the meeting?
     """
     room.time = Time
-    print('TimeIntent - Date: ' + str(room.date))
-    print('TimeIntent - Time: ' + str(room.time))
-    if Time == '':
-        print('############################\n Time is empty')
-        room.time = None
-
-    if not room.date and not room.duration:
-        return question(render_template('msg_missing_date_duration'))
-    elif room.date and not room.duration:
-        return missing_duration(room.date, room.time)
-    elif not room.date and room.duration:
-        print('TimeIntent - duration!=null, date==null')
-        return missing_date(room.time, room.duration)
-    else:
-        return allKnown(room.date, Time, room.duration)
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("DurationIntent")
@@ -370,17 +346,8 @@ def missing_date_time(Duration):
     :param Duration:    duration of the event
     :return:            What day and what time is the meeting?
     """
-    room.duration = ask_session.attributes['duration'] = Duration
-
-    if not room.date and not room.time:
-        return question(render_template('msg_missing_date_time'))
-    elif room.date and not room.time:
-        return missing_time(room.date, room.duration)
-    elif not room.date and room.time:
-        return missing_date(room.time, room.duration)
-    else:
-        print('DurationIntent - All known   ')
-        return allKnown(room.date, room.time, Duration)
+    room.duration = Duration
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("DateDurationIntent")
@@ -393,11 +360,7 @@ def missing_time(Date, Duration):
     """
     room.date = Date
     room.duration = Duration
-
-    if not room.time:
-        return question(render_template('msg_missing_time'))
-    else:
-        return allKnown(room.date, room.time, room.duration)
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("DateTimeIntent")
@@ -410,12 +373,7 @@ def missing_duration(Date, Time):
     """
     room.date = Date
     room.time = Time
-
-    if not room.duration:
-        print('DateTimeIntent no duration')
-        return question(render_template('msg_missing_duration'))
-    else:
-        return allKnown(room.date, room.time, room.duration)
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("TimeDurationIntent")
@@ -426,12 +384,9 @@ def missing_date(Time, Duration):
     :param Duration:    duration of the event
     :return:            What day is the meeting?
     """
-    room.duration = Duration
     room.time = Time
-    if not room.date:
-        return question(render_template('msg_missing_date'))
-    else:
-        return allKnown(room.date, room.time, room.duration)
+    room.duration = Duration
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("DataTimeDurationIntent")
@@ -446,9 +401,7 @@ def allKnown(Date, Time, Duration):
     room.date = Date
     room.time = Time
     room.duration = Duration
-    print('DataTimeDurationIntent ' + str(Date), str(Time), str(Duration))
-
-    return question(render_template('msg_attendees'))
+    return checkMissingAttributes_Phase1()
 
 
 @ask.intent("AttendeesIntent")
@@ -459,13 +412,10 @@ def numberOfAttendees(Attendees):
     :return:            Whats the title of the event?
     """
     room.attendees = Attendees
-    # if room.date and not room.time and room.duration:
-    #     return missing_time(room.date, room.duration)
-    # if not room.date and room.time and room.duration:
-    #     return missing_date(room.time, room.duration)
-    # if room.date and room.time and not room.duration:
-    #     return missing_duration(room.date, room.time)
-    return question(render_template('msg_title'))
+    if Attendees is None:
+        return question(render_template('msg_attendees'))
+    else:
+        return question(render_template('msg_title'))
 
 
 @ask.intent("TitleIntent")
@@ -476,14 +426,10 @@ def title_of_event(Title):
     :return:        readMeeetingTime(date, time, duration, attendees, title)
     """
     room.title = Title
-    # if room.date and not room.time and room.duration:
-    #     return missing_time(room.date, room.duration)
-    # if not room.date and room.time and room.duration:
-    #     return missing_date(room.time, room.duration)
-    # if room.date and room.time and not room.duration:
-    #     return missing_duration(room.date, room.time)
-    # TODO check loop
-    return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
+    if Title is None:
+        return question(render_template('msg_title'))
+    else:
+        return readMeetingTime(room.date, room.time, room.duration, room.attendees, Title)
 
 
 
@@ -596,6 +542,8 @@ def getFreeRooms(t_start, t_end, attendees, title):
             print('Events vorhanden in room ', cal['name'])
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
+
+### Second part of the skill
 @ask.intent("RoomTimeIntent")
 def checkRoomAvailable(Date, Time, t_end, Room):
     """
@@ -709,6 +657,29 @@ def checkEventsForRoom(date, room_name):
             else:
                 {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'], 'reason': ''}
     return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
+
+
+
+# Tests for missing attributes
+def checkMissingAttributes_Phase1(): # date time duration                               # d t d
+    print('###### check missing attributes ########')
+    if room.date is None and room.time is None and room.duration is None:               # 0 0 0
+        return question(render_template(('msg_missing_date_time_duration')))
+    if room.date is None and room.time is None and room.duration is not None:           # 0 0 1
+        return question(render_template(('msg_missing_date_time')))
+    if room.date is None and room.time is not None and room.duration is None:           # 0 1 0
+        return question(render_template(('msg_missing_date_duration')))
+    if room.date is None and room.time is not None and room.duration is not None:       # 0 1 1
+        return question(render_template(('msg_missing_date')))
+    if room.date is not None and room.time is None and room.duration is None:           # 1 0 0
+        print('missing time and duration')
+        return question(render_template(('msg_missing_time_duration')))
+    if room.date is not None and room.time is None and room.duration is not None:       # 1 0 1
+        return question(render_template(('msg_missing_time')))
+    if room.date is not None and room.time is not None and room.duration is None:       # 1 1 0
+        return question(render_template(('msg_missing_duration')))
+    if room.date is not None and room.time is not None and room.duration is not None:   # 1 1 1
+        return question(render_template('msg_attendees'))
 
 
 ###nur for test

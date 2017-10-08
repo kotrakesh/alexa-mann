@@ -1,9 +1,9 @@
 msg_launch_request: Welcome to room monitor
 msg_launch_request3: Welcome to room monitor, your interactive room booking service of Sovanta. How may I help you? If you any further assistance please ask me for help.
-msg_launch_request2: Hello, please tell me the dates and times when your meeting shall be scheduled
+msg_missing_date_time_duration: Hello, please tell me the dates and times when your meeting shall be scheduled
 msg_missing_date_time: What day and what time is the meeting?
 msg_missing_date_duration: Whats the date and the duration of the meeting?
-msg_missing_duration_time: What time is the meeting and how long is it?
+msg_missing_time_duration: What time is the meeting and how long is it?
 msg_missing_date: What day is the meeting?
 msg_missing_time: What time is the meeting?
 msg_missing_duration: How long is the meeting?
