@@ -3,11 +3,12 @@ Amazon Echo Room Monitor
 
 The room monitor custom skill for Alexa Echo manages Outlook Calenders as rooms and checks
 their availability and enables the user to book rooms for specific times and dates.
+
 Prerequesites:
 * Microsoft Outlook Account
-----
 
-# 
+
+
 ## Filestructure 
 ### Shared
 * app.py  Contains the logic
