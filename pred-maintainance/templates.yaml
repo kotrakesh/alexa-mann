@@ -1,14 +1,14 @@
 initialhelp: Hello, It's been a good day. how can I help you.
 
-yesterdayCurrent: current receieved yesterday was {{ numbers }} micro watts.
-lastweekCurrent: current receieved last week was {{ numbers }} micro watts.
-todayCurrentTillNow: current receieved today {{ numbers }} micro watts.
+yesterdayCurrent: current receieved yesterday was {{ numbers }} watts.
+lastweekCurrent: current receieved last week was {{ numbers }} watts.
+todayCurrentTillNow: current receieved today {{ numbers }} watts.
 todayCurrentNow: current receieving now {{ numbers }} micro watts.
-todayCurrentAfter: current expected today is {{ numbers }}micro watts.
+todayCurrentAfter: current expected today is {{ numbers }} watts.
 todayWeather: today's weather is {{ numbers }} degree celcius.
 todayWeatherNow: weather now is {{ numbers }} degree celcius.
-tomorrowCurrent: current expected for tomorrow is {{ numbers }} micro watts.
-nextweekCurrent: current expected for next week {{ numbers }} micro watts.
+tomorrowCurrent: current expected for tomorrow is {{ numbers }} watts.
+nextweekCurrent: current expected for next week {{ numbers }} watts.
 tomorrowWeather: tomorrow's expected weather {{ numbers }} degree celcius.
 nextweekWeather: next week's expected weather {{ numbers }} degree celcius.
 failurePoss: No failure predictions for now
