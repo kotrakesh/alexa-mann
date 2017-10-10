@@ -2,16 +2,18 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import curcomplete
 import fordathd
 import regression
+sched = BlockingScheduler()
 
-def curcomp():
+@sched.scheduled_job('cron', minute='*/15')
+def timed_job():
 	curcomplete.curcomplete()
 	print('This job is run every 15 minutes.')
-
-def fordat1():
+@sched.scheduled_job('cron', hour=7)
+def scheduled_job():
 	fordathd.fordatahd()
 	print('This job is run everyday at 9am.')
-
-def reg1():
+@sched.scheduled_job('cron', hour=7,minute=5)
+def scheduled_job():
 	r = regression.regression()
 	trainArr = r.getTrainData()
 	xdata=[]
@@ -41,13 +43,13 @@ def reg1():
 		print(i[0])
 		ret= r.insertPredictedData(i[0],round(abs(currentPredicted[0]),2))
 		print(ret)
-	print('This job is run everyday at 9:05am.')
-
-def fordat2():
+	print('This job is run everyday at 9:05am.')		
+@sched.scheduled_job('cron', hour=16,minute=20)
+def scheduled_job_eve():
 	fordathd.fordatahd()
 	print('This job is run everyday at 9pm.')
-
-def reg2():
+@sched.scheduled_job('cron', hour=16,minute=29)
+def scheduled_job_eve():
 	r = regression.regression()
 	trainArr = r.getTrainData()
 	xdata=[]
@@ -80,12 +82,4 @@ def reg2():
 	print('This job is run everyday at 9:05pm.')
 
 
-if __name__ == '__main__':
-	sched = BlockingScheduler()
-	sched.add_job(curcomp, 'cron', minute='*/15')
-	sched.add_job(fordat1, 'cron', hour=7)
-	sched.add_job(reg1, 'cron', hour=7,minute=5)
-	sched.add_job(fordat2, 'cron', hour=19)
-	sched.add_job(reg2, 'cron', hour=19,minute=5)
-
-	sched.start()
+sched.start()
