@@ -80,12 +80,12 @@ def reg2():
 	print('This job is run everyday at 9:05pm.')
 
 
-if __name__ == '__main__':
-	sched = BlockingScheduler()
-	sched.add_job(curcomp, 'cron', minute='*/15')
-	sched.add_job(fordat1, 'cron', hour=7)
-	sched.add_job(reg1, 'cron', hour=7,minute=5)
-	sched.add_job(fordat2, 'cron', hour=19)
-	sched.add_job(reg2, 'cron', hour=19,minute=5)
+#if __name__ == '__main__':
+	#sched = BlockingScheduler()
+	#sched.add_job(curcomp, 'cron', minute='*/15')
+	#sched.add_job(fordat1, 'cron', hour=7)
+	#sched.add_job(reg1, 'cron', hour=7,minute=5)
+	#sched.add_job(fordat2, 'cron', hour=19)
+	#sched.add_job(reg2, 'cron', hour=19,minute=5)
 
-	sched.start()
+	#sched.start()
