@@ -25,9 +25,9 @@ class dbc:
         print("before query")
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
-        temp = data
+        data1 = str(data).replace("((", "").replace(",),)", "")
         print("data stream: " + str(data))
-        #temp = "{0:.2f}".format(float(data))
+        temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
         cnx.close()
         print("return value :" + str(temp))
