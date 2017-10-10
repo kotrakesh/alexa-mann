@@ -1,10 +1,10 @@
 import pymysql
 
-from classCommonFunc import classCommonFunc
+from classCommonF import classCommonF
 
-classCommonFunc = classCommonFunc()
+classCommonF = classCommonF()
 
-cnx = classCommonFunc.dataBaseConnection()
+cnx = classCommonF.dataBaseConnection()
 cur = cnx.cursor()
 
 cur.execute("SELECT * FROM current_data")

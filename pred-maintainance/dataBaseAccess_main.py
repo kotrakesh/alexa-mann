@@ -16,11 +16,14 @@ class dbc:
         return temp
 
     def pastlastWeek(self):
+        print(1)
         cnx = classCommonFunc.dataBaseConnection()
+        print(2)
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
+        print(3)
         temp = "{0:.2f}".format(data)
         cursor.close()
         cnx.close()
