@@ -27,6 +27,8 @@ def past_yesterday():
 @ask.intent("LastweekIntent")
 def past_week():
     currentRecieved = pastlastWeek()
+    print(currentRecieved)
+    print("{0:.2f}".format(currentRecieved))
     pastWeekCurrent = render_template('lastweekCurrent', numbers=("{0:.2f}".format(currentRecieved)))
     return statement(pastWeekCurrent)
 
