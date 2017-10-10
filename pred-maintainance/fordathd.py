@@ -9,7 +9,7 @@ def fordatahd():
     cnx = classCommonFunc.dataBaseConnection()
     cur = cnx.cursor()
 
-    now = datetime.datetime.now() + timedelta(hours=2)
+    now = datetime.now() + timedelta(hours=2)
     date_string = now.strftime('%Y-%m-%d %H:%M:%S')
 
 

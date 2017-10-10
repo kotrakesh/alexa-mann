@@ -11,7 +11,7 @@ def curcomplete():
     cnx = classCommonFunc.dataBaseConnection()
     cur = cnx.cursor()
 
-    now = datetime.datetime.now() + timedelta(hours=2)
+    now = datetime.now() + timedelta(hours=2)
     date_string = now.strftime('%Y-%m-%d %H:%M:%S')
 
     url = "http://api.openweathermap.org/data/2.5/weather?zip=69115,de&appid=04ac6f7772b575cbd7bb17063a1430f2"
