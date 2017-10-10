@@ -1,6 +1,7 @@
 import config
-import requests, json
+import requests, json, pymysql
 from classCommonFunc import classCommonFunc
+
 classCommonFunc = classCommonFunc()
 
 class dbc:
@@ -21,8 +22,11 @@ class dbc:
         cursor = cnx.cursor()
         print("cursor set up")
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
+        print("before query")
         lines = cursor.execute(query)  # execute the query
+        print("before fetch")
         rows = cursor.fetchall()
+
         for row in rows:
             print("in for")
             data = float(row['result'])
