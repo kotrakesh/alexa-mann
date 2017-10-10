@@ -24,15 +24,10 @@ class dbc:
         query = "SELECT sum(current_output*900/1000000) as result from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         print("before query")
         lines = cursor.execute(query)  # execute the query
-        print("before fetch")
-        rows = cursor.fetchall()
-
-        for row in rows:
-            print("in for")
-            print(float(row['result']))
-            data = float(row['result'])
+        data = cursor.fetchall()
+        temp = data
         print("data stream: " + str(data))
-        temp = "{0:.2f}".format(float(data))
+        #temp = "{0:.2f}".format(float(data))
         cursor.close()
         cnx.close()
         print("return value :" + str(temp))
