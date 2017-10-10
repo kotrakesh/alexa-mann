@@ -21,7 +21,7 @@ class dbc:
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
         print("cursor set up")
-        query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
+        query = "SELECT sum(current_output*900/1000000) as result from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         print("before query")
         lines = cursor.execute(query)  # execute the query
         print("before fetch")
@@ -29,6 +29,7 @@ class dbc:
 
         for row in rows:
             print("in for")
+            print(float(row['result']))
             data = float(row['result'])
         print("data stream: " + str(data))
         temp = "{0:.2f}".format(float(data))
