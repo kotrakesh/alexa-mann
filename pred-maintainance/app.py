@@ -63,7 +63,7 @@ def present_weather():
 # def present_Now_weather():
 #	weatherRecieved = #------------------------------------------------
 #	presentNowWeather = render_template('todayWeatherNow', numbers=weatherRecieved)
-#	return statement(presentNowWeather) 
+#	return statement(presentNowWeather)
 
 @ask.intent("TomorrowcurrentIntent")
 def future_tomorrow_current():
