@@ -18,12 +18,12 @@ class dbc:
     def pastlastWeek(self):
         print("starting past last week in database access")
         cnx = classCommonFunc.dataBaseConnection()
-
         cursor = cnx.cursor()
         print("cursor set up")
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
+        for row in cursor:
+            data = row['result']
         print("data stream: " + str(data))
         temp = "{0:.2f}".format(float(data))
         cursor.close()
