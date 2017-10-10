@@ -24,7 +24,7 @@ def past_yesterday():
 @ask.intent("LastweekIntent")
 def past_week():
 	currentRecieved = dbco.pastlastWeek()
-	pastWeekCurrent = render_template('lastweekCurrent', numbers=currentRecieved)
+	pastWeekCurrent = render_template('lastweekCurrent', numbers=(float("{0:.2f}".format(currentRecieved))))
 	return statement(pastWeekCurrent)
 
 @ask.intent("TillnowcurrentIntent")
