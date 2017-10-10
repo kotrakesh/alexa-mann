@@ -24,11 +24,11 @@ class dbc:
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
-        print("data stream: " + data)
+        print("data stream: " + str(data))
         temp = "{0:.2f}".format(data)
         cursor.close()
         cnx.close()
-        print("return value :" + temp)
+        print("return value :" + str(temp))
         return temp
 
     def tillNowCurrent(self):
