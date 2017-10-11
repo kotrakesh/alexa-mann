@@ -5,7 +5,7 @@ lastweekCurrent: current receieved last week was {{ numbers }} watts.
 todayCurrentTillNow: current receieved today {{ numbers }} watts.
 todayCurrentNow: current receieving now {{ numbers }} micro watts.
 todayCurrentAfter: current expected today is {{ numbers }} watts.
-todayWeather: today's weather is {{ numbers }} degree celcius.
+todayWeather: Todays temperature average is {{ numbers }} degree celcius, with the weather being mostly {{ desc }}
 todayWeatherNow: weather now is {{ numbers }} degree celcius.
 tomorrowCurrent: current expected for tomorrow is {{ numbers }} watts.
 nextweekCurrent: current expected for next week {{ numbers }} watts.

@@ -55,7 +55,10 @@ def present_after():
 @ask.intent("TodayweatherIntent")
 def present_weather():
     weatherRecieved = dbco.todayWeather()
-    presentWeather = render_template('todayWeather', numbers=weatherRecieved)
+    descRecieved = dbco.todayWeatherDesc()
+    print(weatherRecieved)
+    print(descRecieved)
+    presentWeather = render_template('todayWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(presentWeather)
 
 
