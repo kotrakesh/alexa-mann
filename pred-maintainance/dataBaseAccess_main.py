@@ -10,9 +10,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-1 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -22,9 +21,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -32,11 +30,10 @@ class dbc:
     def tillNowCurrent(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
-        query = "SELECT sum(current_output*900/1000000) as result from current_data where curr_timestamp < now() and curr_timestamp >= curdate() and city = 'Heidelberg'; "  # actual SQL statement to be executed
+        query = "SELECT sum(current_output*900/1000000) as result from current_data where curr_timestamp < DATE_ADD(now(), INTERVAL 2 HOUR) and curr_timestamp >= curdate() and city = 'Heidelberg'; "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -46,9 +43,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(t1.current_output*10800/1000000) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 8) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -56,10 +52,21 @@ class dbc:
     def todayWeather(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
-        query = "SELECT avg(temperature - 273.15) as result from current_data where curr_timestamp < now() and curr_timestamp >= curdate() and city = 'Heidelberg';"  # actual SQL statement to be executed
+        query = "SELECT avg(temperature - 273.15) as result from current_data where curr_timestamp < DATE_ADD(now(), INTERVAL 2 HOUR) and curr_timestamp >= curdate() and city = 'Heidelberg';"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        temp = data
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
+        cursor.close()
+        cnx.close()
+        return temp
+
+    def todayWeatherDesc(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "SELECT description as result from current_data where city = 'Heidelberg' and curr_timestamp < DATE_ADD(now(), INTERVAL 2 HOUR) and curr_timestamp >= curdate() group by description order by count(description) desc limit 1;"
+        lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchone()
+        temp = data[0]
         cursor.close()
         cnx.close()
         return temp
@@ -69,9 +76,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(t1.current_output*10800/1000000) as result from (select * from future_data where city = 'Heidelberg' and weather_date >= (curdate()+ 1) order by curr_timestamp desc, weather_date asc limit 8) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -81,9 +87,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(t1.current_output*10800/1000000) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 40) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        data1 = str(data).replace("((", "").replace(",),)", "")
-        temp = float("{0:.2f}".format(float(data1)))
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -93,8 +98,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT avg(temperature - 273.15) as result from (select * from future_data where city = 'Heidelberg' and weather_date >= (curdate()+ 1) order by curr_timestamp desc, weather_date asc limit 8) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        temp = data
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
@@ -104,8 +109,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT avg(temperature - 273.15) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 40) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
-        temp = data
+        data = cursor.fetchone()
+        temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp

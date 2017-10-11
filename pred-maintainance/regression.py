@@ -2,6 +2,7 @@ import config
 import requests,json
 from sklearn.linear_model import LinearRegression
 import numpy as np
+import warnings
 from classCommonFunc import classCommonFunc
 classCommonFunc = classCommonFunc()
 
@@ -25,7 +26,7 @@ class regression:
 	def getfurturedata(self):
 		cnx = classCommonFunc.dataBaseConnection()
 		cursor = cnx.cursor()
-		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 OR current_output IS NULL LIMIT 10000"
+		query = "SELECT id,description, temperature FROM `future_data` WHERE current_output=1.00 OR current_output IS NULL LIMIT 700"
 		lines = cursor.execute(query) #execute the query
 		data = cursor.fetchall()
 		cursor.close()
@@ -54,6 +55,7 @@ class regression:
 	    return [new_b, new_m]
 
 if __name__ == '__main__':
+	warnings.filterwarnings("ignore",category=DeprecationWarning)
 	r =regression()
 	trainArr = r.getTrainData()
 	xdata=[]
@@ -68,8 +70,8 @@ if __name__ == '__main__':
 			ydata.append(i[3])
 	#xdata = map(float,xdata)
 	#ydata = map(float,ydata)	
-	print(xdata)	
-	print(ydata)
+	#print(xdata)	
+	#print(ydata)
 	#xdata = np.array(xdata)
 	futureArr=r.getfurturedata()
 	for i in futureArr:
@@ -79,8 +81,8 @@ if __name__ == '__main__':
 		attr=[i[2],wval]
 		#attr = map(float,attr)
 		currentPredicted=r.getPrediction(xdata,ydata,attr)
-		print(round(abs(currentPredicted[0]),2))
+		#print(round(abs(currentPredicted[0]),2))
 		print(i[0])
 		ret= r.insertPredictedData(i[0],round(abs(currentPredicted[0]),2))
-		print(ret)
+		#print(ret)
 

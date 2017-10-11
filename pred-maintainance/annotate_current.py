@@ -1,4 +1,3 @@
-import json
 import datetime
 import time
 import random
@@ -7,7 +6,7 @@ import random
 
 def estimate_current(desc, occtime, temp, sunrise, sunset):
     retValue = 0.0 #not used
-    tempC = temp - 273.15 #not used
+    tempC = temp - 273.15 #not used.
 
     # calculate the sunrise hours and the current time in the format of a string: HH:MM:SS in order to compare later
     t1 = datetime.datetime.strptime(occtime, '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S')
