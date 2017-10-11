@@ -8,7 +8,7 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-1 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
+        data = cursor.fetchone()
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
@@ -20,7 +20,7 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-7 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
+        data = cursor.fetchone()
         print(data)
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
@@ -33,7 +33,7 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(current_output*900/1000000) as result from current_data where curr_timestamp < DATE_ADD(now(), INTERVAL 2 HOUR) and curr_timestamp >= curdate() and city = 'Heidelberg'; "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
+        data = cursor.fetchone()
         print(data)
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
@@ -46,7 +46,7 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT sum(t1.current_output*10800/1000000) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 8) t1;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
-        data = cursor.fetchall()
+        data = cursor.fetchone()
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
@@ -58,8 +58,8 @@ class dbc:
         cursor = cnx.cursor()
         query = "SELECT avg(temperature - 273.15) as result from current_data where curr_timestamp < DATE_ADD(now(), INTERVAL 2 HOUR) and curr_timestamp >= curdate() and city = 'Heidelberg';"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchone()
         print(data)
-        data = cursor.fetchall()
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
