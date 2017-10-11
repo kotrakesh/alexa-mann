@@ -11,6 +11,7 @@ class dbc:
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-1 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
+        print(data[0])
         data1 = str(data).replace("((", "").replace(",),)", "")
         temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
@@ -62,7 +63,7 @@ class dbc:
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
         print(data)
-        data1 = str(data).replace("((", "").replace(",),)", "")
+        data1 = str(data).replace("(", "").replace(",)", "")
         temp = float("{0:.2f}".format(float(data1)))
         cursor.close()
         cnx.close()
