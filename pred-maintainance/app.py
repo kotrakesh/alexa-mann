@@ -40,7 +40,6 @@ def present_tillNow():
 @ask.intent("NowcurrentIntent")
 def present_now():
     currentRecieved = dbco.currentNow()
-
     presentNowCurrent = render_template('todayCurrentNow', numbers=currentRecieved)
     return statement(presentNowCurrent)
 
