@@ -2,6 +2,8 @@ import config
 import requests, json, pymysql
 from classCommonFunc import classCommonFunc
 
+classCommonFunc = classCommonFunc()
+
 class dbc:
     def pastYesterday(self):
         cnx = classCommonFunc.dataBaseConnection()
