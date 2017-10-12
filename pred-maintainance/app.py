@@ -58,9 +58,8 @@ def present_weather():
     presentWeather = render_template('todayWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(presentWeather)
 
-
-# @ask.intent("NowweatherIntent")
-# def present_Now_weather():
+#@ask.intent("NowweatherIntent")
+#def present_Now_weather():
 #	weatherRecieved = #------------------------------------------------
 #	presentNowWeather = render_template('todayWeatherNow', numbers=weatherRecieved)
 #	return statement(presentNowWeather)
