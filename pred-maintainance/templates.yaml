@@ -1,4 +1,4 @@
-initialhelp: Hello, It's been a good day. how can I help you.
+initialhelp: Hello, It's been a good day. This is predictive maintenance for Amazon Alexa. How can I help you?
 
 yesterdayCurrent: current receieved yesterday was {{ numbers }} watts.
 lastweekCurrent: current receieved last week was {{ numbers }} watts.
@@ -9,6 +9,6 @@ todayWeather: Todays temperature average is {{ numbers }} degree celcius, with t
 todayWeatherNow: weather now is {{ numbers }} degree celcius.
 tomorrowCurrent: current expected for tomorrow is {{ numbers }} watts.
 nextweekCurrent: current expected for next week {{ numbers }} watts.
-tomorrowWeather: tomorrow's expected weather {{ numbers }} degree celcius.
+tomorrowWeather: Tomorrows expected temperature average is {{ numbers }} degree celcius, with the weather being mostly {{ desc }}
 nextweekWeather: next week's expected weather {{ numbers }} degree celcius.
 failurePoss: No failure predictions for now

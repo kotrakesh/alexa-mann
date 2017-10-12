@@ -7,5 +7,5 @@ class classCommonFunc:
                                   host=config.dbHost,
                                   database=config.dbDatabase)
 		cursor = cnx.cursor()
-		print("Database connection set up")
+		# print("Database connection set up")
 		return cnx

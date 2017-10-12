@@ -55,8 +55,6 @@ def present_after():
 def present_weather():
     weatherRecieved = dbco.todayWeather()
     descRecieved = dbco.todayWeatherDesc()
-    print(weatherRecieved)
-    print(descRecieved)
     presentWeather = render_template('todayWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(presentWeather)
 
@@ -84,7 +82,8 @@ def future_week_current():
 @ask.intent("TomorroweatherIntent")
 def future_Tomorrow_weather():
     weatherRecieved = dbco.tomorrowWeather()
-    futureTomorrowWeather = render_template('tomorrowWeather', numbers=weatherRecieved)
+    descRecieved = dbco.tomorrowWeatherDesc()
+    futureTomorrowWeather = render_template('tomorrowWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(futureTomorrowWeather)
 
 

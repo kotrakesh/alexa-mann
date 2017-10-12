@@ -104,6 +104,17 @@ class dbc:
         cnx.close()
         return temp
 
+    def tomorrowWeatherDesc(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "Select description, count(description) as num from (select * from future_data where city = 'Heidelberg' and weather_date >= (curdate()+ 1) order by curr_timestamp desc, weather_date asc limit 8) t1 group by description order by count(description) desc limit 1;"
+        lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchone()
+        temp = data[0]
+        cursor.close()
+        cnx.close()
+        return temp
+
     def Nnext5DaysWeather(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
