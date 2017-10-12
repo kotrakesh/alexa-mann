@@ -61,9 +61,9 @@ def present_weather():
 @ask.intent("NowweatherIntent")
 def present_Now_weather():
     print("in now weather")
-	weatherRecieved = dbco.nowWeather()
-	presentNowWeather = render_template('todayWeatherNow', numbers=weatherRecieved[0], desc=weatherRecieved[1], city=weatherRecieved[2])
-	return statement(presentNowWeather)
+    weatherRecieved = dbco.nowWeather()
+    presentNowWeather = render_template('todayWeatherNow', numbers=weatherRecieved[0], desc=weatherRecieved[1], city=weatherRecieved[2])
+    return statement(presentNowWeather)
 
 @ask.intent("TomorrowcurrentIntent")
 def future_tomorrow_current():
