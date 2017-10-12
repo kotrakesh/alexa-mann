@@ -100,6 +100,7 @@ class dbc:
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
         temp = float("{0:.2f}".format(float(data[0])))
+        print(temp)
         cursor.close()
         cnx.close()
         return temp
@@ -111,6 +112,7 @@ class dbc:
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
         temp = data[0]
+        print(temp)
         cursor.close()
         cnx.close()
         return temp
