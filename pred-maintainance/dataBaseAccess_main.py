@@ -49,6 +49,17 @@ class dbc:
         cnx.close()
         return temp
 
+    def nowWeather(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "select description, temperature, city from current_data where city = 'Heidelberg' order by id desc limit 1; "  # actual SQL statement to be executed
+        lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchone()
+        temp = (float("{0:.2f}".format(float(data[1]))), data[0], data[2])
+        cursor.close()
+        cnx.close()
+        return temp
+
     def todayWeather(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
