@@ -1,12 +1,12 @@
 import re
 import datetime
 import json
-import ms_endpoints
-import room_class
+#import ms_endpoints
+#import room_class
 import ssl
 import urllib
-room = room_class.Room()
-
+#room = room_class.Room()
+import urllib.request
 ################################################################################
 # Functions
 
@@ -117,7 +117,7 @@ def load():
     #data=requests.get(url, data=json.load(), headers=headers)
     #return data
 
-
+load()
 
 
 def create_room_to_json(isAvailable, city, country, postalCode, state, street, displayName, email, attendees):
@@ -152,3 +152,4 @@ def delete_room_to_json(name):
     data['locations'].pop(x)
     store(data)
 
+load()

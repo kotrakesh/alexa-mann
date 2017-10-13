@@ -174,8 +174,10 @@ def create_calendar():
     locationEmailAddress = request.args.get('locationEmailAddress')
     maxAttendees = request.args.get('maxAttendees')
 
+
     # write new room data to json database,
     util.create_room_to_json(resolveAvailability, city, countryOrRegion, postalCode, state, street, displayName, locationEmailAddress, maxAttendees)
+
 
     # new calendar is created in the Microsoft Account
     response = ms_endpoints.call_createcalendar(session['access_token'], displayName)
