@@ -580,7 +580,7 @@ def checkRoomAvailable(Date, Time, Room):
     room_name = 'Meetingroom '+ str(Room)
     print('room name: '+ room_name)
     room.data = get_calendars(room.token)
-    print('room data: '+room.data)
+    #print('room data: '+room.data)
     print('looking for rooms')
 
     if (room.data is None):
@@ -600,10 +600,12 @@ def checkRoomAvailable(Date, Time, Room):
                 result = {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
             else:
                 result = {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': data['value']}
-    print("cannot find this room")
-    result = {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room' + room_name}
-    # check for free rooms with the constraints
+            break
+        else:
+            print("cannot find this room")
+            result = {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room' + room_name}
 
+    # check for free rooms with the constraints
     print(result)
     if (result['roomFound'] == True & result['roomFound'] == True):
         # returns answer to Alexa and displays the card in the Alexa App, at this time the calendar event already has been booked
