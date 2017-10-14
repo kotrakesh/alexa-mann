@@ -19,3 +19,4 @@ card_booked_room_fail_content: No meeting room could be booked. Reason {{fail_re
 msg_failed_linking: The MS Graph Token couldn\'t be accessed. Please link your account!
 msg_help: You can either directly book rooms by telling me the dates and times or ask for the availability of specific rooms
 msg_bye: See you soon, bye bye
+msg_availableRoom: The following rooms are available to book: {{roomnames}}

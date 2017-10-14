@@ -595,6 +595,22 @@ def checkRoomAvailable(Date, Time, t_end, Room):
     print("cannot find this room")
     return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
 
+@ask.intent('GetRoomsIntent')
+def getAllMeetingRooms():
+    """
+       Alexa names all rooms in the office which can be used for a meeting
+    """
+    roomNames = ""
+    checkAccessToken()
+    room.data = get_calendars(room.token)
+
+    for cal in room.data['value']:
+        roomName = cal['name'] + ", "
+        roomNames += roomName
+        print(cal['name'])
+    return statement(render_template('msg_booked_room_success', roomnames=roomNames)
+
+
 @ask.intent("RoomIntent")
 def checkRoomAvailable(Date, Room):
     """
