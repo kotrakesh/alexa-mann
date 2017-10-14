@@ -61,6 +61,8 @@ def getMeetingEndTime(start, duration):
     :param duration: Amazon duration format
     :return: Meeting end time in the HH:MM 24h format as string
     '''
+    if start is None or duration is None:
+        return -1
     if not re.search(r'\d\d:\d\d', start):
         start = start + ":00"
     if re.search(r'AF', start):
