@@ -20,3 +20,4 @@ msg_failed_linking: The MS Graph Token couldn\'t be accessed. Please link your a
 msg_help: You can either directly book rooms by telling me the dates and times or ask for the availability of specific rooms
 msg_bye: See you soon, bye bye
 msg_availableRoom: The following rooms are available to book: {{roomnames}}
+msg_notAvailableRoom: The following rooms are  not available to book: {{roomnames}}, it has foollowings events: {{eventlists}}
