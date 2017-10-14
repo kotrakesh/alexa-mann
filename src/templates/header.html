@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Sovanta Room-Monitor Dashboard</title>
 
+  <!-- external code (Fabric, jQuery) -->
   <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.min.css" />
   <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/css/fabric.components.min.css" />
   <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.2.0/js/fabric.min.js"></script>
@@ -17,16 +18,17 @@
 
 </head>
 
+<!-- begin body -->
 <body class="ms-Grid">
      <div class="ms-Grid-row">
           <!-- App navigation bar markup. -->
           <div class="ms-NavBar">
             <ul class="ms-NavBar-items">
               <li class="navbar-header ms-font-xxl">
-                  <img src="https://sovanta.com/wp-content/uploads/2017/08/logo_web_120_1x.png" onclick="window.location.href='/main'">
+                  <img src="https://sovanta.com/wp-content/uploads/2017/08/logo_web_120_1x.png" onclick="window.location.href='main'">
               </li>
-              <li class="navbar-header dashBoardTitle ms-font-xxl" onclick="window.location.href='/main'">Room Monitor Dashboard</li>
-              <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='/logout'">
+              <li class="navbar-header dashBoardTitle ms-font-xxl" onclick="window.location.href='main'">Room Monitor Dashboard</li>
+              <li class="ms-NavBar-item ms-NavBar-item--right" onclick="window.location.href='logout'">
                   <i class="ms-Icon ms-Icon--ChromeClose"></i>Ausloggen</li>
             </ul>
           </div>

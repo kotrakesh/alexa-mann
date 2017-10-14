@@ -1,5 +1,9 @@
 /**
- * Created by micha on 8/24/17.
+ * Created by micha (02468) on 8/24/17.
+ */
+
+/* Shows the dialog element before the deletion of an event
+ * Uses a data-countid field to identify which calendar shall be deleted
  */
 $(function() {
     var DialogElements = jQuery(".ms-Dialog");
@@ -28,16 +32,24 @@ $(function() {
     });
 });
 
+
+/* Uses AJAX to asynchroniously loading the events for the respective calendar without reloading the whole page
+ * Uses the template events.html to inject this page into the main page
+ */
 function ajax_loadEvents(className, id, name) {
   xhttp = new XMLHttpRequest();
 
   xhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
-      $(className).html(xhttp.responseText);
-  }};
+      $(className).html(xhttp.responseText); // injects the html code of events.html into the current page
+  }
+  if (this.status == 500) {
+      $(className).html('An error occured while loading the events!')
+  }
+  };
 
   console.log('id of ajax calendar ' + id, name, className);
-  xhttp.open("GET", "/list_events?cal_id="+id+"&cal_name="+name, true);
+  xhttp.open("GET", "list_events?cal_id="+id+"&cal_name="+name, true);
   xhttp.send();
 
   $(className).addClass('open');
@@ -45,7 +57,8 @@ function ajax_loadEvents(className, id, name) {
   console.log('remove Class from ' + className)
 }
 
-/* Toggle views */
+
+/* Toggles the events which are displayed for one calendar. Called upon click on the blue frame */
 function toggleListEvents(id) {
 
   className = '.events'+id;
@@ -55,8 +68,10 @@ function toggleListEvents(id) {
   }
 }
 
+/* Toggles the content of displaying all rooms with the respective events
+ * It furthermore redirects to the main page after each click to avoid being stuck in virtual subpages after form submissions
+ */
 function toggleViewRooms() {
-  window.location = '/main';
   if ($('.viewCalendars').hasClass('open')){
     $('.viewCalendars').removeClass('open');
     $('.viewCalendars').addClass('hide');
@@ -72,6 +87,8 @@ function toggleViewRooms() {
   $('.ms-MessageBar').addClass('hide');
 }
 
+
+/* Toggles the content of the form to add a new calendar */
 function toggleCreateRoom() {
 
   if ($('.createRoom').hasClass('open')){

@@ -2,7 +2,7 @@
 
 
    <div class="ms-Grid-col ms-u-mdPush1 ms-u-md12 ms-u-lgPush1 ms-u-lg10 ms-lg12">
-      <h2 class="ms-font-xxl">Guten Tag, {{ name }}!</h2>
+      <h2 class="ms-font-xxl">Guten Tag {{ vName }} {{ nName }}!</h2>
       <p class="ms-font-xl">
            Sie sind nun mit Office 365 Graph API verbunden.
            Hier k&ouml;nnen Sie Ihre Meetingr&auml;ume und Termine verwalten und neue  R&auml;ume anlegen.
@@ -35,7 +35,7 @@
         </button>
 
         <!-- Create Calender for room -->
-        <form class="createRoom hide" action="/create_calendar">
+        <form class="createRoom hide" action="create_calendar">
             <h3 class="ms-font-xl">Account Interaktionen</h3>
             <div class="ms-TextField">
               <input type="radio" name="resolveAvailability" value="true" hidden>
@@ -94,7 +94,7 @@
                               Alle Raumreservierungen f&uuml;r diesen Raum gehen dabei verloren!</p>
                             </div>
                             <div class="ms-Dialog-actions">
-                              <button onclick="window.location.href='/delete_calendar?calID={{ cal.id }}&calName={{cal.name}}'" class="ms-Button ms-Dialog-action ms-Button--primary">
+                              <button onclick="window.location.href='delete_calendar?calID={{ cal.id }}&calName={{cal.name}}'" class="ms-Button ms-Dialog-action ms-Button--primary">
                                 <span class="ms-Button-label">L&ouml;schen</span>
                               </button>
                               <button class="ms-Button ms-Dialog-action">
@@ -117,7 +117,7 @@
       </div>
       {% endif %}
 
-      <!-- Success messages, displayed after creating or deleting a calendar -->
+      <!-- Show message box after creating a calendar -->
       {% if showSuccess_createCalendar == 'true' %}
         <div class="ms-MessageBar ms-MessageBar--success">
           <div class="ms-MessageBar-content">
@@ -130,7 +130,7 @@
           </div>
         </div>
         <div class="backtoMainButton">
-            <button class="ms-Button" onclick="window.location.href='/main'">
+            <button class="ms-Button" onclick="window.location.href='main'">
                 Zur&uuml;ck zur Startseite
             </button>
         </div>
@@ -147,13 +147,13 @@
           </div>
         </div>
         <div class="backtoMainButton">
-        <button class="ms-Button" onclick="window.location.href='/main'">
+        <button class="ms-Button" onclick="window.location.href='main'">
             Zur&uuml;ck zur Startseite
         </button>
       </div>
       {% endif %}
 
-
+      <!-- Show message box after deleting a calendar -->
       {% if showSuccess_deletedCalendar == 'true' %}
         <div class="ms-MessageBar ms-MessageBar--success deletedCalendarSuccessMessage">
           <div class="ms-MessageBar-content">
@@ -166,7 +166,7 @@
           </div>
         </div>
         <div class="backtoMainButton">
-            <button class="ms-Button" onclick="window.location.href='/main'">
+            <button class="ms-Button" onclick="window.location.href='main'">
                 Zur&uuml;ck zur Startseite
             </button>
         </div>
@@ -184,7 +184,7 @@
           </div>
         </div>
         <div class="backtoMainButton">
-            <button class="ms-Button" onclick="window.location.href='/main'">
+            <button class="ms-Button" onclick="window.location.href='main'">
                 Zur&uuml;ck zur Startseite
             </button>
         </div>
@@ -202,7 +202,7 @@
             <span class="ms-font-m">UserID: {{ uID }} </span>
         </li>
 		<li class="ms-ListItem">
-            <span class="ms-font-m">Name: {{ name }}</span>
+            <span class="ms-font-m">Name: {{ vName }} {{ nName }}</span>
         </li>
 		<li class="ms-ListItem">
             <span class="ms-font-m">Mail: {{ mail }}</span>
@@ -210,25 +210,22 @@
         </li>
 	  </ul>
 
-    <!--
-      <h3 class="ms-font-xl">Alexa Informationen</h3>
-      <ul class="ms-List">
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Datum: {{ aDate }} </span>
-        </li>
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Zeit: {{ aTime }}</span>
-        </li>
-		<li class="ms-ListItem">
-            <span class="ms-font-m">Dauer: {{ aDuration }}</span>
-        </li>
-        <li class="ms-ListItem">
-            <span class="ms-font-m">Anzahl Teilnehmer: {{ aAttendees }}</span>
-        </li>
-	  </ul>
-    -->
+      <br/>
+
+      <h3 class="ms-font-xl">Roomdata aus der JSON-DB</h3>
+      <small>
+       <ul class="ms-List">
+           {% if locConstraint != null %}
+            {% for loc in locConstraint.locations %}
+                    <li class="ms-ListItem">
+                        <span class="ms-font-m">{{ loc.displayName }} ({{ loc.maxAttendees }}) </span>
+                    </li>
+             {% endfor %}
+            {% endif %}
+        </ul>
+      </small>
   </aside>
 
-</body>
+</body><!-- end body -->
 
 </html>
