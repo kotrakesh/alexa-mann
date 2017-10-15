@@ -99,10 +99,12 @@ def future_Week_weather():
     return statement(futureWeekWeather)
 
 
-@app.route("/admin")
+@app.route("/")
 def admin():
-    return ""
-
-
+    pastYesterday = dbco.pastYesterday()
+    currentNow = dbco.currentNow()
+    tomorrowCurrent = dbco.tomorrowCurrent()
+    return render_template('%s.html' % 'index',pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent)#
+    
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 

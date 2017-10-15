@@ -191,7 +191,11 @@ class dbc:
         url = "http://" + str(tempip) + "/sensordata"
         print(url)
         f = requests.get(url)
-        jdata = f.json()
-        powq = jdata[0] * config.powerFactor  # actual conversion
-        ret = str(powq)
+        if(isinstance(f.json,dict)):
+            ret = f
+            jdata = f.json()
+            powq = jdata[0] * config.powerFactor  # actual conversion
+            ret = str(powq)
+        else:
+            ret=0    
         return ret

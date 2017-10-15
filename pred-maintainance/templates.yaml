@@ -1,5 +1,4 @@
 initialhelp: Hello, this is the maintenance tool for solar plants for Amazon Alexa. You can ask for weather and current values generated at your solar plants. How can I help you right now?
-
 yesterdayCurrent: The current generated yesterday was {{ numbers }} watts.
 lastweekCurrent: The current generated last week was {{ numbers }} watts.
 todayCurrentTillNow: The current generated today was {{ numbers }} watts.
