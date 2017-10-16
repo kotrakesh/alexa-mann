@@ -100,7 +100,7 @@ def future_Week_weather():#To retrieve next week weather data
 
 
 @app.route("/")
-def admin():# ,ethod to route with localhost
+def admin():# method to route with localhost
     pastYesterday = dbco.pastYesterday()
     currentNow = dbco.currentNow()
     tomorrowCurrent = dbco.tomorrowCurrent()
