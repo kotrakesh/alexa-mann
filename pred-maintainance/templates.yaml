@@ -11,3 +11,6 @@ nextweekCurrent: The total current predicted for next week {{ numbers }} watts.
 tomorrowWeather: Tomorrows expected temperature average at your solar plant is {{ numbers }} degree celcius, with the weather being mostly {{ desc }}
 nextweekWeather: Next weeks expected temperature average at your solar plant is {{ numbers }} degree celcius, with the weather being mostly {{ desc }}
 failurePoss: No failure predictions for now
+failurePoss2: Risk of failure at 71.7 percent the week after next due to harsh weather predictions on tuesday.
+msghelp: You can ask directly for weather information at your solar plant or ask for your previous and predicted generated current. Furthermore you can ask whether your solar plant may fail in the next 2 weeks.
+msgbye: See you soon, bye bye

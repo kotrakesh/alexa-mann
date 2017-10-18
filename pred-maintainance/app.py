@@ -15,6 +15,17 @@ def predective_maintenance(): #Basic help
     initial_help = render_template('initialhelp')
     return question(initial_help)
 
+@ask.intent("AMAZON.HelpIntent")
+def intent_help():
+    return question(render_template('msghelp'))
+
+@ask.intent("AMAZON.CancelIntent")
+def intent_cancel():
+    return statement(render_template('msgbye'))
+
+@ask.intent("AMAZON.StopIntent")
+def intent_stop():
+    return statement(render_template('msgbye'))
 
 @ask.intent("YesterdayIntent")
 def past_yesterday():# To retrieve yesterday current
@@ -90,6 +101,10 @@ def future_Tomorrow_weather():#To retrieve tomorrow weather data
 def failure_weather():
     futureTomorrowWeather = render_template('failurePoss')
     return statement(futureTomorrowWeather)
+
+@ask.intent("FalseFailurePossibilityIntent")
+def failure_weather():
+     return statement(render_template('failurePoss2'))
 
 
 @ask.intent("NextweekweatherIntent")
