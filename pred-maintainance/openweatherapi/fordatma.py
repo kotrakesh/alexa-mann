@@ -14,7 +14,7 @@ db = MySQLdb.connect(host="eu-cdbr-west-01.cleardb.com",
 cur = db.cursor()
 
 now = datetime.datetime.now()
-date_string = now.strftime('%Y-%m-%d %H:%M:%S')
+date_string = now.strftime('%Y-%m-%d %H:%M:%S')#Convert a tuple to a string as specified by the format argument
 
 
 
