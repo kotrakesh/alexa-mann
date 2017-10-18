@@ -1,6 +1,6 @@
 msg_launch_request: Welcome to room monitor
 msg_launch_request3: Welcome to room monitor, your interactive room booking service of Sovanta. How may I help you? If you any further assistance please ask me for help.
-msg_missing_date_time_duration: Hello, please tell me the dates and times when your meeting shall be scheduled
+msg_missing_date_time_duration: Please tell me the dates and times when your meeting shall be scheduled
 msg_missing_date_time: What day and what time is the meeting?
 msg_missing_date_duration: Whats the date and the duration of the meeting?
 msg_missing_time_duration: What time is the meeting and how long is it?
@@ -12,10 +12,15 @@ msg_NaN: Only numbers are allowed for this field
 msg_title: Whats the title of the event?
 msg_booked_room_success: The meeting is in room {{roomname}}
 msg_booked_room_fail: Booking failed. Reason {{fail_reason}}
+msg_book_room_intent: Do you want to book the room for the specified time and dates?
+msg_check_room_success: The following rooms are available to book. {{roomnames}}
+msg_check_room_fail: There are no rooms available or the listing failed
 card_booked_room_success_title: Booked Meeting
 card_booked_room_success_content: The meeting takes place in Room {{roomname}}. Start {{start}}, End {{end}}, Teilnehmer {{attendees}}
 card_booked_room_fail_title: Failed booking
 card_booked_room_fail_content: No meeting room could be booked. Reason {{fail_reason}}
 msg_failed_linking: The MS Graph Token couldn\'t be accessed. Please link your account!
 msg_help: You can either directly book rooms by telling me the dates and times or ask for the availability of specific rooms
-msg_bye: See you soon, bye bye
+msg_bye: Bye bye
+msg_availableRoom: Room {{roomname}} is available at the specified time. Should I book the meeting room for you?
+msg_notAvailableRoom: The room {{roomname}} is not available at this time, the following events take place instead. {{eventlists}}

@@ -302,19 +302,14 @@ def session_ended():
 
 @ask.intent("AMAZON.NoIntent")
 def intent_no():
-    return None
+    room.date = room.time = None
 
 # invoked after user is asked if he wants to book the room
 @ask.intent("AMAZON.YesIntent")
 def intent_yes():
-    if room.date is not None and room.time is None and room.duration is None:           # 1 0 0
-        missing_duration_time(room.date)
-    if room.date is not None and room.time is None and room.duration is not None:       # 1 0 1
-        missing_time(room.date, room.duration)
-    if room.date is not None and room.time is not None and room.duration is None:       # 1 1 0
-        missing_duration(room.date, room.time)
-    if room.date is not None and room.time is not None and room.duration is not None:   # 1 1 1
-        return None
+    print('yes intent ---')
+    room.bookingProcess = 1
+    return question(render_template('msg_attendees'))
 
 # Custom intents
 @ask.intent("DateIntent")
@@ -419,6 +414,8 @@ def numberOfAttendees(Attendees):
     :return:            Whats the title of the event?
     """
     room.attendees = Attendees
+    checkMissingAttributes_Phase1()
+
     # check if Attendees is really a valid number, Problem: also invoked if title intent is misused
     # try:
     #     isinstance(int(Attendees), int)
@@ -457,11 +454,7 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     :return:            statement for Amazon Echo including card information
     """
 
-    try:
-        room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
-    except:
-        print('room token was not set')
-        return statement('The MS Graph Token couldn\'t be accessed. Please link your account!').link_account_card()
+    checkAccessToken()
 
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
@@ -470,11 +463,22 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
 
     # calculate: end = start_time + duration
     am_end = util.getMeetingEndTime(Time, Duration)
+    if am_end == -1:
+        fail_end_time = 'End time could not be calculated'
+        return statement(render_template('msg_booked_room_fail', fail_reason=fail_end_time)) \
+            .simple_card(title=render_template('card_booked_room_fail_title'),
+                         content=render_template('card_booked_room_fail_content', fail_reason=fail_end_time)
+                         )
     end = util.convert_amazon_to_ms(Date, am_end)
     print('start and endtimes: ' , start, end)
 
     # check for free rooms with the constraints
-    result = getFreeRooms(start, end, Attendees, Title)
+    #TODO is room number is set book this room
+    if room.roomNumber is not None:
+        result = getFreeRooms(start, end, Attendees, Title, room.roomNumber)
+    else:
+        room.roomNumber = None
+        result = getFreeRooms(start, end, Attendees, Title, None)
 
     print(result)
     if (result['roomFound'] == 1):
@@ -487,7 +491,7 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
             .simple_card(title=render_template('card_booked_room_fail_title'), content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
-def getFreeRooms(t_start, t_end, attendees, title):
+def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
     """
     Searches for free rooms with the given constraints of start, end and number of attendees
         First loop: iterate through the Microsoft Calendars to find rooms
@@ -500,7 +504,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
     :return:            python object, with information about status of room booking and fail reason on error
     """
     print('getFreeRooms')
-
+    room_name = 'Meetingroom ' + str(roomnumber)
     print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ' ', str(title), ' --- cal.data: ')
 
     # opens the json database
@@ -522,6 +526,7 @@ def getFreeRooms(t_start, t_end, attendees, title):
         print(' ------------ ')
         print('name: ' + str(cal['name']))
 
+
         #returns events for the specified times
         jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
         print(jdata.text)
@@ -542,6 +547,10 @@ def getFreeRooms(t_start, t_end, attendees, title):
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
 
+                        if room_name is cal['name']:
+                            ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
+                            return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
+
                         # create calendar event for that room
                         ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
                         # Free room found
@@ -556,86 +565,149 @@ def getFreeRooms(t_start, t_end, attendees, title):
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 
-### Second part of the skill
-@ask.intent("RoomTimeIntent")
-def checkRoomAvailable(Date, Time, t_end, Room):
+### New Skill
+@ask.intent("GetAllRoomsIntent")
+def getAllMeetingRooms():
+    """
+       Alexa names all rooms in the office which can be used for a meeting
+    """
+    roomNames = ""
+    checkAccessToken()
+    print('checked Access token')
+    try:
+        room.data = get_calendars(room.token)
+    except:
+        return statement(render_template('msg_check_room_fail'))
+
+    for cal in room.data['value']:
+        if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'):
+            continue
+        roomName = cal['name'] + ", "
+        roomNames += roomName
+    print(roomNames)
+    return statement(render_template('msg_check_room_success', roomnames=roomNames))
+
+
+
+
+# is room 2 available
+# @ask.intent("RoomAvailabilityDateIntent")
+# @ask.intent("RoomIntent")
+# num as parameter
+@ask.intent("RoomAvailabilityIntent")
+def checkRoomAvailableDate(Room):
+    room.bookingProcess = 0
+    room.roomNumber = Room
+    return checkMissingAttributes_RoomAvailable(Room)
+
+
+# is room 2 available tomorrow
+@ask.intent("RoomAvailabilityDateIntent")
+def checkRoomAvailableDate(Room, Date):
+    checkAccessToken()
+    room.date = Date
+    room.bookingProcess = 0
+    room.roomNumber = Room
+    return checkMissingAttributes_RoomAvailable(Room)
+
+
+# is room 2 available at 2 pm
+@ask.intent("RoomAvailabilityTimeIntent")
+def checkRoomAvailableTime(Room, Time):
+    checkAccessToken()
+    room.time = Time
+    room.bookingProcess = 0
+    room.roomNumber = Room
+    return checkMissingAttributes_RoomAvailable(Room)
+
+
+
+
+
+
+###
+@ask.intent("RoomAvailabilityDateTimeIntent")
+def checkRoomAvailable(Date, Time, Room):
     """
        check whether a specific room is still available for a time
 
-       :param t_start:     start of the event
-       :param t_end:       end of the event
-       :param room_name:   name of the room
-       """
-    room_name = 'Meeting Room'+ str(Room)
-
-    print('getAllRooms')
-    room.data = get_calendars(room.token)
-    #print(room.data)
-
-    print('looking for rooms')
-
-    if (room.data is None):
-        return {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
-    for cal in room.data['value']:
-        # ignore some standard calendars
-        print("test!")
-        print(cal['name'])
-        if (cal['name'] == room_name):
-            print("find this room"+ room_name)
-            # check whether this room is free at that time.
-            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], Time, t_end)
-            print(jdata.text)
-            data = json.loads(jdata.text)
-            if not data['value']:
-                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
-                print('Keine Events vorhanden')
-                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
-            else:
-                return {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'some event in this room'}
-    print("cannot find this room")
-    return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
-
-@ask.intent("RoomIntent")
-def checkRoomAvailable(Date, Room):
-    """
-       check whether a specific room is still available for a day
-
-       :param t_start:     start of the event
-       :param t_end:       end of the event
-       :param room_name:   name of the room
+       :param Date:
+       :param Time:
+       :param Duration:
+       :param Room_:   Number of the room
        """
     checkAccessToken()
+    room_name = 'Meeting Room'+ str(Room)
+    room.date = Date
+    room.time = Time
+    room.bookingProcess = 0
+    room.roomNumber = Room
+    # checkMissingAttributes_RoomAvailable(Room)
 
-    room_name = 'Meetingroom ' + str(Room)
-    timeData = util.deleteHourMinSec(Date)
-    t_start = timeData['start_time']
-    t_end = timeData['end_time']
-    print('getAllRooms')
+    # Changing datatypes for Microsoft
+    start = util.convert_amazon_to_ms(Date, Time)
+
+    # calculate: end = start_time + duration
+    am_end = util.getMeetingEndTime(Time, "PT1H")
+    end = util.convert_amazon_to_ms(Date, am_end)
+    print('start and endtimes: ' , start, end)
+
+    room_name = 'Meetingroom '+ str(Room)
+    print('room name: '+ room_name)
     room.data = get_calendars(room.token)
-    #print(room.data)
-
+    #print('room data: '+room.data)
     print('looking for rooms')
 
     if (room.data is None):
-        return {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
+        result = {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
     for cal in room.data['value']:
         # ignore some standard calendars
-        print("test!")
-        print(cal['name'])
+        print('check Available with '+cal['name'])
         if (cal['name'] == room_name):
             print("find this room"+ room_name)
             # check whether this room is free at that time.
-            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], start, end)
             print(jdata.text)
             data = json.loads(jdata.text)
             if not data['value']:
                 # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
                 print('Keine Events vorhanden')
-                return  {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
+                result = {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
             else:
-                return {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'some event in this room'}
-    print("cannot find this room")
-    return {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room'}
+                result = {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': data['value'][0]['subject']}
+            break
+        else:
+            print("cannot find this room")
+            result = {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room' + room_name}
+
+    # check for free rooms with the constraints
+    print(result)
+
+    if (result['roomFound'] == True and result['roomAvailable'] == True):
+        # returns answer to Alexa and displays the card in the Alexa App, at this time the calendar event already has been booked
+        print('room has been found and is available')
+        return question(render_template('msg_availableRoom', roomname=result['roomName']))
+        #to do: ask user whether book this room now
+        '''
+           \ .simple_card(title=render_template('card_booked_room_success_title'),
+                         content=render_template('card_booked_room_success_content', roomname=result['roomName'],
+                                                 start=start, end=end, attendees=Attendees))'''
+    if (result['roomFound'] == True and result ['roomAvailable']== False):
+        room.date = room.time = None
+        # Alexa gets informed about the failed booking, in some cases the fail reason is send and also displayed on the Alexa Card
+        return statement(render_template('msg_notAvailableRoom', roomname=result['roomName'], eventlists=result['reason'] )) \
+            .simple_card(title=render_template('card_booked_room_fail_title'),
+                         content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
+    if (result['roomFound'] == False):
+        room.date = room.time = None
+        return statement(render_template('msg_booked_room_fail', fail_reason=result['reason'])) \
+            .simple_card(title=render_template('card_booked_room_fail_title'),
+                         content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
+
+
+
+
+
 
 def checkEventsForRoom(date, room_name):
     """
@@ -668,6 +740,9 @@ def checkEventsForRoom(date, room_name):
     return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
 
 
+
+
+### UTIL ###
 def checkAccessToken():
     try:
         room.token = ask_session['user']['accessToken']  # get the MS Token from the Alexa Session after successful account linking
@@ -678,24 +753,48 @@ def checkAccessToken():
 
 # Tests for missing attributes
 def checkMissingAttributes_Phase1(): # date time duration                               # d t d
-    print('###### check missing attributes ########')
-    if room.date is None and room.time is None and room.duration is None:               # 0 0 0
-        return question(render_template(('msg_missing_date_time_duration')))
-    if room.date is None and room.time is None and room.duration is not None:           # 0 0 1
+    if room.bookingProcess == 0:
+        print('no room is booked now')
+        return checkMissingAttributes_RoomAvailable(room.roomNumber)
+    else:
+        print('###### check missing attributes ########')
+        if room.date is None and room.time is None and room.duration is None:               # 0 0 0
+            return question(render_template(('msg_missing_date_time_duration')))
+        if room.date is None and room.time is None and room.duration is not None:           # 0 0 1
+            return question(render_template(('msg_missing_date_time')))
+        if room.date is None and room.time is not None and room.duration is None:           # 0 1 0
+            return question(render_template(('msg_missing_date_duration')))
+        if room.date is None and room.time is not None and room.duration is not None:       # 0 1 1
+            return question(render_template(('msg_missing_date')))
+        if room.date is not None and room.time is None and room.duration is None:           # 1 0 0
+            print('missing time and duration')
+            return question(render_template(('msg_missing_time_duration')))
+        if room.date is not None and room.time is None and room.duration is not None:       # 1 0 1
+            return question(render_template(('msg_missing_time')))
+        if room.date is not None and room.time is not None and room.duration is None:       # 1 1 0
+            return question(render_template(('msg_missing_duration')))
+        if room.date is not None and room.time is not None and room.duration is not None:   # 1 1 1
+            return question(render_template('msg_attendees'))
+
+def checkMissingAttributes_RoomAvailable(Room):  # date time          # d t
+    print('###### check missing attributes room available ########')
+    if room.date is None and room.time is None:                       # 0 0
         return question(render_template(('msg_missing_date_time')))
-    if room.date is None and room.time is not None and room.duration is None:           # 0 1 0
-        return question(render_template(('msg_missing_date_duration')))
-    if room.date is None and room.time is not None and room.duration is not None:       # 0 1 1
+
+    if room.date is None and room.time is not None:                   # 0 1
         return question(render_template(('msg_missing_date')))
-    if room.date is not None and room.time is None and room.duration is None:           # 1 0 0
-        print('missing time and duration')
-        return question(render_template(('msg_missing_time_duration')))
-    if room.date is not None and room.time is None and room.duration is not None:       # 1 0 1
+
+    if room.date is not None and room.time is None:                   # 1 0
+        print('missing time')
         return question(render_template(('msg_missing_time')))
-    if room.date is not None and room.time is not None and room.duration is None:       # 1 1 0
-        return question(render_template(('msg_missing_duration')))
-    if room.date is not None and room.time is not None and room.duration is not None:   # 1 1 1
-        return question(render_template('msg_attendees'))
+
+    if room.date is not None and room.time is not None:               # 1 1
+        # TODO call function to answer the availability
+        print('all data is available')
+        # return statement(render_template(('card_booked_room_success_title')))
+
+        return checkRoomAvailable(room.date, room.time, Room)
+
 
 
 ###nur for test
