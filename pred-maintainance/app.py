@@ -102,6 +102,7 @@ def failure_weather():
     futureTomorrowWeather = render_template('failurePoss')
     return statement(futureTomorrowWeather)
 
+
 @ask.intent("FalseFailurePossibilityIntent")
 def failure_weather():
      return statement(render_template('failurePoss2'))
@@ -110,9 +111,9 @@ def failure_weather():
 @ask.intent("NextweekweatherIntent")
 def future_Week_weather():#To retrieve next week weather data
     weatherRecieved = dbco.Nnext5DaysWeather()
-    futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved)
+    descRecieved = dbco.Nnext5DaysWeatherdesc()
+    futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(futureWeekWeather)
-
 
 @app.route("/")
 def admin():# method to route with localhost
