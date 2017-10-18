@@ -144,7 +144,6 @@ class dbc:
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
         temp = data[0]
-        print(temp)
         cursor.close()
         cnx.close()
         return temp
@@ -161,6 +160,18 @@ class dbc:
         cnx.close()
         return temp
     #chages to be done here to get all values from the database
+
+    def Nnext5DaysWeatherdesc(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "Select description, count(description) as num from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 40) t1;"
+        lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchone()
+        temp = data[0]
+        cursor.close()
+        cnx.close()
+        return temp
+
 
     def next5DaysfullWeather(self):
         cnx = classCommonFunc.dataBaseConnection()

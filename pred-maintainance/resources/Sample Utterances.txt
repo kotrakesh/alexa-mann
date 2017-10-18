@@ -1,0 +1,35 @@
+YesterdayIntent what is the current recieved yesterday
+YesterdayIntent yesterday current recieved
+YesterdayIntent how much current was generated yesterday
+YesterdayIntent how much was generated yesterday
+YesterdayIntent generated yesterday
+LastweekIntent what is the current recieved last week
+LastweekIntent last week current recieved
+LastweekIntent how much current was generated last week
+LastweekIntent how much was generated last week
+LastweekIntent generated last week
+TillnowcurrentIntent what is the current recieved for today
+TillnowcurrentIntent todays current recieved
+TillnowcurrentIntent how much current was generated today
+TillnowcurrentIntent how much was generated today
+TillnowcurrentIntent generated today
+NowcurrentIntent What is the current recieved right now
+NowcurrentIntent current recieving now
+NowcurrentIntent how much current does the solar panel recieve right now
+NowcurrentIntent how much current is the solar panel recieving now
+NowcurrentIntent generating now
+TodayaftercurrentIntent what is the expected current for today
+TodayweatherIntent today's expected weather
+NowweatherIntent what is the weather now
+NowweatherIntent weather now
+TomorrowcurrentIntent what is the current expected for tomorrow
+TomorrowcurrentIntent tomorrow expected current
+NextweekcurrentIntent what is next week expected current
+NextweekcurrentIntent current expected for next week
+TomorroweatherIntent what is tomorrow's expected weather
+NextweekweatherIntent next week's expected weather
+NextweekweatherIntent next week weather
+FailurePossibilityIntent what is the failure possibility next week
+FalseFailurePossibilityIntent what is the failure possibility next week after
+FalseFailurePossibilityIntent what is the failure possibility in two weeks
+FalseFailurePossibilityIntent failure possibility in two weeks

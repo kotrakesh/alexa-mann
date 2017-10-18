@@ -15,6 +15,17 @@ def predective_maintenance(): #Basic help
     initial_help = render_template('initialhelp')
     return question(initial_help)
 
+@ask.intent("AMAZON.HelpIntent")
+def intent_help():
+    return question(render_template('msghelp'))
+
+@ask.intent("AMAZON.CancelIntent")
+def intent_cancel():
+    return statement(render_template('msgbye'))
+
+@ask.intent("AMAZON.StopIntent")
+def intent_stop():
+    return statement(render_template('msgbye'))
 
 @ask.intent("YesterdayIntent")
 def past_yesterday():# To retrieve yesterday current
@@ -92,12 +103,17 @@ def failure_weather():
     return statement(futureTomorrowWeather)
 
 
+@ask.intent("FalseFailurePossibilityIntent")
+def failure_weather():
+     return statement(render_template('failurePoss2'))
+
+
 @ask.intent("NextweekweatherIntent")
 def future_Week_weather():#To retrieve next week weather data
     weatherRecieved = dbco.Nnext5DaysWeather()
-    futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved)
+    descRecieved = dbco.Nnext5DaysWeatherdesc()
+    futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved, desc=descRecieved)
     return statement(futureWeekWeather)
-
 
 @app.route("/")
 def admin():# method to route with localhost
