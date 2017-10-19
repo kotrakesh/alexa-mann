@@ -181,7 +181,8 @@ class dbc:
         datax = cursor.fetchall() #only the last value is returning not all the values
         for row in datax:
             data = row
-        temp = float("{0:.2f}".format(float(data[0])))
+        temp = datax
+        #float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
