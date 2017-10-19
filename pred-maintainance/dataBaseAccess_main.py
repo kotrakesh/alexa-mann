@@ -176,7 +176,7 @@ class dbc:
     def next5DaysfullWeather(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
-        query = "SELECT (temperature - 273.15) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 40) t1;"  # actual SQL statement to be executed
+        query = " SELECT weather_date,AVG(temperature - 273.15) AS result FROM (SELECT CAST(weather_date AS DATE) AS weather_date,temperature  FROM future_data WHERE city = 'Heidelberg' AND weather_date > CURDATE()+1 AND weather_date< CURDATE()+6 ) t1 GROUP BY weather_date;"  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
         datax = cursor.fetchall() #only the last value is returning not all the values
         for row in datax:
@@ -189,16 +189,18 @@ class dbc:
     def next5DaysfullCurrent(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
-        query = "SELECT sum(t1.current_output*10800/1000000) as result from (select * from future_data where city = 'Heidelberg' order by curr_timestamp desc, weather_date asc limit 40) t1;"  # actual SQL statement to be executed
+        query = "SELECT weather_date, SUM(current_output) FROM (SELECT CAST(weather_date AS DATE) AS weather_date,current_output FROM future_data WHERE city = 'Heidelberg'AND weather_date > CURDATE()+1 AND weather_date< CURDATE()+6 ) t1 GROUP BY weather_date;" 
+         #actual SQL statement to be executed- 18000 * config.powerFactor/ 1000000
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
         data1 = data[0]
         if data1 is None:
             data1 = 0.0
-        temp = float("{0:.2f}".format(float(data1)))
+        #temp = float("{0:.2f}".format(float(data1)))
+
         cursor.close()
         cnx.close()
-        return temp
+        return data
 
     def currentNow(self):
         # receiving present current 
