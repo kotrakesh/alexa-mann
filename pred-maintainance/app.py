@@ -138,7 +138,7 @@ def tomorrow_Current():
 
 @app.route("/")
 def admin():# method to route with localhost
-    pastYesterday = dbco.pastYesterday()
+    pastYesterday =  dbco.pastYesterday()
     currentNow = dbco.currentNow()
     tomorrowCurrent = dbco.tomorrowCurrent()
     return render_template('%s.html' % 'index',pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent)#
