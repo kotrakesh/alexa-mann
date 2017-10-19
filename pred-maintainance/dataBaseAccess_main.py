@@ -195,7 +195,6 @@ class dbc:
         #for row in data:
            # print(row)
         #temp = float("{0:.2f}".format(float(data1)))
-
         cursor.close()
         cnx.close()
         return data      
@@ -207,12 +206,8 @@ class dbc:
          #actual SQL statement to be executed- 18000 *3* config.powerFactor/ 1000000
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
-        for row in data:
-            if row[1] is None
-                row[1] = 0.0
-                        #data1 = data[0]
         #if data1 is None:
-         #   data1 = 0.0
+        #   data1 = 0.0
         #temp = float("{0:.2f}".format(float(data1)))
 
         cursor.close()
