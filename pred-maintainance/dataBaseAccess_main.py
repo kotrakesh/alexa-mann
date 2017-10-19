@@ -216,13 +216,13 @@ class dbc:
         cursor.close()
         cnx.close()
         url = "http://" + str(tempip) + "/sensordata"
-        print(url)
+        #print(url)
         f = requests.get(url)
-        if(isinstance(f.json,dict)):
+        if(isinstance(f.json(),list)):
             ret = f
             jdata = f.json()
             powq = jdata[0] * config.powerFactor  # actual conversion
             ret = str(powq)
         else:
             ret=0    
-        return ret
+        return float("{0:.2f}".format(float(ret)))
