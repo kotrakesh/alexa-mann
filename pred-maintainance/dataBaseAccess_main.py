@@ -185,12 +185,26 @@ class dbc:
         cursor.close()
         cnx.close()
         return temp
+    def last5DaysfullCurrent(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "SELECT weather_date, SUM(current_output)FROM (SELECT CAST(curr_timestamp AS DATE) AS weather_date,current_output FROM current_data WHERE city = 'Heidelberg' AND curr_timestamp > CURDATE()-5 AND curr_timestamp< CURDATE()+1)) t1 GROUP BY weather_date;" #actual SQL statement to be executed- 18000 * config.powerFactor/ 1000000
+        lines = cursor.execute(query)  # execute the query
+        data = cursor.fetchall()
+        data1 = data[0]
+        if data1 is None:
+            data1 = 0.0
+        #temp = float("{0:.2f}".format(float(data1)))
+
+        cursor.close()
+        cnx.close()
+        return data      
 
     def next5DaysfullCurrent(self):
         cnx = classCommonFunc.dataBaseConnection()
         cursor = cnx.cursor()
         query = "SELECT weather_date, SUM(current_output) FROM (SELECT CAST(weather_date AS DATE) AS weather_date,current_output FROM future_data WHERE city = 'Heidelberg'AND weather_date > CURDATE()+1 AND weather_date< CURDATE()+6 ) t1 GROUP BY weather_date;" 
-         #actual SQL statement to be executed- 18000 * config.powerFactor/ 1000000
+         #actual SQL statement to be executed- 18000 *3* config.powerFactor/ 1000000
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
         data1 = data[0]
