@@ -217,7 +217,7 @@ class dbc:
         url = "http://" + str(tempip) + "/sensordata"
         #print(url)
         f = requests.get(url)
-        if(isinstance(f.json(),list)):
+        if(str(f)!="<Response [502]>"):
             ret = f
             jdata = f.json()
             powq = jdata[0] * config.powerFactor  # actual conversion
