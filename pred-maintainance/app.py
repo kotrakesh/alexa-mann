@@ -115,6 +115,27 @@ def future_Week_weather():#To retrieve next week weather data
     futureWeekWeather = render_template('nextweekWeather', numbers=weatherRecieved, desc=descRecieved)
     return question(futureWeekWeather)
 
+@app.route("/nextweekweather")
+def next_Week_weather():
+    weatherRecieved = dbco.next5DaysfullWeather()
+    return repr(weatherRecieved)
+
+@app.route("/nextweekCurrent")
+def next_Week_current():
+    currentRecieved = dbco.next5DaysfullCurrent()
+    return repr(currentRecieved)
+
+@app.route("/tomorroweather")
+def tomorrow_weather():
+    weatherRecieved = dbco.tomorrowWeather()
+    return repr(weatherRecieved)
+
+@app.route("/tomorrowCurrent")
+def tomorrow_Current():
+    currentRecieved = dbco.tomorrowCurrent()
+    return repr(currentRecieved)
+
+
 @app.route("/")
 def admin():# method to route with localhost
     pastYesterday = dbco.pastYesterday()
