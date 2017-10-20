@@ -103,7 +103,7 @@ def failure_weather():
     s = svcClass()
     failureData = s.getfailureprediction()
     failureDate = failureData[0]
-    failureReason = "Due to "+ failureData[1]
+    failureReason =  failureData[1]
     futureTomorrowWeather = render_template('failurePoss',failureDate=failureDate,failureReason=failureReason)
     return question(futureTomorrowWeather)
 
