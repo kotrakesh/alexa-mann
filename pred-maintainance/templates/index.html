@@ -68,7 +68,7 @@
 				</div>
 				<div class="pull-left info">
 					<p>Plant Status</p>
-					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+					<a href="#"><i class="fa fa-circle text-success"></i> </a>
 				</div>
 			</div>
 			<!-- search form -->
@@ -108,7 +108,7 @@
 		<section class="content-header">
 			<h1>
 				Dashboard
-				<small>Control panel</small>
+				<small></small>
 			</h1>
 			<ol class="breadcrumb">
 				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -124,9 +124,10 @@
 					<!-- small box -->
 					<div class="small-box bg-aqua">
 						<div class="inner">
+							<label>Current received yesterday</label>
 						<!-- MRchanges yesterday current -->
 							<h3> {{pastYesterday}}</h3>
-							<p>Yesterday current</p>
+							<p>Total received current</p>
 						</div>
 						<div class="icon">
 							<i class="ion ion-stats-bars"></i>
@@ -138,6 +139,7 @@
 					<!-- small box -->
 					<div class="small-box bg-aqua">
 						<div class="inner">
+							<label>Live current</label>
 							<h3>{{currentNow}} </h3>
 							<!-- MRchanges present current -->
 							<p>Generating now</p>
@@ -152,9 +154,10 @@
 					<!-- small box -->
 					<div class="small-box bg-aqua">
 						<div class="inner">
+							<label>Expected current tommorow</label>
 							<h3>{{tomorrowCurrent}}</h3>
 							<!-- MRchanges tomorrow current -->
-							<p>Tomorrow current</p>
+							<p>Total expected current</p>
 						</div>
 						<div class="icon">
 							<i class="ion ion-stats-bars"></i>
@@ -166,6 +169,7 @@
 					<!-- small box -->
 					<div class="small-box bg-red">
 						<div class="inner">
+							<label>Failure Alert</label>
 							<!-- MRchanges warning -->
 							<h3>{{failureDate}}</h3>
               				<p>{{failureReason}}</p>
@@ -186,9 +190,9 @@
 					<div class="nav-tabs-custom">
 						<!-- Tabs within a box -->
 						<ul class="nav nav-tabs pull-right">
-							<li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-							<li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
-							<li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
+							<li class="active"><a href="#revenue-chart" data-toggle="tab"></a></li>
+							<!-- <li><a href="#sales-chart" data-toggle="tab">Donut</a></li> -->
+							<li class="pull-left header"><i class="fa fa-inbox"></i> Current</li>
 						</ul>
 						<div class="tab-content no-padding">
 							<!-- Morris chart - Sales -->
