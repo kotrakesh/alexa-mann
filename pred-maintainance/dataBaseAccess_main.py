@@ -228,7 +228,12 @@ class dbc:
         cnx.close()
         url = "http://" + str(tempip) + "/sensordata"
         #print(url)
-        f = requests.get(url,timeout=5)
+        f= "<Response [502]>"
+        try:
+            f = requests.get(url,timeout=5)
+        except:
+            print("curl issue")
+                
         if(str(f)!="<Response [502]>" and str(f)!="<Response [500]>" and str(f)!="<Response [404]>"):
             ret = f
             jdata = f.json()
