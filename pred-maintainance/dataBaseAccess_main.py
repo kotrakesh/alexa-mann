@@ -181,7 +181,7 @@ class dbc:
         datax = cursor.fetchall() #only the last value is returning not all the values
         for row in datax:
             data = row
-        temp = datax
+        temp = datax    
         #float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
@@ -192,11 +192,9 @@ class dbc:
         query = "SELECT weather_date, SUM(current_output)FROM (SELECT CAST(curr_timestamp AS DATE) AS weather_date,current_output FROM current_data WHERE city = 'Heidelberg' AND curr_timestamp > CURDATE()-5 AND curr_timestamp< CURDATE()+1)) t1 GROUP BY weather_date;" #actual SQL statement to be executed- 18000 * config.powerFactor/ 1000000
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
-        data1 = data[0]
-        if data1 is None:
-            data1 = 0.0
+        #for row in data:
+           # print(row)
         #temp = float("{0:.2f}".format(float(data1)))
-
         cursor.close()
         cnx.close()
         return data      
@@ -208,9 +206,8 @@ class dbc:
          #actual SQL statement to be executed- 18000 *3* config.powerFactor/ 1000000
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchall()
-        data1 = data[0]
-        if data1 is None:
-            data1 = 0.0
+        #if data1 is None:
+        #   data1 = 0.0
         #temp = float("{0:.2f}".format(float(data1)))
 
         cursor.close()
