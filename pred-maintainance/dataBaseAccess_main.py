@@ -228,7 +228,7 @@ class dbc:
         cnx.close()
         url = "http://" + str(tempip) + "/sensordata"
         #print(url)
-        f = requests.get(url)
+        f = requests.get(url,timeout=5)
         if(str(f)!="<Response [502]>" and str(f)!="<Response [500]>" and str(f)!="<Response [404]>"):
             ret = f
             jdata = f.json()
@@ -237,3 +237,13 @@ class dbc:
         else:
             ret=0    
         return float("{0:.2f}".format(float(ret)))
+
+    def previousandnext5DaysfullCurrent(self):
+        cnx = classCommonFunc.dataBaseConnection()
+        cursor = cnx.cursor()
+        query = "SELECT weather_date, SUM(current_output)*10800/1000000 FROM (SELECT CAST(weather_date AS DATE) AS weather_date,current_output FROM future_data WHERE city = 'Heidelberg'AND weather_date > CURDATE()+1 AND weather_date< CURDATE()+6 )t1 GROUP BY weather_date" 
+        lines = cursor.execute(query)  
+        data = cursor.fetchall()
+        cursor.close()
+        cnx.close()
+        return data
