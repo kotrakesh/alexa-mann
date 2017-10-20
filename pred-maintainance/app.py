@@ -3,6 +3,7 @@ from random import randint
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 from dataBaseAccess_main import dbc
+from prediction import svcClass
 
 app = Flask(__name__)
 ask = Ask(app, "/")
@@ -138,10 +139,15 @@ def tomorrow_Current():
 
 @app.route("/")
 def admin():# method to route with localhost
-    pastYesterday =  dbco.pastYesterday()
-    currentNow = dbco.currentNow()
-    tomorrowCurrent = dbco.tomorrowCurrent()
-    return render_template('%s.html' % 'index',pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent)#
+    pastYesterday =  str(dbco.pastYesterday())+"kw"
+    currentNow = str(dbco.currentNow())+"mW"
+    tomorrowCurrent = str(dbco.tomorrowCurrent())+"kW"
+    s = svcClass()
+    failureData = s.getfailureprediction()
+    failureDate = failureData[0]
+    failureReason = "Due to "+ failureData[1]
+
+    return render_template('%s.html' % 'index',pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent, failureDate = failureDate, failureReason = failureReason )#
     
 if __name__ == '__main__':
     app.run(debug=True) 
