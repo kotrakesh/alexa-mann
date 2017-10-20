@@ -146,12 +146,13 @@ def admin():# method to route with localhost
     pastYesterday =  str(dbco.pastYesterday())+"kw"
     currentNow = str(dbco.currentNow())+"mW"
     tomorrowCurrent = str(dbco.tomorrowCurrent())+"kW"
+    currentNextWeek = dbco.next5DaysCurrent()
     s = svcClass()
     failureData = s.getfailureprediction()
     failureDate = failureData[0]
     failureReason = "Due to "+ failureData[1]
 
-    return render_template('%s.html' % 'index',pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent, failureDate = failureDate, failureReason = failureReason )#
+    return render_template('%s.html' % 'index',currentNextWeek=currentNextWeek,pastYesterday=pastYesterday,currentNow =currentNow, tomorrowCurrent = tomorrowCurrent, failureDate = failureDate, failureReason = failureReason )#
     
 if __name__ == '__main__':
     app.run(debug=True) 
