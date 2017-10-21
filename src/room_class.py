@@ -7,3 +7,5 @@ class Room  :
         self.data = None
         self.attendees = None
         self.title = None
+        self.bookingProcess = 1
+        self.roomNumber = None
