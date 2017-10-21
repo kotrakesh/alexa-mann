@@ -84,6 +84,16 @@ def getMeetingEndTime(start, duration):
     time = hours + ':' + minutes
     return timeSum(start, time)
 
+def getMeetingEndTimeMinusTwoH(start, duration):
+    '''
+    Takes a start time in HH:MM 24h format, subtract 2 hours from this time, adds the Amazon duration to it
+    and returns the end time in HH:MM 24h format.
+    :param start: Starting time in the HH:MM 24h format as string
+    :param duration: Amazon duration format
+    :return: Meeting end time in the HH:MM 24h format as string
+    '''
+    return getMeetingEndTime(timeSum(start,"22:00"),duration)
+
 def deleteHourMinSec(date):
     ''''
     used for get all events for a day
@@ -104,7 +114,6 @@ def store_locationConstraint(data):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post(url_locationConstraint, data=json.dumps(data), headers=headers, verify=False)
     return r.status_code
-
 
 
 def load_locationConstraint():
