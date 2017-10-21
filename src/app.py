@@ -453,6 +453,11 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
     ask_session.attributes['date'] = ask_session.attributes['time'] = ask_session.attributes['duration'] = room.date = room.time = room.duration = None
 
     # Changing datatypes for Microsoft
+    print('Time of the event:')
+    print(Time)
+
+    # TODO get time from London Time Zone
+
     start = util.convert_amazon_to_ms(Date, Time)
 
     # calculate: end = start_time + duration
@@ -536,21 +541,22 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
 
             return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'Room is too small for this amount of people'}
 
-        print(' ------------ ')
-        print('name: ' + str(cal['name']))
+
 
         #returns events for the specified times
         jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
-        print('---')
+
         data = json.loads(jdata.text)
+        print(str(cal['name']) + ', dates: ' + str(t_start) + ' - ' + str(t_end))
+        print(jdata.text)
 
         if not data['value']:
             # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
-            print('Keine Events vorhanden')
+            print('- Keine Events vorhanden in ' + str(cal['name']))
 
             # second constraint: load rooms from the local database, often the main error source as localdatabase is not updated
             for l in locConstraint['locations']:
-
+                print('- current locationConstraintCheck: ' + str(l['displayName']))
                 if l['displayName'] == cal['name']:
                     # check if the room is big enough to hold the number of specified people
                     if int(attendees) <= int(l['maxAttendees']):
@@ -568,7 +574,8 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
                         print('Raum ist zu klein')
 
         else:
-            print('Events vorhanden in room ', cal['name'])
+            print('Events vorhanden in room ', cal['name'], ' ', room.data['value'])
+        print(' ------------ ')
     return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'No free room was found'}
 
 
@@ -716,6 +723,40 @@ def checkRoomAvailable(Date, Time, Room):
                          content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
+@ask.intent('EventIntent')
+def checkEventsForRoom(date, room_name):
+    """
+       Get all events from a room for the whole day
+       :param date: date when the events take place
+       :param room_name:   name of the room
+       """
+    timeData = util.deleteHourMinSec(date)
+    t_start = timeData['start_time']
+    t_end = timeData['end_time']
+    print('getAllRooms')
+    room.data = get_calendars(room.token)
+
+    if (room.data is None):
+        return {'roomFound': False, 'roomName': '', 'roomId': '', 'eventlist': '',
+                'reason': 'Error while loading rooms from Microsoft API'}
+    for cal in room.data['value']:
+        if (cal['name'] == room_name):
+            print("find this room" + room_name)
+            # check whether this room is free at that time.
+            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
+            print(jdata.text)
+            data = json.loads(jdata.text)
+            if not data['value']:
+                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
+                print('Keine Events vorhanden')
+                return {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': '',
+                        'reason': 'No event for this time'}
+            else:
+                {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'],
+                 'reason': ''}
+    return {'roomFound': False, 'roomName': '', 'roomId': '', 'eventlist': '', 'reason': 'cannot find this room'}
+
+
 ### UTIL ###
 # only with parameter function
 def checkAccessToken(function):
@@ -734,6 +775,7 @@ def checkMissingAttributes_Phase1(): # date time duration                       
         return checkMissingAttributes_RoomAvailable(room.roomNumber)
     else:
         print('###### check missing attributes ########')
+        print('-- attributes - date: ', room.date, ', time:', room.time, ' dur:', room.duration)
         if room.date is None and room.time is None and room.duration is None:               # 0 0 0
             return question(render_template(('msg_missing_date_time_duration')))
         if room.date is None and room.time is None and room.duration is not None:           # 0 0 1
@@ -743,7 +785,6 @@ def checkMissingAttributes_Phase1(): # date time duration                       
         if room.date is None and room.time is not None and room.duration is not None:       # 0 1 1
             return question(render_template(('msg_missing_date')))
         if room.date is not None and room.time is None and room.duration is None:           # 1 0 0
-            print('missing time and duration')
             return question(render_template(('msg_missing_time_duration')))
         if room.date is not None and room.time is None and room.duration is not None:       # 1 0 1
             return question(render_template(('msg_missing_time')))
@@ -758,14 +799,14 @@ def checkMissingAttributes_RoomAvailable(Room):  # date time          # d t
         return statement(render_template('msg_no_roomnumber'))
 
     if room.date is None and room.time is None:                       # 0 0
-        return question(render_template(('msg_missing_date_time')))
+        return question(render_template(('msg_booking_date_time')))
 
     if room.date is None and room.time is not None:                   # 0 1
-        return question(render_template(('msg_missing_date')))
+        return question(render_template(('msg_booking_date')))
 
     if room.date is not None and room.time is None:                   # 1 0
         print('missing time')
-        return question(render_template(('msg_missing_time')))
+        return question(render_template(('msg_booking_time')))
 
     if room.date is not None and room.time is not None:               # 1 1
         print('all data is available')
