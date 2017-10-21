@@ -25,4 +25,4 @@ msg_booked_room_fail: Booking failed. Reason {{fail_reason}}
 card_booked_room_success_title: Booked Meeting
 card_booked_room_success_content: The meeting takes place in Room {{roomname}}. Start {{start}}, End {{end}}, Teilnehmer {{attendees}}
 card_booked_room_fail_title: Failed booking
-card_booked_room_fail_content: No meeting room could be booked. Reason {{fail_reason}}
+card_booked_room_fail_content: No meeting room could be booked. Reason, room is already booked. Event is {{fail_reason}}

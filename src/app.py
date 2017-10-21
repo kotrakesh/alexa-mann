@@ -503,11 +503,7 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
 
     # opens the json database
     locConstraint = util.load_locationConstraint()
-
     room.data = get_calendars(room.token)
-    #print(room.data)
-
-    print('looking for rooms')
 
     if(room.data is None):
         return {'roomFound': 0, 'roomName': '', 'reason': 'Error while loading rooms from Microsoft API'}
@@ -516,6 +512,29 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
         # ignore some standard calendars
         if (cal['name'] == 'Calendar' or cal['name'] == 'Birthdays' or cal['name'] == 'Room 3'):
             continue
+
+        # if room has been specified
+        if cal['name'] == room_name:
+            print('specified room found: ' + room_name)
+            for l in locConstraint['locations']:
+
+                if l['displayName'] == room_name:
+                    # check if the room is big enough to hold the number of specified people
+                    if int(attendees) <= int(l['maxAttendees']):
+                        print('Anzahl Teilnehmer: ' + str(attendees), ' max Raumgroesse: ', str(l['maxAttendees']))
+                        print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
+                        print('    ')
+
+                        # create calendar event for that room
+                        ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
+                        # Free room found
+                        return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
+                    else:
+                        # room is too small, look for the next room
+                        print('Raumgroesse: ' + str(attendees), ' > ', str(l['maxAttendees']))
+                        print('Raum ist zu klein')
+
+            return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'Room is too small for this amount of people'}
 
         print(' ------------ ')
         print('name: ' + str(cal['name']))
@@ -538,11 +557,6 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
                         print('Anzahl Teilnehmer: ' +  str(attendees), ' max Raumgroesse: ', str(l['maxAttendees']))
                         print('Das Meeting findet in Raum ' + cal['name'] + ' statt!')
                         print('    ')
-
-                        if room_name is cal['name']:
-                            print(' - room found: ' + room_name)
-                            ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
-                            return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
 
                         # create calendar event for that room
                         ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
@@ -649,34 +663,35 @@ def checkRoomAvailable(Date, Time, Room):
     # calculate: end = start_time + duration
     am_end = util.getMeetingEndTime(Time, "PT59M")
     end = util.convert_amazon_to_ms(Date, am_end)
-    print('start and endtimes: ' , start, end)
+
 
     print('room name: '+ room_name)
     room.data = get_calendars(room.token)
-    #print('room data: '+room.data)
-    print('looking for rooms')
 
     if (room.data is None):
         result = {'roomFound': False, 'roomAvailable': False, 'roomName': '', 'roomId': '', 'reason': 'Error while loading rooms from Microsoft API'}
-    for cal in room.data['value']:
-        # ignore some standard calendars
-        print('check Available with '+cal['name'])
-        if (cal['name'] == room_name):
-            print("find this room"+ room_name)
-            # check whether this room is free at that time.
-            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], start, end)
-            print(jdata.text)
-            data = json.loads(jdata.text)
-            if not data['value']:
-                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
-                print('Keine Events vorhanden')
-                result = {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
+    else:
+        for cal in room.data['value']:
+            # ignore some standard calendars
+            print('check Available with '+cal['name'])
+            if (cal['name'] == room_name):
+                print("found room "+ room_name)
+                # check whether this room is free at that time.
+                print('start and endtimes: ', start, ' ', end)
+                jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], start, end)
+                print(jdata.text)
+                data = json.loads(jdata.text)
+
+                if not data['value']:
+                    # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
+                    print('Keine Events vorhanden')
+                    result = {'roomFound': True, 'roomAvailable': True, 'roomName': cal['name'], 'roomId': cal['id'], 'reason': 'no event in this room'}
+                else:
+                    result = {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': data['value'][0]['subject']}
+                break
             else:
-                result = {'roomFound': True, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': data['value'][0]['subject']}
-            break
-        else:
-            print("cannot find this room")
-            result = {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room' + room_name}
+                print("no name match")
+                result = {'roomFound': False, 'roomAvailable': False, 'roomName': cal['name'], 'roomId': '', 'reason': 'cannot find this room' + room_name}
 
     # check for free rooms with the constraints
     print(result)
@@ -687,60 +702,18 @@ def checkRoomAvailable(Date, Time, Room):
         print('room has been found and is available')
         return question(render_template('msg_availableRoom', roomname=result['roomName']))
 
-
-        '''
-           \ .simple_card(title=render_template('card_booked_room_success_title'),
-                         content=render_template('card_booked_room_success_content', roomname=result['roomName'],
-                                                 start=start, end=end, attendees=Attendees))'''
-
     if (result['roomFound'] == True and result ['roomAvailable']== False):
         room.roomNumber = room.date = room.time = None  # reset all values before further actions
         # Alexa gets informed about the failed booking, in some cases the fail reason is send and also displayed on the Alexa Card
         return statement(render_template('msg_notAvailableRoom', roomname=result['roomName'], eventlists=result['reason'])) \
             .simple_card(title=render_template('card_booked_room_fail_title'),
                          content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
+
     if (result['roomFound'] == False):
         room.roomNumber = room.date = room.time = None  # reset all values before further actions
         return statement(render_template('msg_booked_room_fail', fail_reason=result['reason'])) \
             .simple_card(title=render_template('card_booked_room_fail_title'),
                          content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
-
-
-
-
-
-
-def checkEventsForRoom(date, room_name):
-    """
-       Get all events from a room for a specific time
-       :param t_start:     start of the event
-       :param t_end:       end of the event
-       :param room_name:   name of the room
-       """
-    timeData = util.deleteHourMinSec(date)
-    t_start = timeData['start_time']
-    t_end = timeData['end_time']
-    print('getAllRooms')
-    room.data = get_calendars(room.token)
-
-    if (room.data is None):
-        return {'roomFound': False, 'roomName': '', 'roomId': '', 'eventlist': '', 'reason': 'Error while loading rooms from Microsoft API'}
-    for cal in room.data['value']:
-        if (cal['name'] == room_name):
-            print("find this room"+ room_name)
-            # check whether this room is free at that time.
-            jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
-            print(jdata.text)
-            data = json.loads(jdata.text)
-            if not data['value']:
-                # first constraint passed: no events are listed in that calendar for those times: data['value'] array is empty
-                print('Keine Events vorhanden')
-                return {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': '', 'reason': 'No event for this time'}
-            else:
-                {'roomFound': True, 'roomName': cal['name'], 'roomId': cal['id'], 'eventlist': data['value'], 'reason': ''}
-    return {'roomFound': False,  'roomName': '', 'roomId': '', 'eventlist': '',  'reason': 'cannot find this room'}
-
-
 
 
 ### UTIL ###
