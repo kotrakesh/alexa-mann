@@ -104,14 +104,15 @@ def call_listevents_for_time(access_token, id, start, end):
     :param end: End time of the event
     :return: list of events. On error the status code and error message are returned
     '''
-    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startDateTime=' + start + 'Z&endDateTime=' + end + 'Z'
-
+    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startdatetime=' + start + '&enddatetime=' + end
+    print('--- url: ---')
+    print(list_events_url)
     # set request headers
     headers = {'User-Agent': 'python_tutorial/1.0',
                'Authorization': 'Bearer {0}'.format(access_token),
                'Accept': 'application/json',
-               'Content-Type': 'application/json',
-               'Prefer' : 'outlook.timezone="W. Europe Standard Time"'
+               'Content-Type': 'application/json'
+               # 'Prefer' : 'outlook.timezone="W. Europe Standard Time"'
                }
 
     request_id = str(uuid.uuid4())
@@ -123,7 +124,7 @@ def call_listevents_for_time(access_token, id, start, end):
                             headers=headers,
                             verify=False,
                             params=None)
-
+    print(response.text)
     if response.ok:
         return response
     else:

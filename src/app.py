@@ -454,49 +454,38 @@ def readMeetingTime(Date, Time, Duration, Attendees, Title):
 
     # Changing datatypes for Microsoft
     print('Time of the event:')
-    print(Time)
+    print(Time, Duration)
 
-    # TODO get time from London Time Zone
-
-    start = util.convert_amazon_to_ms(Date, Time)
-
-    # calculate: end = start_time + duration
-    am_end = util.getMeetingEndTime(Time, Duration)
-    if am_end == -1:
-        fail_end_time = 'End time could not be calculated'
-        return statement(render_template('msg_booked_room_fail', fail_reason=fail_end_time)) \
-            .simple_card(title=render_template('card_booked_room_fail_title'),
-                         content=render_template('card_booked_room_fail_content', fail_reason=fail_end_time)
-                         )
-    end = util.convert_amazon_to_ms(Date, am_end)
-    print('start and endtimes: ' , start, end)
-
-    # check for free rooms with the constraints
+    # check for free rooms with the constraints, after room was checked
     if room.roomNumber is not None:
-        result = getFreeRooms(start, end, Attendees, Title, room.roomNumber)
+        result = getFreeRooms(Date, Time, Duration, Attendees, Title, room.roomNumber)
     else:
         room.roomNumber = None
-        result = getFreeRooms(start, end, Attendees, Title, None)
+        result = getFreeRooms(Date, Time, Duration, Attendees, Title, None)
 
     print(result)
+
+    # Result from getFreeRooms, either positive or negative regarding free rooms, if negative error message is provided
     if (result['roomFound'] == 1):
         # returns answer to Alexa and displays the card in the Alexa App, at this time the calendar event already has been booked
         return statement(render_template('msg_booked_room_success', roomname=result['roomName']))\
-            .simple_card(title=render_template('card_booked_room_success_title'), content= render_template('card_booked_room_success_content', roomname=result['roomName'], start=start, end=end, attendees=Attendees))
+            .simple_card(title=render_template('card_booked_room_success_title'), content= render_template('card_booked_room_success_content', roomname=result['roomName'], start=Time, duration=Duration, attendees=Attendees))
     else:
         # Alexa gets informed about the failed booking, in some cases the fail reason is send and also displayed on the Alexa Card
         return statement(render_template('msg_booked_room_fail', fail_reason=result['reason']))\
             .simple_card(title=render_template('card_booked_room_fail_title'), content=render_template('card_booked_room_fail_content', fail_reason=result['reason']))
 
 
-def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
+
+def getFreeRooms(Date, Time, Duration, attendees, title, roomnumber):
     """
     Searches for free rooms with the given constraints of start, end and number of attendees
         First loop: iterate through the Microsoft Calendars to find rooms
         Second loop: iterate through the json database to check the number of attendees constraint as this value can't be saved in the Microsoft calendar
 
-    :param t_start:     start of the event
-    :param t_end:       end of the event
+    :param Date:        start of the event in Amazon format
+    :param Time:        end of the event in Amazon Format
+    :param Duration:    duration of the event in Amazon format
     :param attendees:   number of people attending the meeting (room constraint)
     :param title:       title of the event
     :return:            python object, with information about status of room booking and fail reason on error
@@ -504,7 +493,26 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
     print('getFreeRooms')
     room_name = 'Meetingroom ' + str(roomnumber)
 
-    print(str(t_start), str(t_end), ' Attendees: ', str(attendees), ', ', str(title))
+    # List Time and creating time are different due to different time zones and support of the MS API
+    start_listevents   = util.convert_amazon_to_ms(Date, util.timeSum(Time, "22:00"))
+    start_createevents = util.convert_amazon_to_ms(Date, Time)
+
+    # calculate: end = start_time + duration
+    end_listevents   = util.getMeetingEndTimeMinusTwoH(Time, Duration)
+    end_createevents = util.getMeetingEndTime(Time, Duration)
+    end_listevents   = util.convert_amazon_to_ms(Date, end_listevents)
+    end_createevents = util.convert_amazon_to_ms(Date, end_createevents)
+
+    if end_listevents == -1 or end_createevents == -1:
+        fail_end_time = 'End time could not be calculated'
+        return statement(render_template('msg_booked_room_fail', fail_reason=fail_end_time)) \
+            .simple_card(title=render_template('card_booked_room_fail_title'),
+                         content=render_template('card_booked_room_fail_content', fail_reason=fail_end_time)
+                         )
+
+
+    print('start and endtimes: ', start_listevents, start_createevents, end_listevents, end_createevents)
+    print(' Attendees: ', str(attendees), ', ', str(title))
 
     # opens the json database
     locConstraint = util.load_locationConstraint()
@@ -531,7 +539,7 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
                         print('    ')
 
                         # create calendar event for that room
-                        ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
+                        ms_endpoints.call_createvent(room.token, start_createevents, end_createevents, title, cal['name'], cal['id'])
                         # Free room found
                         return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
                     else:
@@ -542,12 +550,9 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
             return {'roomFound': 0, 'roomName': cal['name'], 'reason': 'Room is too small for this amount of people'}
 
 
-
         #returns events for the specified times
-        jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], t_start, t_end)
-
+        jdata = ms_endpoints.call_listevents_for_time(room.token, cal['id'], start_listevents, end_listevents)
         data = json.loads(jdata.text)
-        print(str(cal['name']) + ', dates: ' + str(t_start) + ' - ' + str(t_end))
         print(jdata.text)
 
         if not data['value']:
@@ -565,7 +570,7 @@ def getFreeRooms(t_start, t_end, attendees, title, roomnumber):
                         print('    ')
 
                         # create calendar event for that room
-                        ms_endpoints.call_createvent(room.token, t_start, t_end, title, cal['name'], cal['id'])
+                        ms_endpoints.call_createvent(room.token, start_createevents, end_createevents, title, cal['name'], cal['id'])
                         # Free room found
                         return {'roomFound': 1, 'roomName': cal['name'], 'reason': ''}
                     else:
@@ -614,6 +619,11 @@ def getAllMeetingRooms():
 # num as parameter
 @ask.intent("RoomAvailabilityIntent")
 def checkRoomAvailableDate(Room):
+    '''
+    Skill: Check availability of rooms
+    :param Room: Number of room (integer)
+    :return: check access token, if set call checkMissingAttributes for the room check
+    '''
     print('room available?')
     room.bookingProcess = 0
     room.roomNumber = Room
@@ -623,6 +633,12 @@ def checkRoomAvailableDate(Room):
 # is room 2 available tomorrow
 @ask.intent("RoomAvailabilityDateIntent")
 def checkRoomAvailableDate(Room, Date):
+    '''
+    Skill:
+    :param Room:
+    :param Date:
+    :return:
+    '''
     print('room available?')
     room.date = Date
     room.bookingProcess = 0
@@ -665,10 +681,10 @@ def checkRoomAvailable(Date, Time, Room):
     room.roomNumber = Room
 
     # Changing datatypes for Microsoft
-    start = util.convert_amazon_to_ms(Date, Time)
+    start = util.convert_amazon_to_ms(Date, util.timeSum(Time, "22:00"))
 
     # calculate: end = start_time + duration
-    am_end = util.getMeetingEndTime(Time, "PT59M")
+    am_end = util.getMeetingEndTimeMinusTwoH(Time, "PT1H")
     end = util.convert_amazon_to_ms(Date, am_end)
 
 
@@ -730,7 +746,7 @@ def checkEventsForRoom(date, room_name):
        :param date: date when the events take place
        :param room_name:   name of the room
        """
-    timeData = util.deleteHourMinSec(date)
+    timeData = util.getAllDayHours(date)
     t_start = timeData['start_time']
     t_end = timeData['end_time']
     print('getAllRooms')
@@ -796,7 +812,9 @@ def checkMissingAttributes_Phase1(): # date time duration                       
 def checkMissingAttributes_RoomAvailable(Room):  # date time          # d t
     print('###### check missing attributes room available ########')
     if Room is None:
-        return statement(render_template('msg_no_roomnumber'))
+        room.roomNumber = room.date = room.time = room.duration = room.attendees = None  # reset all values before further actions
+        room.bookingProcess = 1
+        return question(render_template('msg_missing_date_time_duration'))
 
     if room.date is None and room.time is None:                       # 0 0
         return question(render_template(('msg_booking_date_time')))

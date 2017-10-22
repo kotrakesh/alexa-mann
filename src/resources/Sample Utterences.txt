@@ -1,16 +1,107 @@
+AMAZON.StopIntent Bye bye
+AMAZON.StopIntent be quiet
+GetAllRoomsIntent What rooms can I book
+GetAllRoomsIntent What rooms are there
+GetAllRoomsIntent Which are the rooms to book
+GetAllRoomsIntent Which rooms are there
+GetAllRoomsIntent What are the names of the rooms I can book
 AttendeesIntent {Attendees}
 AttendeesIntent {Attendees} people
 AttendeesIntent {Attendees} attendees
+AttendeesIntent {Attendees} persons
+AttendeesIntent There will be {Attendees} people
+AttendeesIntent There will be {Attendees} persons
 DataTimeDurationIntent The meeting will be {Date} at {Time} for {Duration}
 DataTimeDurationIntent The meeting will be on {Date} at {Time} for {Duration}
 DataTimeDurationIntent The meeting is {Date} at {Time} for {Duration}
 DataTimeDurationIntent The meeting {Date} at {Time} will take {Duration}
 DataTimeDurationIntent The meeting {Date} at {Time} will take {Duration} long
+DataTimeDurationIntent Book me a room on {Date} at {Time} for {Duration}
+DataTimeDurationIntent Please book me a room on {Date} at {Time} for {Duration}
+DataTimeDurationIntent Please book me a room for {Date} at {Time} for {Duration}
+DataTimeDurationIntent Can you please book me a room on {Date} at {Time} for {Duration}
+DataTimeDurationIntent Can you please book me a room for {Date} at {Time} for {Duration}
+DataTimeDurationIntent Can you book me a room on {Date} at {Time} for {Duration}
+DataTimeDurationIntent Can you book me a room for {Date} at {Time} for {Duration}
+DataTimeDurationIntent Book me a room on {Date} for {Duration} at {Time}
+DataTimeDurationIntent Book me a room for {Date} for {Duration} at {Time}
+DataTimeDurationIntent Please book me a room on {Date} for {Duration} at {Time}
+DataTimeDurationIntent Please book me a room for {Date} for {Duration} at {Time}
+DataTimeDurationIntent Can you please book me a room on {Date} for {Duration} at {Time}
+DataTimeDurationIntent Can you please book me a room for {Date} for {Duration} at {Time}
+DataTimeDurationIntent Can you book me a room on {Date} for {Duration} at {Time}
+DataTimeDurationIntent Can you book me a room for {Date} for {Duration} at {Time}
+DataTimeDurationIntent Please book me a room at {Time} for {Duration} on {Date}
+DataTimeDurationIntent Please book me a room at {Time} for {Duration} for {Date}
+DataTimeDurationIntent Can you please book me a room at {Time} for {Duration} on {Date}
+DataTimeDurationIntent Can you please book me a room at {Time} for {Duration} for {Date}
+DataTimeDurationIntent Can you book me a room at {Time} for {Duration} on {Date}
+DataTimeDurationIntent Can you book me a room at {Time} for {Duration} for {Date}
+DataTimeDurationIntent Book me a room at {Time} for {Duration} on {Date}
+DataTimeDurationIntent Book me a room at {Time} for {Duration} for {Date}
+DataTimeDurationIntent Please book me a room at {Time} on {Date} for {Duration}
+DataTimeDurationIntent Please book me a room at {Time} for {Date} for {Duration}
+DataTimeDurationIntent Can you please book me a room at {Time} on {Date} for {Duration}
+DataTimeDurationIntent Can you please book me a room at {Time} for {Date} for {Duration}
+DataTimeDurationIntent Can you book me a room at {Time} on {Date} for {Duration}
+DataTimeDurationIntent Can you book me a room at {Time} for {Date} for {Duration}
+DataTimeDurationIntent Book me a room at {Time} on {Date} for {Duration}
+DataTimeDurationIntent Book me a room at {Time} for {Date} for {Duration}
+DataTimeDurationIntent Please book me a room for {Duration} on {Date} at {Time}
+DataTimeDurationIntent Please book me a room for {Duration} for {Date} at {Time}
+DataTimeDurationIntent Can you please book me a room for {Duration} on {Date} at {Time}
+DataTimeDurationIntent Can you please book me a room for {Duration} for {Date} at {Time}
+DataTimeDurationIntent Can you book me a room for {Duration} on {Date} at {Time}
+DataTimeDurationIntent Can you book me a room for {Duration} for {Date} at {Time}
+DataTimeDurationIntent Book me a room for {Duration} on {Date} at {Time}
+DataTimeDurationIntent Book me a room for {Duration} for {Date} at {Time}
+DataTimeDurationIntent Please book me a room for {Duration} at {Time} on {Date}
+DataTimeDurationIntent Please book me a room for {Duration} at {Time} for {Date}
+DataTimeDurationIntent Can you please book me a room for {Duration} at {Time} on {Date}
+DataTimeDurationIntent Can you please book me a room for {Duration} at {Time} for {Date}
+DataTimeDurationIntent Can you book me a room for {Duration} at {Time} on {Date}
+DataTimeDurationIntent Can you book me a room for {Duration} at {Time} for {Date}
+DataTimeDurationIntent Book me a room for {Duration} at {Time} on {Date}
+DataTimeDurationIntent Book me a room for {Duration} at {Time} for {Date}
 DateDurationIntent The meeting is {Date} for {Duration}
+DateDurationIntent Book me a room on {Date} for {Duration}
+DateDurationIntent Book me a room for {Date} for {Duration}
+DateDurationIntent Please book me a room on {Date} for {Duration}
+DateDurationIntent Please book me a room for {Date} for {Duration}
+DateDurationIntent Can you please book me a room on {Date} for {Duration}
+DateDurationIntent Can you please book me a room for {Date} for {Duration}
+DateDurationIntent Can you book me a room on {Date} for {Duration}
+DateDurationIntent Can you book me a room for {Date} for {Duration}
 DateDurationIntent {Date} for {Duration}
 DateDurationIntent it is {Date} for {Duration}
 DateDurationIntent {Duration} {Date}
+DateDurationIntent Book me a room for {Duration} on {Date}
+DateDurationIntent Book me a room for {Duration} for {Date}
+DateDurationIntent Please book me a room for {Duration} on {Date}
+DateDurationIntent Please book me a room for {Duration} for {Date}
+DateDurationIntent Can you please book me a room for {Duration} on {Date}
+DateDurationIntent Can you please book me a room for {Duration} for {Date}
+DateDurationIntent Can you book me a room for {Duration} on {Date}
+DateDurationIntent Can you book me a room for {Duration} for {Date}
 DateDurationIntent it is {Duration} {Date}
+DateIntent Book me a meeting room
+DateIntent Please book me a meeting room
+DateIntent Can you please book me a meeting room
+DateIntent Can you book a meeting room
+DateIntent Can you book me a meeting room
+DateIntent Book me a room
+DateIntent Please book me a room
+DateIntent Can you please book me a room
+DateIntent Can you book a room
+DateIntent Can you book me a room
+DateIntent Book me a room on {Date}
+DateIntent Book me a room for {Date}
+DateIntent Please book me a room on {Date}
+DateIntent Please book me a room for {Date}
+DateIntent Can you please book me a room on {Date}
+DateIntent Can you please book me a room for {Date}
+DateIntent Can you book me a room on {Date}
+DateIntent Can you book me a room for {Date}
 DateIntent the meeting will be at {Date}
 DateIntent the meeting will be {Date}
 DateIntent the meeting will be on {Date}
@@ -22,12 +113,28 @@ DateIntent it will be {Date}
 DateIntent it will be on {Date}
 DateIntent it will be in {Date}
 DateIntent it is {Date}
-DateIntent it is on {Date}
 DateIntent {Date}
+DateIntent it is on {Date}
 DateTimeIntent The meeting is {Date} at {Time}
+DateTimeIntent Book me a room on {Date} at {Time}
+DateTimeIntent Book me a room for {Date} at {Time}
+DateTimeIntent Please book me a room on {Date} at {Time}
+DateTimeIntent Please book me a room for {Date} at {Time}
+DateTimeIntent Can you book me a room on {Date} at {Time}
+DateTimeIntent Can you book me a room for {Date} at {Time}
+DateTimeIntent Can you please book me a room on {Date} at {Time}
+DateTimeIntent Can you please book me a room for {Date} at {Time}
 DateTimeIntent it is {Date} at {Time}
 DateTimeIntent The meeting is {Time} at {Date}
 DateTimeIntent it is {Time} at {Date}
+DateTimeIntent Book me a room at {Time} on {Date}
+DateTimeIntent Book me a room at {Time} for {Date}
+DateTimeIntent Please book me a room at {Time} on {Date}
+DateTimeIntent Please book me a room at {Time} for {Date}
+DateTimeIntent Can you book me a room at {Time} on {Date}
+DateTimeIntent Can you book me a room at {Time} for {Date}
+DateTimeIntent Can you please book me a room at {Time} on {Date}
+DateTimeIntent Can you please book me a room at {Time} for {Date}
 DurationIntent The meeting is {Duration}
 DurationIntent The meeting takes {Duration}
 DurationIntent The meeting will be {Duration}
@@ -37,24 +144,185 @@ DurationIntent it takes {Duration}
 DurationIntent it will be {Duration}
 DurationIntent it will take {Duration}
 DurationIntent {Duration}
+DurationIntent Book me a room for {Duration}
+DurationIntent Please book me a room for {Duration}
+DurationIntent Can you book me a room for {Duration}
+DurationIntent Can you please book me a room for {Duration}
 TimeDurationIntent the meeting will be at {Time} for {Duration}
 TimeDurationIntent the meeting is at {Time} for {Duration}
 TimeDurationIntent the meeting will be at {Time} and will take {Duration}
 TimeDurationIntent the meeting is at {Time} and will take {Duration}
 TimeDurationIntent the meeting will take {Duration} and will start at {Time}
+TimeDurationIntent Book me a room for {Duration} at {Time}
+TimeDurationIntent Please book me a room for {Duration} at {Time}
+TimeDurationIntent Can you book me a room for {Duration} at {Time}
+TimeDurationIntent Can you please book me a room for {Duration} at {Time}
+TimeDurationIntent Book me a room at {Time} for {Duration}
+TimeDurationIntent Please book me a room at {Time} for {Duration}
+TimeDurationIntent Can you book me a room at {Time} for {Duration}
+TimeDurationIntent Can you please book me a room at {Time} for {Duration}
 TimeIntent The meeting is at {Time}
 TimeIntent The meeting will be at {Time}
 TimeIntent it is at {Time}
+TimeIntent it is {Time}
+TimeIntent {Time}
 TimeIntent it will be at {Time}
+TimeIntent Book me a room at {Time}
+TimeIntent Please book me a room at {Time}
+TimeIntent Can you book me a room at {Time}
+TimeIntent Can you please book me a room at {Time}
+TimeIntent The time is {Time}
+EventIntent What events are there {Date} in room {Room}
+EventIntent What events are there on {Date} in room {Room}
+EventIntent What events are there {Date} in meeting room {Room}
+EventIntent What events are there on {Date} in meeting room {Room}
+EventIntent What events are there {Date} in conference room {Room}
+EventIntent What events are there on {Date} in conference room {Room}
+EventIntent What events are there {Date} in room number {Room}
+EventIntent What events are there on {Date} in room number {Room}
+EventIntent What events are there {Date} in meeting room number {Room}
+EventIntent What events are there on {Date} in meeting room number {Room}
+EventIntent What events are there {Date} in conference room number {Room}
+EventIntent What events are there on {Date} in conference room number {Room}
+RoomAvailabilityIntent Is room {Room} available
+RoomAvailabilityIntent Is room {Room} free
+RoomAvailabilityIntent Is room {Room} not occupied
+RoomAvailabilityIntent Is room {Room} occupied
+RoomAvailabilityIntent Is it possible to book room {Room}
+RoomAvailabilityIntent Is room number {Room} available
+RoomAvailabilityIntent Is room number {Room} free
+RoomAvailabilityIntent Is room number {Room} not occupied
+RoomAvailabilityIntent Is room number {Room} occupied
+RoomAvailabilityIntent Is it possible to book room number {Room}
+RoomAvailabilityIntent Is the room {Room} available
+RoomAvailabilityIntent Is the room number {Room} available
+RoomAvailabilityIntent Is room {Room} available
+RoomAvailabilityIntent Is room number {Room} available
+RoomAvailabilityIntent Is the conference room {Room} available
+RoomAvailabilityIntent Is the conference room number {Room} available
+RoomAvailabilityIntent Is conference room {Room} available
+RoomAvailabilityIntent Is conference room number {Room} available
+RoomAvailabilityIntent Is the meeting room {Room} available
+RoomAvailabilityIntent Is the meeting room number {Room} available
+RoomAvailabilityIntent Is meeting room {Room} available
+RoomAvailabilityIntent Is meeting room number {Room} available
+RoomAvailabilityDateIntent Is room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is room {Room} available {Date}
+RoomAvailabilityDateIntent Is room {Room} available on {Date}
+RoomAvailabilityDateIntent Is room {Room} available this {Date}
+RoomAvailabilityDateIntent Is room {Room} free {Date}
+RoomAvailabilityDateIntent Is room {Room} free on {Date}
+RoomAvailabilityDateIntent Is room {Room} free this {Date}
+RoomAvailabilityDateIntent Is room {Room} not occupied {Date}
+RoomAvailabilityDateIntent Is room {Room} not occupied on {Date}
+RoomAvailabilityDateIntent Is room {Room} not occupied this {Date}
+RoomAvailabilityDateIntent Is room {Room} occupied {Date}
+RoomAvailabilityDateIntent Is room {Room} occupied on {Date}
+RoomAvailabilityDateIntent Is room {Room} occupied this {Date}
+RoomAvailabilityDateIntent Is it possible to book room {Room} {Date}
+RoomAvailabilityDateIntent Is it possible to book room {Room} on {Date}
+RoomAvailabilityDateIntent Is it possible to book room {Room} this {Date}
+RoomAvailabilityDateIntent Is room number {Room} available {Date}
+RoomAvailabilityDateIntent Is room number {Room} available on {Date}
+RoomAvailabilityDateIntent Is room number {Room} available this {Date}
+RoomAvailabilityDateIntent Is room number {Room} free {Date}
+RoomAvailabilityDateIntent Is room number {Room} free on {Date}
+RoomAvailabilityDateIntent Is room number {Room} free this {Date}
+RoomAvailabilityDateIntent Is room number {Room} not occupied {Date}
+RoomAvailabilityDateIntent Is room number {Room} not occupied on {Date}
+RoomAvailabilityDateIntent Is room number {Room} not occupied this {Date}
+RoomAvailabilityDateIntent Is room number {Room} occupied {Date}
+RoomAvailabilityDateIntent Is room number {Room} occupied on {Date}
+RoomAvailabilityDateIntent Is room number {Room} occupied this {Date}
+RoomAvailabilityDateIntent Is it possible to book room number {Room} {Date}
+RoomAvailabilityDateIntent Is it possible to book room number {Room} on {Date}
+RoomAvailabilityDateIntent Is it possible to book room number {Room} this {Date}
+RoomAvailabilityDateIntent Is the room {Room} available for {Date}
+RoomAvailabilityDateIntent Is the room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is room {Room} available for {Date}
+RoomAvailabilityDateIntent Is room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is the conference room {Room} available for {Date}
+RoomAvailabilityDateIntent Is the conference room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is conference room {Room} available for {Date}
+RoomAvailabilityDateIntent Is conference room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is the meeting room {Room} available for {Date}
+RoomAvailabilityDateIntent Is the meeting room number {Room} available for {Date}
+RoomAvailabilityDateIntent Is meeting room {Room} available for {Date}
+RoomAvailabilityDateIntent Is meeting room number {Room} available for {Date}
+RoomAvailabilityTimeIntent Is room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is room {Room} available on {Time}
+RoomAvailabilityTimeIntent Is room {Room} available from {Time}
+RoomAvailabilityTimeIntent Is room {Room} free at {Time}
+RoomAvailabilityTimeIntent Is room {Room} free on {Time}
+RoomAvailabilityTimeIntent Is room {Room} free from {Time}
+RoomAvailabilityTimeIntent Is room {Room} not occupied at {Time}
+RoomAvailabilityTimeIntent Is room {Room} not occupied on {Time}
+RoomAvailabilityTimeIntent Is room {Room} not occupied from {Time}
+RoomAvailabilityTimeIntent Is room {Room} occupied at {Time}
+RoomAvailabilityTimeIntent Is room {Room} occupied on {Time}
+RoomAvailabilityTimeIntent Is room {Room} occupied from {Time}
+RoomAvailabilityTimeIntent Is it possible to book room {Room} at {Time}
+RoomAvailabilityTimeIntent Is it possible to book room {Room} on {Time}
+RoomAvailabilityTimeIntent Is it possible to book room {Room} from {Time}
+RoomAvailabilityTimeIntent Is it possible to book room {Room} for {Time}
+RoomAvailabilityTimeIntent Is room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is room number {Room} available on {Time}
+RoomAvailabilityTimeIntent Is room number {Room} available from {Time}
+RoomAvailabilityTimeIntent Is room number {Room} free at {Time}
+RoomAvailabilityTimeIntent Is room number {Room} free on {Time}
+RoomAvailabilityTimeIntent Is room number {Room} free from {Time}
+RoomAvailabilityTimeIntent Is room number {Room} not occupied at {Time}
+RoomAvailabilityTimeIntent Is room number {Room} not occupied on {Time}
+RoomAvailabilityTimeIntent Is room number {Room} not occupied from {Time}
+RoomAvailabilityTimeIntent Is room number {Room} occupied at {Time}
+RoomAvailabilityTimeIntent Is room number {Room} occupied on {Time}
+RoomAvailabilityTimeIntent Is room number {Room} occupied from {Time}
+RoomAvailabilityTimeIntent Is it possible to book room number {Room} at {Time}
+RoomAvailabilityTimeIntent Is it possible to book room number {Room} on {Time}
+RoomAvailabilityTimeIntent Is it possible to book room number {Room} from {Time}
+RoomAvailabilityTimeIntent Is it possible to book room number {Room} for {Time}
+RoomAvailabilityTimeIntent Is the room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is the room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is the conference room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is the conference room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is conference room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is conference room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is the meeting room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is the meeting room number {Room} available at {Time}
+RoomAvailabilityTimeIntent Is meeting room {Room} available at {Time}
+RoomAvailabilityTimeIntent Is meeting room number {Room} available at {Time}
+RoomAvailabilityDateTimeIntent Is the room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is the room number {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is room number {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is the conference room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is the conference room number {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is conference room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is conference room number {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is the meeting room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is the meeting room number {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is meeting room {Room} available for {Date} at {Time}
+RoomAvailabilityDateTimeIntent Is meeting room number {Room} available for {Date} at {Time}
 TitleIntent The title is {value |Title}
 TitleIntent The title is {one two |Title}
 TitleIntent The title is {one two three |Title}
 TitleIntent The title is {one two three four |Title}
 TitleIntent The title is {one two three four five |Title}
 TitleIntent The title is {one two three four five six |Title}
-TitleIntent The title is {one two three four five six seven|Title}
-TitleIntent The title is {one two three four five six seven eight |Title}
-TitleIntent The title is {one two three four five six seven eight nine|Title}
+TitleIntent The event is called {value |Title}
+TitleIntent The event is called {one two |Title}
+TitleIntent The event is called {one two three |Title}
+TitleIntent The event is called {one two three four |Title}
+TitleIntent The event is called {one two three four five |Title}
+TitleIntent The event is called {one two three four five six |Title}
+TitleIntent The meeting is called {value |Title}
+TitleIntent The meeting is called {one two |Title}
+TitleIntent The meeting is called {one two three |Title}
+TitleIntent The meeting is called {one two three four |Title}
+TitleIntent The meeting is called {one two three four five |Title}
+TitleIntent The meeting is called {one two three four five six |Title}
 TitleIntent The title is {value |Title}
 TitleIntent Title {one |Title}
 TitleIntent Title {one two |Title}
@@ -62,15 +330,15 @@ TitleIntent Title {one two three |Title}
 TitleIntent Title {one two three four |Title}
 TitleIntent Title {one two three four five |Title}
 TitleIntent Title {one two three four five six |Title}
-TitleIntent Title {one two three four five six seven|Title}
-TitleIntent Title {one two three four five six seven eight |Title}
-TitleIntent Title {one two three four five six seven eight nine|Title}
 TitleIntent it's {one |Title}
 TitleIntent it's {one two |Title}
 TitleIntent it's {one two three |Title}
 TitleIntent it's {one two three four |Title}
 TitleIntent it's {one two three four five |Title}
 TitleIntent it's {one two three four five six |Title}
-TitleIntent it's {one two three four five six seven|Title}
-TitleIntent it's {one two three four five six seven eight |Title}
-TitleIntent it's {one two three four five six seven eight nine|Title}
+TitleIntent it is {one |Title}
+TitleIntent it is {one two |Title}
+TitleIntent it is {one two three |Title}
+TitleIntent it is {one two three four |Title}
+TitleIntent it is {one two three four five |Title}
+TitleIntent it is {one two three four five six |Title}

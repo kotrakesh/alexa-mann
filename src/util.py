@@ -94,7 +94,7 @@ def getMeetingEndTimeMinusTwoH(start, duration):
     '''
     return getMeetingEndTime(timeSum(start,"22:00"),duration)
 
-def deleteHourMinSec(date):
+def getAllDayHours(date):
     ''''
     used for get all events for a day
     '''
