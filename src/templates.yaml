@@ -1,14 +1,14 @@
 msg_launch_request: Welcome to room monitor
-msg_launch_request3: Welcome to room monitor, your interactive room booking service of Sovanta. How may I help you? If you any further assistance please ask me for help.
-msg_missing_date_time_duration: Please tell me the dates and times when your meeting shall be scheduled
+msg_launch_request2: Welcome to room monitor, your interactive room booking service of Sovanta. How may I help you? If you any further assistance please ask me for help.
+msg_missing_date_time_duration: Of course, just tell me the dates and times when your meeting shall be scheduled
 msg_missing_date_time: What day and what time is the meeting?
 msg_booking_date_time: What day and what time do you want to check?
 msg_missing_date_duration: Whats the date and the duration of the meeting?
 msg_missing_time_duration: What time is the meeting and how long is it?
 msg_missing_date: What day is the meeting?
-msg_booking_date: Which do you want to check?
+msg_booking_date: Which date do you want to check?
 msg_missing_time: What time is the meeting?
-msg_booking_time: What is the you want to check?
+msg_booking_time: What is the time you want to check?
 msg_missing_duration: How long is the meeting?
 msg_attendees: How many attendees will attend the meeting?
 msg_NaN: Only numbers are allowed for this field
@@ -19,7 +19,7 @@ msg_no: Alright, bye bye.
 msg_bye: Bye bye
 msg_book_room_intent: Do you want to book the room for the specified time and dates?
 msg_no_roomnumber: No valid room number was given, please try again.
-msg_check_room_success: The following rooms are available to book. {{roomnames}}
+msg_check_room_success: The following rooms are available to book. {{roomnames}}. Hint, the rooms can be managed over the Dashboard
 msg_check_room_fail: There are no rooms available or the listing failed
 msg_availableRoom: Room {{roomname}} is available for one hour. Should I book the meeting room for you?
 msg_notAvailableRoom: The room {{roomname}} is not available, the following events take place instead. {{eventlists}}.
