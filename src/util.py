@@ -172,17 +172,21 @@ def delete_room_to_json(name):
     :param name: identifier of the room: display name
     :return: http status code of uploading the file
     '''
+    print("this room need to be deleted in Json file "+ name)
     data=load_locationConstraint()
+    print(data)
     x=0
     for i in range(0, len(data['locations'])):
         if(data['locations'][i]['displayName'] == name):
             print("find room")
             x=i
+            data['locations'].pop(x)
+            print(data)
+            store_locationConstraint(data)
         else:
             print("couldnt find room")
 
-    data['locations'].pop(x)
-    return store_locationConstraint(data)
+
 
 
 # Testing
