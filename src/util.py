@@ -183,6 +183,7 @@ def delete_room_to_json(name):
             data['locations'].pop(x)
             print(data)
             store_locationConstraint(data)
+            break
         else:
             print("couldnt find room")
 
