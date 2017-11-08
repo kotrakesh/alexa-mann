@@ -1,15 +1,45 @@
 Amazon Echo Room Monitor
 =======================
 
-The room monitor custom skill for Alexa Echo manages Outlook Calenders as rooms and checks
-their availability and enables the user to book rooms for specific times and dates.
+## Project Purpose 
+This project enables users to book meeting rooms in a company environment with the help of Alexa as a voice interface for a hands free room booking experience.
+Possible (implemented) use cases are:
+* Booking a meeting room with the information about, date, time, duration, number of attendees and title of the event
+* Checking availability of specific rooms for specific dates and times
+* Overview over all registered rooms
 
-Prerequesites:
+Rooms can be managed over a Web Interface (added, deleted)
+
+
+## Technical Prerequisites
+There are some prerequisites that must be fulfilled in order to be able to run the program.
 * Microsoft Outlook Account
+* Amazon Developer Account
+* Amazon Lambda Account
+* Python3 and Git have to be installed
+* internet connectivity has to be available throughout the whole process 
 
 
+### File Structure
 
-## Filestructure 
+```
+src
++---static
+|      +---script.js
+|      +---style.css
++---templates
+|     +---main.html
+|     +---header.html
+|     +---events.html
++---app.py
++---util.py
++---ms-endpoints.py
++---room_class.py
++---templates.yaml
++---requirements.txt
++---zappa_settings.json
+```
+
 ### Shared
 * app.py  Contains the logic
 * util.py Contains utility functions used by Amazon and MS Graph
@@ -26,6 +56,32 @@ Prerequesites:
 ### Misc
 * zappa_settings.json Deployment settings for Amazon Lambda
 * requirements.txt python packages needed, install with pip install -r requirements.txt
+
+
+## Setup the Project 
+This project can either be run locally or can be deployed on Amazon Lambda. 
+This guide will contain the information about the deployment on Amazon Lambda.
+The local mode is covered in a extra README.
+
+This project is set-up as a Maven project. After cloning the project into your local workspace, execute the following command in the top-level project folder to install all dependencies:
+```
+zappa 
+```
+
+
+## How to run the skill?
+Once everything is uploaded and deployed on Lambda the custom skill can be tested either over the Amazon Developer Console, a raspberry pi or on a real Alexa.
+
+## Common Problems
+- Alexa will discard the security token of the MS Graph API every once in a while. Once this happens, the skill has to be reconnected (linked) again to the MS Account.
+
+
+## Implementation Details
+
+### General Structure and Implementation Documentation
+
+
+
 
 
 
