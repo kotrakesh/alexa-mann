@@ -60,13 +60,28 @@ src
 
 ## Setup the Project 
 This project can either be run locally or can be deployed on Amazon Lambda. 
-This guide will contain the information about the deployment on Amazon Lambda.
-The local mode is covered in a extra README.
+The local mode is covered in a extra README file.
+To deploy it on Amazon Lambda the following guide covers all necessary steps.
 
-This project is set-up as a Maven project. After cloning the project into your local workspace, execute the following command in the top-level project folder to install all dependencies:
+[Deploy on Amazon Lambda with zappa](https://developer.amazon.com/de/blogs/post/8e8ad73a-99e9-4c0f-a7b3-60f92287b0bf/new-alexa-tutorial-deploy-flask-ask-skills-to-aws-lambda-with-zappa)
+
+Note: As the repository already contains a zappa_settings file, the initialization of the zappa configuration is not needed.
+All what is left is simply to deploy the skill by typing:
+
 ```
-zappa 
+zappa deploy dev
 ```
+ 
+The initial deployment process can take a few minutes while Zappa creates API gateways and bundles and uploads the code and dependencies. Releasing code updates doesn't recreate the API gateways and is a bit faster. 
+
+If file in the repository changes the updates are handled through a separate command:
+```
+zappa update dev
+```
+
+After deploying or updating, Zappa outputs the URL your skill is hosted at. The URL looks similar to this one:
+https://mcgalgvft5.execute-api.us-east-1.amazonaws.com/dev
+
 
 
 ## How to run the skill?
