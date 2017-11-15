@@ -84,7 +84,17 @@ def getMeetingEndTime(start, duration):
     time = hours + ':' + minutes
     return timeSum(start, time)
 
-def deleteHourMinSec(date):
+def getMeetingEndTimeMinusTwoH(start, duration):
+    '''
+    Takes a start time in HH:MM 24h format, subtract 2 hours from this time, adds the Amazon duration to it
+    and returns the end time in HH:MM 24h format.
+    :param start: Starting time in the HH:MM 24h format as string
+    :param duration: Amazon duration format
+    :return: Meeting end time in the HH:MM 24h format as string
+    '''
+    return getMeetingEndTime(timeSum(start,"22:00"),duration)
+
+def getAllDayHours(date):
     ''''
     used for get all events for a day
     '''
@@ -104,7 +114,6 @@ def store_locationConstraint(data):
     headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
     r = requests.post(url_locationConstraint, data=json.dumps(data), headers=headers, verify=False)
     return r.status_code
-
 
 
 def load_locationConstraint():
@@ -163,17 +172,22 @@ def delete_room_to_json(name):
     :param name: identifier of the room: display name
     :return: http status code of uploading the file
     '''
+    print("this room need to be deleted in Json file "+ name)
     data=load_locationConstraint()
+    print(data)
     x=0
     for i in range(0, len(data['locations'])):
         if(data['locations'][i]['displayName'] == name):
             print("find room")
             x=i
+            data['locations'].pop(x)
+            print(data)
+            store_locationConstraint(data)
+            break
         else:
             print("couldnt find room")
 
-    data['locations'].pop(x)
-    return store_locationConstraint(data)
+
 
 
 # Testing

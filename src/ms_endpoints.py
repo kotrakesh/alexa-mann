@@ -60,16 +60,15 @@ def call_createvent(access_token, tStart, tEnd, title, roomName, cal_id):
         return '{0}: {1}'.format(response.status_code, response.text)
 
 
-def call_listevents_for_time(access_token, id, start, end):
+def call_listevents(access_token, id):
     '''
-    This function returns an array of events for the specified times
+    This function returns an array of events
     :param access_token: Security token for the MS Graph API
     :param id: ID of the calendar the events are searched in
-    :param start: Start time of the event
-    :param end: End time of the event
     :return: list of events. On error the status code and error message are returned
     '''
-    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startDateTime=' + start + 'Z&endDateTime=' + end + 'Z'
+    #GET /me/calendars/{id}/events
+    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/events'
 
     # set request headers
     headers = {'User-Agent': 'python_tutorial/1.0',
@@ -88,7 +87,44 @@ def call_listevents_for_time(access_token, id, start, end):
                             headers=headers,
                             verify=False,
                             params=None)
+    print(response)
+    if response.ok:
+        return response
+    else:
+        print('ms listevents failed !!!!!')
+        #TODO try and exception
+        return '{0}: {1}'.format(response.status_code, response.text)
 
+def call_listevents_for_time(access_token, id, start, end):
+    '''
+    This function returns an array of events for the specified times
+    :param access_token: Security token for the MS Graph API
+    :param id: ID of the calendar the events are searched in
+    :param start: Start time of the event
+    :param end: End time of the event
+    :return: list of events. On error the status code and error message are returned
+    '''
+    list_events_url = 'https://graph.microsoft.com/v1.0/me/calendars/' + id + '/calendarView?startdatetime=' + start + '&enddatetime=' + end
+    print('--- url: ---')
+    print(list_events_url)
+    # set request headers
+    headers = {'User-Agent': 'python_tutorial/1.0',
+               'Authorization': 'Bearer {0}'.format(access_token),
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+               # 'Prefer' : 'outlook.timezone="W. Europe Standard Time"'
+               }
+
+    request_id = str(uuid.uuid4())
+    instrumentation = {'client-request-id': request_id,
+                       'return-client-request-id': 'true'}
+    headers.update(instrumentation)
+
+    response = requests.get(url=list_events_url,
+                            headers=headers,
+                            verify=False,
+                            params=None)
+    print(response.text)
     if response.ok:
         return response
     else:
