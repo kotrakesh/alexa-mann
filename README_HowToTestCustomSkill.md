@@ -1,4 +1,6 @@
-# Installing and running a sample Alexa Skill (Development mode)
+# Installing and running a sample Alexa Skill (Development)
+This short tutorial provides a quick overview of how to run an Alexa custom skill in the development mode. Changes can be applied quickly and also tested via the Amazon Developer Console.
+
 ## Prerequisites 
 * python
 * git 
