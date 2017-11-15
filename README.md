@@ -5,6 +5,8 @@ This repository contains two different Alexa Custom skills.
 2. Predictive Maintanance for Solar panels
 
 Both skills can be independently run Alexa. For further instruction see below. More information can be found in other READMEs in this repository.
+* How to initially run the custom skill for development purposes. See [here](README_HowToTestCustomSkill.md).
+* Further information about the Room Monitor skill and how to run it. See [here](src/README.md).
 
 
 ## How to run the skill
