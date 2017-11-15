@@ -1,10 +1,3 @@
-Amazon Echo Teamproject
-=======================
-
-
-
-----
-
 # Installing and running a sample Alexa Skill (Development mode)
 ## Prerequisites 
 * python
@@ -13,7 +6,6 @@ Amazon Echo Teamproject
 * flask-ask
 * ngrok
 * Amazon Developer Account
-
 
 
 ## Start Amazon Sample App
