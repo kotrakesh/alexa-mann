@@ -12,7 +12,9 @@ class dbc:
         query = "SELECT sum(current_output*900/1000000) as result  from current_data where city = 'Heidelberg' and curr_timestamp >= curdate()-1 and curr_timestamp <curdate(); "  # actual SQL statement to be executed
         lines = cursor.execute(query)  # execute the query
         data = cursor.fetchone()
-        temp = float("{0:.2f}".format(float(data[0])))
+        temp =""
+        if data[0] is not None:
+            temp = float("{0:.2f}".format(float(data[0])))
         cursor.close()
         cnx.close()
         return temp
