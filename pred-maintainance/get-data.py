@@ -19,7 +19,7 @@ class weatherDataGetter:
 			#print(data)
 		f.close()
 		self.lon=str(data['coord']['lon'])
-		self.lat=str(data['coord']['lat'])
+		self.lat=str(data['coord']['lat']) 
 		self.description = data['weather'][0]['description']
 		self.temperature=str(data['main']['temp'])
 		self.temp_min=str(data['main']['temp_min'])

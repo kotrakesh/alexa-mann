@@ -1,0 +1,55 @@
+YesterdayIntent what is the current received yesterday
+YesterdayIntent yesterday current received
+YesterdayIntent how much current was generated yesterday
+YesterdayIntent how much was generated yesterday
+YesterdayIntent generated yesterday
+LastweekIntent what is the current received last week
+LastweekIntent last week current received
+LastweekIntent how much current was generated last week
+LastweekIntent how much was generated last week
+LastweekIntent generated last week
+TillnowcurrentIntent what is the current received for today
+TillnowcurrentIntent todays current received
+TillnowcurrentIntent how much current was generated today
+TillnowcurrentIntent how much was generated today
+TillnowcurrentIntent generated today
+NowcurrentIntent What is the current received right now
+NowcurrentIntent current receiving now
+NowcurrentIntent how much current does the solar panel receive right now
+NowcurrentIntent how much current is the solar panel receiving now
+NowcurrentIntent generating now
+TodayaftercurrentIntent what is the expected current for today
+TodayaftercurrentIntent current expected for rest of today
+TodayaftercurrentIntent how much current will the solar panel receive today
+TodayaftercurrentIntent how much current is the solar panel receiving today
+TodayaftercurrentIntent how much current will the solar panel generate today
+TodayaftercurrentIntent how much current is the solar panel generating today
+TodayweatherIntent today's expected weather
+TodayweatherIntent what will the weather be today
+TodayweatherIntent today weather
+TodayweatherIntent what will the weather be later today
+NowweatherIntent what is the weather now
+NowweatherIntent what is the weather now in Heidelberg
+NowweatherIntent weather now
+TomorrowcurrentIntent what is the current expected for tomorrow
+TomorrowcurrentIntent what is tomorrows expected current
+TomorrowcurrentIntent how much current is expected for tomorrow
+TomorrowcurrentIntent how much is tomorrows expected current
+TomorrowcurrentIntent tomorrow expected current
+TomorrowcurrentIntent tomorrow current
+NextweekcurrentIntent what is the current expected for next week
+NextweekcurrentIntent what is next weeks expected current
+NextweekcurrentIntent how much current is expected for next week
+NextweekcurrentIntent how much is next weeks expected current
+NextweekcurrentIntent current expected for next week
+NextweekcurrentIntent next week current
+TomorroweatherIntent what is tomorrow's expected weather
+TomorroweatherIntent what is the weather forecast for tomorrow
+TomorroweatherIntent weather tomorrow
+NextweekweatherIntent next week's expected weather
+NextweekweatherIntent what is next weeks expected average weather
+NextweekweatherIntent next week weather
+FailurePossibilityIntent what is the failure possibility next week
+FalseFailurePossibilityIntent what is the failure possibility next week after
+FalseFailurePossibilityIntent what is the failure possibility in two weeks
+FalseFailurePossibilityIntent failure possibility in two weeks

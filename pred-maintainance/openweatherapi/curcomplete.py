@@ -3,7 +3,7 @@ import urllib2
 import MySQLdb
 import datetime
 import annotate_current
-
+#Connecting to data base
 db = MySQLdb.connect(host="eu-cdbr-west-01.cleardb.com",
                      user="b3465148a734be",
                      passwd="a2c4eda1",
@@ -11,11 +11,12 @@ db = MySQLdb.connect(host="eu-cdbr-west-01.cleardb.com",
 
 cur = db.cursor()
 
-now = datetime.datetime.now()
-date_string = now.strftime('%Y-%m-%d %H:%M:%S')
+now = datetime.datetime.now()# to get present time
+date_string = now.strftime('%Y-%m-%d %H:%M:%S')#Convert a tuple to a string as specified by the format argument
 
 url = "http://api.openweathermap.org/data/2.5/weather?zip=69115,de&appid=04ac6f7772b575cbd7bb17063a1430f2"
 data = json.load(urllib2.urlopen(url))
+#inserting data into Heroku server
 sqlinsert = "insert into heroku_c0277ef6294fdf7.current_data (longitude, latitude, city, description, temperature, temperature_min, temperature_max, humidity, wind, sunrise, sunset, current_output, curr_timestamp) values ('" + str(
     data['coord']['lon']) + "', '" + str(data['coord']['lat']) + "', '" + str(data['name']) + "', '" + str(
     data['weather'][0]['description']) + "', " + str(data['main']['temp']) + ", " + str(

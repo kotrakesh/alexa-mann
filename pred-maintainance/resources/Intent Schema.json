@@ -1,0 +1,58 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "YesterdayIntent"
+    },
+    {
+      "intent": "LastweekIntent"
+    },
+    {
+      "intent": "TillnowcurrentIntent"
+    },
+    {
+      "intent": "NowcurrentIntent"
+    },
+    {
+      "intent": "TodayaftercurrentIntent"
+    },
+    {
+      "intent": "TodayweatherIntent"
+    },
+    {
+      "intent": "NowweatherIntent"
+    },
+    {
+      "intent": "TomorrowcurrentIntent"
+    },
+    {
+      "intent": "NextweekcurrentIntent"
+    },
+    {
+      "intent": "TomorroweatherIntent"
+    },
+    {
+      "intent": "NextweekweatherIntent"
+    },
+    {
+      "intent": "FailurePossibilityIntent"
+    },
+    {
+      "intent": "FalseFailurePossibilityIntent"
+    }
+  ]
+}
