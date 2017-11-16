@@ -117,10 +117,6 @@ Each function can also be called directly without invoking the Launch Request. P
 - For the title of the event the built-in datatype "Literal" is used. In a few cases, especially when keywords like dates or numbers are used as a title, Alexa will mistake them as a request to a different intent and thus Alexa might ask for information twice and go into a loop. Therefore only titles which are unique and can't be mistaken as any other built-in datatype may be used
 
 
-## Implementation Details
-
-### General Structure and Implementation Documentation
-
 
 
 
