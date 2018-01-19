@@ -1,9 +1,24 @@
 AMAZON.StopIntent Bye bye
 AMAZON.StopIntent be quiet
 GetAllRoomsIntent What rooms can I book
+GetAllRoomsIntent What rooms can be booked
 GetAllRoomsIntent What rooms are there
+GetAllRoomsIntent What meeting rooms can I book
+GetAllRoomsIntent What meeting rooms can be booked
+GetAllRoomsIntent What meeting rooms are there
+GetAllRoomsIntent Which rooms can be booked
+GetAllRoomsIntent Which rooms can I book
+GetAllRoomsIntent Which rooms are there to book
 GetAllRoomsIntent Which are the rooms to book
+GetAllRoomsIntent Which are the rooms I can book
 GetAllRoomsIntent Which rooms are there
+GetAllRoomsIntent Which are the names of the rooms I can book
+GetAllRoomsIntent Which meeting rooms can be booked
+GetAllRoomsIntent Which meeting rooms can I book
+GetAllRoomsIntent Which meeting rooms are there to book
+GetAllRoomsIntent Which are the meeting rooms to book
+GetAllRoomsIntent Which are the meeting rooms I can book
+GetAllRoomsIntent Which meeting rooms are there
 GetAllRoomsIntent What are the names of the rooms I can book
 AttendeesIntent {Attendees}
 AttendeesIntent {Attendees} people
@@ -85,6 +100,7 @@ DateDurationIntent Can you book me a room for {Duration} on {Date}
 DateDurationIntent Can you book me a room for {Duration} for {Date}
 DateDurationIntent it is {Duration} {Date}
 DateIntent Book me a meeting room
+DateIntent I need a room
 DateIntent Please book me a meeting room
 DateIntent Can you please book me a meeting room
 DateIntent Can you book a meeting room
@@ -196,7 +212,6 @@ RoomAvailabilityIntent Is room number {Room} occupied
 RoomAvailabilityIntent Is it possible to book room number {Room}
 RoomAvailabilityIntent Is the room {Room} available
 RoomAvailabilityIntent Is the room number {Room} available
-RoomAvailabilityIntent Is room {Room} available
 RoomAvailabilityIntent Is room number {Room} available
 RoomAvailabilityIntent Is the conference room {Room} available
 RoomAvailabilityIntent Is the conference room number {Room} available
