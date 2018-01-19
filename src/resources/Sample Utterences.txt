@@ -99,17 +99,6 @@ DateDurationIntent Can you please book me a room for {Duration} for {Date}
 DateDurationIntent Can you book me a room for {Duration} on {Date}
 DateDurationIntent Can you book me a room for {Duration} for {Date}
 DateDurationIntent it is {Duration} {Date}
-DateIntent Book me a meeting room
-DateIntent I need a room
-DateIntent Please book me a meeting room
-DateIntent Can you please book me a meeting room
-DateIntent Can you book a meeting room
-DateIntent Can you book me a meeting room
-DateIntent Book me a room
-DateIntent Please book me a room
-DateIntent Can you please book me a room
-DateIntent Can you book a room
-DateIntent Can you book me a room
 DateIntent Book me a room on {Date}
 DateIntent Book me a room for {Date}
 DateIntent Please book me a room on {Date}
