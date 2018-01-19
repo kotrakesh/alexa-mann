@@ -10,6 +10,15 @@
       "intent": "AMAZON.StopIntent"
     },
     {
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "GetAllRoomsIntent"
+    },
+    {
       "slots": [
         {
           "name": "Attendees",
@@ -100,6 +109,71 @@
         }
       ],
       "intent": "TimeIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Room",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "EventIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Room",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "RoomAvailabilityIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Room",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "RoomAvailabilityDateIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        },
+        {
+          "name": "Room",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "RoomAvailabilityTimeIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "Time",
+          "type": "AMAZON.TIME"
+        },
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "Room",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "RoomAvailabilityDateTimeIntent"
     },
     {
       "slots": [
