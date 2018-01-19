@@ -1,224 +1,582 @@
 {
-  "intents": [
-    {
-      "name": "AMAZON.CancelIntent",
-      "samples": []
-    },
-    {
-      "name": "AMAZON.HelpIntent",
-      "samples": []
-    },
-    {
-      "name": "AMAZON.StopIntent",
-      "samples": []
-    },
-    {
-      "name": "AttendeesIntent",
-      "samples": [
-        "{Attendees}",
-        "{Attendees} people",
-        "{Attendees} attendees"
-      ],
-      "slots": [
-        {
-          "name": "Attendees",
-          "type": "AMAZON.NUMBER",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "DataTimeDurationIntent",
-      "samples": [
-        "The meeting will be {Date} at {Time} for {Duration}",
-        "The meeting will be on {Date} at {Time} for {Duration}",
-        "The meeting is {Date} at {Time} for {Duration}",
-        "The meeting {Date} at {Time} will take {Duration}",
-        "The meeting {Date} at {Time} will take {Duration} long"
-      ],
-      "slots": [
-        {
-          "name": "Time",
-          "type": "AMAZON.TIME",
-          "samples": []
-        },
-        {
-          "name": "Duration",
-          "type": "AMAZON.DURATION",
-          "samples": []
-        },
-        {
-          "name": "Date",
-          "type": "AMAZON.DATE",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "DateDurationIntent",
-      "samples": [
-        "The meeting is {Date} for {Duration}",
-        "{Date} for {Duration}",
-        "it is {Date} for {Duration}",
-        "{Duration} {Date}",
-        "it is {Duration} {Date}"
-      ],
-      "slots": [
-        {
-          "name": "Date",
-          "type": "AMAZON.DATE",
-          "samples": []
-        },
-        {
-          "name": "Duration",
-          "type": "AMAZON.DURATION",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "DateIntent",
-      "samples": [
-        "the meeting will be at {Date}",
-        "the meeting will be {Date}",
-        "the meeting will be on {Date}",
-        "the meeting will be in {Date}",
-        "the meeting is {Date}",
-        "the meeting is on {Date}",
-        "it will be at {Date}",
-        "it will be {Date}",
-        "it will be on {Date}",
-        "it will be in {Date}",
-        "it is {Date}",
-        "it is on {Date}",
-        "{Date}"
-      ],
-      "slots": [
-        {
-          "name": "Date",
-          "type": "AMAZON.DATE",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "DateTimeIntent",
-      "samples": [
-        "The meeting is {Date} at {Time}",
-        "it is {Date} at {Time}",
-        "The meeting is {Time} at {Date}",
-        "it is {Time} at {Date}"
-      ],
-      "slots": [
-        {
-          "name": "Date",
-          "type": "AMAZON.DATE",
-          "samples": []
-        },
-        {
-          "name": "Time",
-          "type": "AMAZON.TIME",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "DurationIntent",
-      "samples": [
-        "The meeting is {Duration}",
-        "The meeting takes {Duration}",
-        "The meeting will be {Duration}",
-        "The meeting will take {Duration}",
-        "it is {Duration}",
-        "it takes {Duration}",
-        "it will be {Duration}",
-        "it will take {Duration}",
-        "{Duration}"
-      ],
-      "slots": [
-        {
-          "name": "Duration",
-          "type": "AMAZON.DURATION",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "TimeDurationIntent",
-      "samples": [
-        "the meeting will be at {Time} for {Duration}",
-        "the meeting is at {Time} for {Duration}",
-        "the meeting will be at {Time} and will take {Duration}",
-        "the meeting is at {Time} and will take {Duration}",
-        "the meeting will take {Duration} and will start at {Time}"
-      ],
-      "slots": [
-        {
-          "name": "Time",
-          "type": "AMAZON.TIME",
-          "samples": []
-        },
-        {
-          "name": "Duration",
-          "type": "AMAZON.DURATION",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "TimeIntent",
-      "samples": [
-        "The meeting is at {Time}",
-        "The meeting will be at {Time}",
-        "it is at {Time}",
-        "it will be at {Time}"
-      ],
-      "slots": [
-        {
-          "name": "Time",
-          "type": "AMAZON.TIME",
-          "samples": []
-        }
-      ]
-    },
-    {
-      "name": "TitleIntent",
-      "samples": [
-        "The title is {value |Title}",
-        "The title is {one two |Title}",
-        "The title is {one two three |Title}",
-        "The title is {one two three four |Title}",
-        "The title is {one two three four five |Title}",
-        "The title is {one two three four five six |Title}",
-        "The title is {one two three four five six seven|Title}",
-        "The title is {one two three four five six seven eight |Title}",
-        "The title is {one two three four five six seven eight nine|Title}",
-        "Title {one |Title}",
-        "Title {one two |Title}",
-        "Title {one two three |Title}",
-        "Title {one two three four |Title}",
-        "Title {one two three four five |Title}",
-        "Title {one two three four five six |Title}",
-        "Title {one two three four five six seven|Title}",
-        "Title {one two three four five six seven eight |Title}",
-        "Title {one two three four five six seven eight nine|Title}",
-        "it's {one |Title}",
-        "it's {one two |Title}",
-        "it's {one two three |Title}",
-        "it's {one two three four |Title}",
-        "it's {one two three four five |Title}",
-        "it's {one two three four five six |Title}",
-        "it's {one two three four five six seven|Title}",
-        "it's {one two three four five six seven eight |Title}",
-        "it's {one two three four five six seven eight nine|Title}"
-      ],
-      "slots": [
-        {
-          "name": "Title",
-          "type": "AMAZON.LITERAL",
-          "samples": []
-        }
-      ]
-    }
-  ]
+  "languageModel": {
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.NoIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": [
+          "Bye bye",
+          "be quiet"
+        ]
+      },
+      {
+        "name": "AMAZON.YesIntent",
+        "samples": []
+      },
+      {
+        "name": "AttendeesIntent",
+        "samples": [
+          "{Attendees}",
+          "{Attendees} people",
+          "{Attendees} attendees",
+          "{Attendees} persons",
+          "There will be {Attendees} people",
+          "There will be {Attendees} persons"
+        ],
+        "slots": [
+          {
+            "name": "Attendees",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "DataTimeDurationIntent",
+        "samples": [
+          "The meeting will be {Date} at {Time} for {Duration}",
+          "The meeting will be on {Date} at {Time} for {Duration}",
+          "The meeting is {Date} at {Time} for {Duration}",
+          "The meeting {Date} at {Time} will take {Duration}",
+          "The meeting {Date} at {Time} will take {Duration} long",
+          "Book me a room on {Date} at {Time} for {Duration}",
+          "Please book me a room on {Date} at {Time} for {Duration}",
+          "Please book me a room for {Date} at {Time} for {Duration}",
+          "Can you please book me a room on {Date} at {Time} for {Duration}",
+          "Can you please book me a room for {Date} at {Time} for {Duration}",
+          "Can you book me a room on {Date} at {Time} for {Duration}",
+          "Can you book me a room for {Date} at {Time} for {Duration}",
+          "Book me a room on {Date} for {Duration} at {Time}",
+          "Book me a room for {Date} for {Duration} at {Time}",
+          "Please book me a room on {Date} for {Duration} at {Time}",
+          "Please book me a room for {Date} for {Duration} at {Time}",
+          "Can you please book me a room on {Date} for {Duration} at {Time}",
+          "Can you please book me a room for {Date} for {Duration} at {Time}",
+          "Can you book me a room on {Date} for {Duration} at {Time}",
+          "Can you book me a room for {Date} for {Duration} at {Time}",
+          "Please book me a room at {Time} for {Duration} on {Date}",
+          "Please book me a room at {Time} for {Duration} for {Date}",
+          "Can you please book me a room at {Time} for {Duration} on {Date}",
+          "Can you please book me a room at {Time} for {Duration} for {Date}",
+          "Can you book me a room at {Time} for {Duration} on {Date}",
+          "Can you book me a room at {Time} for {Duration} for {Date}",
+          "Book me a room at {Time} for {Duration} on {Date}",
+          "Book me a room at {Time} for {Duration} for {Date}",
+          "Please book me a room at {Time} on {Date} for {Duration}",
+          "Please book me a room at {Time} for {Date} for {Duration}",
+          "Can you please book me a room at {Time} on {Date} for {Duration}",
+          "Can you please book me a room at {Time} for {Date} for {Duration}",
+          "Can you book me a room at {Time} on {Date} for {Duration}",
+          "Can you book me a room at {Time} for {Date} for {Duration}",
+          "Book me a room at {Time} on {Date} for {Duration}",
+          "Book me a room at {Time} for {Date} for {Duration}",
+          "Please book me a room for {Duration} on {Date} at {Time}",
+          "Please book me a room for {Duration} for {Date} at {Time}",
+          "Can you please book me a room for {Duration} on {Date} at {Time}",
+          "Can you please book me a room for {Duration} for {Date} at {Time}",
+          "Can you book me a room for {Duration} on {Date} at {Time}",
+          "Can you book me a room for {Duration} for {Date} at {Time}",
+          "Book me a room for {Duration} on {Date} at {Time}",
+          "Book me a room for {Duration} for {Date} at {Time}",
+          "Please book me a room for {Duration} at {Time} on {Date}",
+          "Please book me a room for {Duration} at {Time} for {Date}",
+          "Can you please book me a room for {Duration} at {Time} on {Date}",
+          "Can you please book me a room for {Duration} at {Time} for {Date}",
+          "Can you book me a room for {Duration} at {Time} on {Date}",
+          "Can you book me a room for {Duration} at {Time} for {Date}",
+          "Book me a room for {Duration} at {Time} on {Date}",
+          "Book me a room for {Duration} at {Time} for {Date}"
+        ],
+        "slots": [
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          },
+          {
+            "name": "Duration",
+            "type": "AMAZON.DURATION"
+          },
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          }
+        ]
+      },
+      {
+        "name": "DateDurationIntent",
+        "samples": [
+          "The meeting is {Date} for {Duration}",
+          "Book me a room on {Date} for {Duration}",
+          "Book me a room for {Date} for {Duration}",
+          "Please book me a room on {Date} for {Duration}",
+          "Please book me a room for {Date} for {Duration}",
+          "Can you please book me a room on {Date} for {Duration}",
+          "Can you please book me a room for {Date} for {Duration}",
+          "Can you book me a room on {Date} for {Duration}",
+          "Can you book me a room for {Date} for {Duration}",
+          "{Date} for {Duration}",
+          "it is {Date} for {Duration}",
+          "{Duration} {Date}",
+          "Book me a room for {Duration} on {Date}",
+          "Book me a room for {Duration} for {Date}",
+          "Please book me a room for {Duration} on {Date}",
+          "Please book me a room for {Duration} for {Date}",
+          "Can you please book me a room for {Duration} on {Date}",
+          "Can you please book me a room for {Duration} for {Date}",
+          "Can you book me a room for {Duration} on {Date}",
+          "Can you book me a room for {Duration} for {Date}",
+          "it is {Duration} {Date}"
+        ],
+        "slots": [
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          },
+          {
+            "name": "Duration",
+            "type": "AMAZON.DURATION"
+          }
+        ]
+      },
+      {
+        "name": "DateIntent",
+        "samples": [
+          "Book me a meeting room",
+          "I need a room",
+          "Please book me a meeting room",
+          "Can you please book me a meeting room",
+          "Can you book a meeting room",
+          "Can you book me a meeting room",
+          "Book me a room",
+          "Please book me a room",
+          "Can you please book me a room",
+          "Can you book a room",
+          "Can you book me a room",
+          "Book me a room on {Date}",
+          "Book me a room for {Date}",
+          "Please book me a room on {Date}",
+          "Please book me a room for {Date}",
+          "Can you please book me a room on {Date}",
+          "Can you please book me a room for {Date}",
+          "Can you book me a room on {Date}",
+          "Can you book me a room for {Date}",
+          "the meeting will be at {Date}",
+          "the meeting will be {Date}",
+          "the meeting will be on {Date}",
+          "the meeting will be in {Date}",
+          "the meeting is {Date}",
+          "the meeting is on {Date}",
+          "it will be at {Date}",
+          "it will be {Date}",
+          "it will be on {Date}",
+          "it will be in {Date}",
+          "it is {Date}",
+          "{Date}",
+          "it is on {Date}"
+        ],
+        "slots": [
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          }
+        ]
+      },
+      {
+        "name": "DateTimeIntent",
+        "samples": [
+          "The meeting is {Date} at {Time}",
+          "Book me a room on {Date} at {Time}",
+          "Book me a room for {Date} at {Time}",
+          "Please book me a room on {Date} at {Time}",
+          "Please book me a room for {Date} at {Time}",
+          "Can you book me a room on {Date} at {Time}",
+          "Can you book me a room for {Date} at {Time}",
+          "Can you please book me a room on {Date} at {Time}",
+          "Can you please book me a room for {Date} at {Time}",
+          "it is {Date} at {Time}",
+          "The meeting is {Time} at {Date}",
+          "it is {Time} at {Date}",
+          "Book me a room at {Time} on {Date}",
+          "Book me a room at {Time} for {Date}",
+          "Please book me a room at {Time} on {Date}",
+          "Please book me a room at {Time} for {Date}",
+          "Can you book me a room at {Time} on {Date}",
+          "Can you book me a room at {Time} for {Date}",
+          "Can you please book me a room at {Time} on {Date}",
+          "Can you please book me a room at {Time} for {Date}"
+        ],
+        "slots": [
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          },
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          }
+        ]
+      },
+      {
+        "name": "DurationIntent",
+        "samples": [
+          "The meeting is {Duration}",
+          "The meeting takes {Duration}",
+          "The meeting will be {Duration}",
+          "The meeting will take {Duration}",
+          "it is {Duration}",
+          "it takes {Duration}",
+          "it will be {Duration}",
+          "it will take {Duration}",
+          "{Duration}",
+          "Book me a room for {Duration}",
+          "Please book me a room for {Duration}",
+          "Can you book me a room for {Duration}",
+          "Can you please book me a room for {Duration}"
+        ],
+        "slots": [
+          {
+            "name": "Duration",
+            "type": "AMAZON.DURATION"
+          }
+        ]
+      },
+      {
+        "name": "EventIntent",
+        "samples": [
+          "What events are there {Date} in room {Room}",
+          "What events are there on {Date} in room {Room}",
+          "What events are there {Date} in meeting room {Room}",
+          "What events are there on {Date} in meeting room {Room}",
+          "What events are there {Date} in conference room {Room}",
+          "What events are there on {Date} in conference room {Room}",
+          "What events are there {Date} in room number {Room}",
+          "What events are there on {Date} in room number {Room}",
+          "What events are there {Date} in meeting room number {Room}",
+          "What events are there on {Date} in meeting room number {Room}",
+          "What events are there {Date} in conference room number {Room}",
+          "What events are there on {Date} in conference room number {Room}"
+        ],
+        "slots": [
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          },
+          {
+            "name": "Room",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "GetAllRoomsIntent",
+        "samples": [
+          "What rooms can I book",
+          "What rooms can be booked",
+          "What rooms are there",
+          "What meeting rooms can I book",
+          "What meeting rooms can be booked",
+          "What meeting rooms are there",
+          "Which rooms can be booked",
+          "Which rooms can I book",
+          "Which rooms are there to book",
+          "Which are the rooms to book",
+          "Which are the rooms I can book",
+          "Which rooms are there",
+          "Which are the names of the rooms I can book",
+          "Which meeting rooms can be booked",
+          "Which meeting rooms can I book",
+          "Which meeting rooms are there to book",
+          "Which are the meeting rooms to book",
+          "Which are the meeting rooms I can book",
+          "Which meeting rooms are there",
+          "What are the names of the rooms I can book"
+        ],
+        "slots": []
+      },
+      {
+        "name": "RoomAvailabilityDateIntent",
+        "samples": [
+          "Is room number {Room} available for {Date}",
+          "Is room {Room} available {Date}",
+          "Is room {Room} available on {Date}",
+          "Is room {Room} available this {Date}",
+          "Is room {Room} free {Date}",
+          "Is room {Room} free on {Date}",
+          "Is room {Room} free this {Date}",
+          "Is room {Room} not occupied {Date}",
+          "Is room {Room} not occupied on {Date}",
+          "Is room {Room} not occupied this {Date}",
+          "Is room {Room} occupied {Date}",
+          "Is room {Room} occupied on {Date}",
+          "Is room {Room} occupied this {Date}",
+          "Is it possible to book room {Room} {Date}",
+          "Is it possible to book room {Room} on {Date}",
+          "Is it possible to book room {Room} this {Date}",
+          "Is room number {Room} available {Date}",
+          "Is room number {Room} available on {Date}",
+          "Is room number {Room} available this {Date}",
+          "Is room number {Room} free {Date}",
+          "Is room number {Room} free on {Date}",
+          "Is room number {Room} free this {Date}",
+          "Is room number {Room} not occupied {Date}",
+          "Is room number {Room} not occupied on {Date}",
+          "Is room number {Room} not occupied this {Date}",
+          "Is room number {Room} occupied {Date}",
+          "Is room number {Room} occupied on {Date}",
+          "Is room number {Room} occupied this {Date}",
+          "Is it possible to book room number {Room} {Date}",
+          "Is it possible to book room number {Room} on {Date}",
+          "Is it possible to book room number {Room} this {Date}",
+          "Is the room {Room} available for {Date}",
+          "Is the room number {Room} available for {Date}",
+          "Is room {Room} available for {Date}",
+          "Is the conference room {Room} available for {Date}",
+          "Is the conference room number {Room} available for {Date}",
+          "Is conference room {Room} available for {Date}",
+          "Is conference room number {Room} available for {Date}",
+          "Is the meeting room {Room} available for {Date}",
+          "Is the meeting room number {Room} available for {Date}",
+          "Is meeting room {Room} available for {Date}",
+          "Is meeting room number {Room} available for {Date}"
+        ],
+        "slots": [
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          },
+          {
+            "name": "Room",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "RoomAvailabilityDateTimeIntent",
+        "samples": [
+          "Is the room {Room} available for {Date} at {Time}",
+          "Is the room number {Room} available for {Date} at {Time}",
+          "Is room {Room} available for {Date} at {Time}",
+          "Is room number {Room} available for {Date} at {Time}",
+          "Is the conference room {Room} available for {Date} at {Time}",
+          "Is the conference room number {Room} available for {Date} at {Time}",
+          "Is conference room {Room} available for {Date} at {Time}",
+          "Is conference room number {Room} available for {Date} at {Time}",
+          "Is the meeting room {Room} available for {Date} at {Time}",
+          "Is the meeting room number {Room} available for {Date} at {Time}",
+          "Is meeting room {Room} available for {Date} at {Time}",
+          "Is meeting room number {Room} available for {Date} at {Time}"
+        ],
+        "slots": [
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          },
+          {
+            "name": "Date",
+            "type": "AMAZON.DATE"
+          },
+          {
+            "name": "Room",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "RoomAvailabilityIntent",
+        "samples": [
+          "Is room {Room} available",
+          "Is room {Room} free",
+          "Is room {Room} not occupied",
+          "Is room {Room} occupied",
+          "Is it possible to book room {Room}",
+          "Is room number {Room} available",
+          "Is room number {Room} free",
+          "Is room number {Room} not occupied",
+          "Is room number {Room} occupied",
+          "Is it possible to book room number {Room}",
+          "Is the room {Room} available",
+          "Is the room number {Room} available",
+          "Is the conference room {Room} available",
+          "Is the conference room number {Room} available",
+          "Is conference room {Room} available",
+          "Is conference room number {Room} available",
+          "Is the meeting room {Room} available",
+          "Is the meeting room number {Room} available",
+          "Is meeting room {Room} available",
+          "Is meeting room number {Room} available"
+        ],
+        "slots": [
+          {
+            "name": "Room",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "RoomAvailabilityTimeIntent",
+        "samples": [
+          "Is room {Room} available at {Time}",
+          "Is room {Room} available on {Time}",
+          "Is room {Room} available from {Time}",
+          "Is room {Room} free at {Time}",
+          "Is room {Room} free on {Time}",
+          "Is room {Room} free from {Time}",
+          "Is room {Room} not occupied at {Time}",
+          "Is room {Room} not occupied on {Time}",
+          "Is room {Room} not occupied from {Time}",
+          "Is room {Room} occupied at {Time}",
+          "Is room {Room} occupied on {Time}",
+          "Is room {Room} occupied from {Time}",
+          "Is it possible to book room {Room} at {Time}",
+          "Is it possible to book room {Room} on {Time}",
+          "Is it possible to book room {Room} from {Time}",
+          "Is it possible to book room {Room} for {Time}",
+          "Is room number {Room} available at {Time}",
+          "Is room number {Room} available on {Time}",
+          "Is room number {Room} available from {Time}",
+          "Is room number {Room} free at {Time}",
+          "Is room number {Room} free on {Time}",
+          "Is room number {Room} free from {Time}",
+          "Is room number {Room} not occupied at {Time}",
+          "Is room number {Room} not occupied on {Time}",
+          "Is room number {Room} not occupied from {Time}",
+          "Is room number {Room} occupied at {Time}",
+          "Is room number {Room} occupied on {Time}",
+          "Is room number {Room} occupied from {Time}",
+          "Is it possible to book room number {Room} at {Time}",
+          "Is it possible to book room number {Room} on {Time}",
+          "Is it possible to book room number {Room} from {Time}",
+          "Is it possible to book room number {Room} for {Time}",
+          "Is the room {Room} available at {Time}",
+          "Is the room number {Room} available at {Time}",
+          "Is the conference room {Room} available at {Time}",
+          "Is the conference room number {Room} available at {Time}",
+          "Is conference room {Room} available at {Time}",
+          "Is conference room number {Room} available at {Time}",
+          "Is the meeting room {Room} available at {Time}",
+          "Is the meeting room number {Room} available at {Time}",
+          "Is meeting room {Room} available at {Time}",
+          "Is meeting room number {Room} available at {Time}"
+        ],
+        "slots": [
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          },
+          {
+            "name": "Room",
+            "type": "AMAZON.NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "TimeDurationIntent",
+        "samples": [
+          "the meeting will be at {Time} for {Duration}",
+          "the meeting is at {Time} for {Duration}",
+          "the meeting will be at {Time} and will take {Duration}",
+          "the meeting is at {Time} and will take {Duration}",
+          "the meeting will take {Duration} and will start at {Time}",
+          "Book me a room for {Duration} at {Time}",
+          "Please book me a room for {Duration} at {Time}",
+          "Can you book me a room for {Duration} at {Time}",
+          "Can you please book me a room for {Duration} at {Time}",
+          "Book me a room at {Time} for {Duration}",
+          "Please book me a room at {Time} for {Duration}",
+          "Can you book me a room at {Time} for {Duration}",
+          "Can you please book me a room at {Time} for {Duration}"
+        ],
+        "slots": [
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          },
+          {
+            "name": "Duration",
+            "type": "AMAZON.DURATION"
+          }
+        ]
+      },
+      {
+        "name": "TimeIntent",
+        "samples": [
+          "The meeting is at {Time}",
+          "The meeting will be at {Time}",
+          "it is at {Time}",
+          "it is {Time}",
+          "{Time}",
+          "it will be at {Time}",
+          "Book me a room at {Time}",
+          "Please book me a room at {Time}",
+          "Can you book me a room at {Time}",
+          "Can you please book me a room at {Time}",
+          "The time is {Time}"
+        ],
+        "slots": [
+          {
+            "name": "Time",
+            "type": "AMAZON.TIME"
+          }
+        ]
+      },
+      {
+        "name": "TitleIntent",
+        "samples": [
+          "The title is {value |Title}",
+          "The title is {one two |Title}",
+          "The title is {one two three |Title}",
+          "The title is {one two three four |Title}",
+          "The title is {one two three four five |Title}",
+          "The title is {one two three four five six |Title}",
+          "The event is called {value |Title}",
+          "The event is called {one two |Title}",
+          "The event is called {one two three |Title}",
+          "The event is called {one two three four |Title}",
+          "The event is called {one two three four five |Title}",
+          "The event is called {one two three four five six |Title}",
+          "The meeting is called {value |Title}",
+          "The meeting is called {one two |Title}",
+          "The meeting is called {one two three |Title}",
+          "The meeting is called {one two three four |Title}",
+          "The meeting is called {one two three four five |Title}",
+          "The meeting is called {one two three four five six |Title}",
+          "Title {one |Title}",
+          "Title {one two |Title}",
+          "Title {one two three |Title}",
+          "Title {one two three four |Title}",
+          "Title {one two three four five |Title}",
+          "Title {one two three four five six |Title}",
+          "it's {one |Title}",
+          "it's {one two |Title}",
+          "it's {one two three |Title}",
+          "it's {one two three four |Title}",
+          "it's {one two three four five |Title}",
+          "it's {one two three four five six |Title}",
+          "it is {one |Title}",
+          "it is {one two |Title}",
+          "it is {one two three |Title}",
+          "it is {one two three four |Title}",
+          "it is {one two three four five |Title}",
+          "it is {one two three four five six |Title}"
+        ],
+        "slots": [
+          {
+            "name": "Title",
+            "type": "AMAZON.LITERAL"
+          }
+        ]
+      }
+    ],
+    "invocationName": "room monitor"
+  }
 }
