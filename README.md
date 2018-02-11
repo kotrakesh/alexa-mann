@@ -2,8 +2,8 @@ Amazon Echo Teamproject
 =======================
 
 This repository contains two independent Alexa Custom skills.
-[1. Room Monitor](03_room_monitor/)
-[2. Predictive Maintanance for Solar panels](04_pred_maintainance/)
+1. [Room Monitor](03_room_monitor/)
+2. [Predictive Maintanance for Solar panels](04_pred_maintainance/)
 
 Links to the available README files for each custom skill:
 * How to initially setup and run the **custom skill for development purposes** generally. See [here](00_doc/README.md).
