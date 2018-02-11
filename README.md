@@ -29,7 +29,6 @@ Room monitored is further explained in its own [README](03_room_monitor/README.m
 
 
 ### Predictive maintainance 
-Here you can get very precise information about the power generation of solar panels.
-More details are written in the specific [README](04_pred_maintainance/README.md).
+Predictive maintenance is designed to help determine the condition of in-service machines in order to predict when maintenance should be performed. This promises cost savings over usual maintenance, because tasks are performed only when needed. Alexais used as interface to communicate. [README](04_pred_maintainance/README.md).
 
 
