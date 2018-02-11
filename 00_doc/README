@@ -22,13 +22,13 @@ On __Windows__
 
 2. create sample app at [developer.amazon.com](developer.amazon.com)
 3. specify __Skill Information__ and save configuration
-![Skill Information](doc/alexa_skill-information.png)
+![Skill Information](alexa_skill-information.png)
 4. Fill out __Interaction Model__ (*Intent Schema* and *Sample Utterances*)
 5. copy the https Link displayed by ngrok and insert it at the __Configuration__ Tab (Endpoint)
-![Configuration](doc/alexa_configuration.png)
+![Configuration](alexa_configuration.png)
 6. Select the __SSL-Certificate__
-![SSL-Certificate](doc/alexa_ssl-certificate.png)
+![SSL-Certificate](alexa_ssl-certificate.png)
 7. run `python sample.py`
 8. Go to __Test__ Tab in the amazon developer console and start the testing with the *Invocation Name* specified at the __Skill Information__ Tab
-![Test Skill](doc/alexa_test.png)
+![Test Skill](alexa_test.png)
 
