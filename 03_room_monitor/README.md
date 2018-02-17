@@ -97,7 +97,7 @@ These call can be adapted and fed with more information like the date and time w
 
 ### Amazon Developer Console
 Go to __Test__ Tab in the amazon developer console and start the testing with the *Invocation Name* specified at the __Skill Information__ Tab (room monitor)
-![Test Skill](/doc/alexa_test.png)
+![Test Skill](/00_doc/alexa_test.png)
 
 ### Raspberry PI
 Please follow the official guide of Amazon to set up the raspberry pi as an Alexa.
