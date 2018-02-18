@@ -839,5 +839,5 @@ def testFunc():
     print(data['roomAvailable'])
 
 if __name__ == '__main__':
-	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443)
-	# app.run()
+	app.run(host='ghk3pcg5q0.execute-api.us-east-1.amazonaws.com/dev', port=443) # for deployment on lambda
+	# app.run()								     # for local testing
